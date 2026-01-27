@@ -15,7 +15,6 @@ pdf-engine: xelatex
 
 # Filters (executed in order)
 filters:
-  - /usr/local/share/pandoc/filters/tof-box.lua
   - pandoc-plantuml
   - mermaid-filter
 

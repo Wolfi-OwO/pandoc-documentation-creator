@@ -134,11 +134,9 @@ graph TD
 Edit the build script to customize:
 
 ```bash
-docker run --rm -v "$(pwd):/data" registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
-  --defaults=/usr/local/share/pandoc/defaults.yaml \
-  --metadata-file=/data/metadata.yaml \
-  /data/chapters/'*.md' \
-  -o /data/output/documentation.pdf
+docker run --rm -v "$(pwd):/data" --entrypoint=/bin/sh \
+  registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
+  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
 ```
 
 ### Using Different Templates
@@ -170,11 +168,9 @@ docker pull registry.gitlab.com/woofi4/public/pandoc-documentation-creator:lates
 ### Run Manually
 
 ```bash
-docker run --rm -v $(pwd):/data registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
-  --defaults=/usr/local/share/pandoc/defaults.yaml \
-  --metadata-file=/data/metadata.yaml \
-  /data/chapters/'*.md' \
-  -o /data/output/documentation.pdf
+docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
+  registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
+  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
 ```
 
 ## Troubleshooting

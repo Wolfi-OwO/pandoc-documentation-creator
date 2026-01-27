@@ -64,11 +64,9 @@ echo -e "${YELLOW}Generating PDF...${NC}"
 
 docker run --rm \
   -v "${PROJECT_DIR}:/data" \
+  --entrypoint=/bin/sh \
   "${IMAGE_NAME}" \
-  --defaults=/usr/local/share/pandoc/defaults.yaml \
-  --metadata-file=/data/metadata.yaml \
-  /data/chapters/'*.md' \
-  -o /data/output/documentation.pdf
+  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
 
 if [ $? -eq 0 ]; then
     echo ""

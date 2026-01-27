@@ -78,11 +78,9 @@ create_release:
       ## Usage Example
       
       ```bash
-      docker run --rm -v $(pwd):/data $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG \
-        --defaults=/usr/local/share/pandoc/defaults.yaml \
-        --metadata-file=/data/metadata.yaml \
-        /data/chapters/*.md \
-        -o /data/output/documentation.pdf
+      docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
+        $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG \
+        -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
       ```
         --filter pandoc-plantuml \
         --filter pandoc-mermaid \
