@@ -6,7 +6,7 @@ set -e
 # This script sets up the documentation project structure
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-IMAGE_NAME="pandoc-documentation-creator"
+IMAGE_REGISTRY="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
 VERSION="1.0.0"
 
 # Repository URL for templates
@@ -139,7 +139,9 @@ create_new_project() {
     echo "Note: Pandoc configuration (defaults.yaml) is built into the Docker image."
     echo "      You only need to edit metadata.yaml for document customization."
     echo ""
-}metadata() {
+}
+
+create_minimal_metadata() {
     cat > "$1" << 'EOF'
 title: "Project Documentation"
 author: "Your Name"
@@ -246,8 +248,7 @@ create_minimal_help() {
 ## Configuration
 
 Edit `.pandoc/metadata.yaml` to customize document properties.
-EOFusr/local/share/pandoc/defaults.yaml \
-  --metadata-file=/data/metadata
+EOF
     print_success "Created minimal help file"
 }
 
@@ -274,9 +275,9 @@ Thumbs.db
 EOF
 }
 
-# Function to build Docker image
-build_docker_image() {
-    print_header "Building Docker Image"
+# Function to check/pull Docker image
+check_docker_image() {
+    print_header "Checking Docker Image"
     
     # Check Docker
     if ! command_exists docker; then
@@ -284,49 +285,51 @@ build_docker_image() {
         exit 1
     fi
     
-    print_info "Building image: ${IMAGE_NAME}:${VERSION}"
-    
-    docker build -t "${IMAGE_NAME}:${VERSION}" -t "${IMAGE_NAME}:latest" "${SCRIPT_DIR}"
-    
-    if [ $? -eq 0 ]; then
-        echo ""
-        print_success "Docker image built successfully!"
-        echo ""
-        print_info "Image: ${IMAGE_NAME}:${VERSION}"
-        print_info "Image: ${IMAGE_NAME}:latest"
+    # Try to pull the latest image
+    print_info "Pulling latest Docker image..."
+    if docker pull "${IMAGE_REGISTRY}:latest" >/dev/null 2>&1; then
+        print_success "Docker image pulled successfully"
     else
-        echo ""
-        print_error "Docker build failed!"
-        exit 1
+        print_error "Failed to pull Docker image"
+        print_info "Checking for local image..."
+        if ! docker image inspect "${IMAGE_REGISTRY}:latest" >/dev/null 2>&1; then
+            print_error "No local image found either"
+            exit 1
+        fi
+        print_info "Using local image"
     fi
+    
+    # Get version from Docker image
+    IMAGE_VERSION=$(docker inspect --format='{{index .Config.Labels "org.opencontainers.image.version"}}' "${IMAGE_REGISTRY}:latest" 2>/dev/null || echo "unknown")
+    
+    if [ "$IMAGE_VERSION" != "unknown" ] && [ -n "$IMAGE_VERSION" ]; then
+        VERSION="$IMAGE_VERSION"
+        print_info "Using image version: ${VERSION}"
+    else
+        print_info "Could not determine image version, using default: ${VERSION}"
+    fi
+    
+    # Set the full image name with version
+    IMAGE_NAME="${IMAGE_REGISTRY}:latest"
 }
 
 # Main script logic
 print_header "Pandoc Documentation Creator v${VERSION}"
 
-# Parse command line arguments
-case "${1:-build}" in
-    new)
-        create_new_project "${2:-.}"
-        echo ""
-        print_info "To build the Docker image, run: ./init.sh build"
-        ;;
-    build)
-        build_docker_image
-        echo ""
-        print_header "Usage"
-        echo "To create a new project structure:"
-        echo "  ./init.sh new [directory]"
-        echo ""
-        echo "To build a PDF:"
-        echo "  ./build-pdf.sh"
-        ;;
-    *)
-        print_error "Unknown command: $1"
-        echo ""
-        echo "Usage:"
-        echo "  ./init.sh build         - Build Docker image"
-        echo "  ./init.sh new [dir]     - Create new project structure"
-        exit 1
-        ;;
-esac
+# Check/pull Docker image
+check_docker_image
+
+echo ""
+
+# Create new project structure
+create_new_project "."
+
+echo ""
+print_header "Setup Complete!"
+echo "Your documentation project is ready."
+echo ""
+echo "Next steps:"
+echo "  1. Edit files in the chapters/ directory"
+echo "  2. Customize metadata.yaml"
+echo "  3. Run ./build-pdf.sh to generate your PDF"
+echo ""

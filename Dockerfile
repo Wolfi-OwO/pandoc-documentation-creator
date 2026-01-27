@@ -1,5 +1,19 @@
 FROM pandoc/latex:3.7
 
+# Build arguments for OCI labels
+ARG VERSION
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VCS_URL
+
+# Metadata labels (passed via build args)
+LABEL org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.source="${VCS_URL}" \
+      org.opencontainers.image.title="Pandoc Documentation Creator" \
+      org.opencontainers.image.description="Professional documentation generator using Pandoc and LaTeX"
+
 ENV PLANTUML_VERSION=1.2025.4
 
 # Install system dependencies and fonts
