@@ -5,19 +5,22 @@ stages:
 variables:
   DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
   DOCKER_LATEST_TAG: $CI_REGISTRY_IMAGE:latest
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
 
 build_and_push_docker:
   stage: build
-  image: docker:latest
+  image: docker:24-dind
   services:
-    - docker:dind
-  only:
-    - tags
+    - docker:24-dind
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - echo "Logging into GitLab Container Registry..."
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
   script:
     - echo "Building Docker image with tag $CI_COMMIT_TAG"
-    - docker build -t $DOCKER_IMAGE_NAME -t $DOCKER_LATEST_TAG .
+    - docker build -t $DOCKER_IMAGE_NAME -t $DOCKER_LATEST_TAG -f Dockerfile .
     - echo "Pushing image to GitLab Container Registry..."
     - docker push $DOCKER_IMAGE_NAME
     - docker push $DOCKER_LATEST_TAG
@@ -28,8 +31,8 @@ build_and_push_docker:
 create_release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
-  only:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
   script:
     - echo "Creating release $CI_COMMIT_TAG"
   release:
@@ -37,11 +40,27 @@ create_release:
     description: |
       Release $CI_COMMIT_TAG of Pandoc Documentation Creator
       
-      Docker Image: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+      Docker Image: `$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG`
       
-      Usage:
-      ```
+      ## Features
+      - VSCode Light Theme syntax highlighting
+      - Mermaid diagram support
+      - PlantUML diagram support
+      - Modern professional PDF layout
+      - A4 page format with proper margins
+      
+      ## Usage
+      ```bash
       docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+      
       docker run --rm -v $(pwd):/data $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG \
-        my-doc.md --template=eisvogel.latex -o /data/output/my-doc.pdf
+        example/deckblatt.md example/documentation.md \
+        --template=custom-template.tex \
+        --highlight-style=/usr/local/share/pandoc/templates/styles/code/vscode-light.theme \
+        --pdf-engine=xelatex \
+        --toc \
+        --number-sections \
+        --filter pandoc-plantuml \
+        --filter pandoc-mermaid \
+        -o /data/output/documentation.pdf
       ```
