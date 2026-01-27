@@ -7,7 +7,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IMAGE_REGISTRY="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
-VERSION="1.0.0"
+VERSION="unknown"
 
 # Repository URL for templates
 REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/templates"
@@ -314,10 +314,13 @@ check_docker_image() {
 }
 
 # Main script logic
-print_header "Pandoc Documentation Creator v${VERSION}"
+print_header "Pandoc Documentation Creator"
 
 # Check/pull Docker image
 check_docker_image
+
+echo ""
+print_info "Version: ${VERSION}"
 
 echo ""
 
