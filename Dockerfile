@@ -52,7 +52,7 @@ ENV PUPPETEER_ARGS="--no-sandbox --disable-setuid-sandbox"
 
 # Copy puppeteer and mermaid config
 COPY .puppeteer.json /root/.puppeteer.json
-COPY docker/mmdc-wrapper.sh /usr/bin/mmdc-wrapper
+COPY core/mmdc-wrapper.sh /usr/bin/mmdc-wrapper
 RUN chmod +x /usr/bin/mmdc-wrapper
 ENV PUPPETEER_CFG=/root/.puppeteer.json
 ENV MERMAID_BIN=/usr/bin/mmdc-wrapper
@@ -70,7 +70,7 @@ RUN mkdir -p /opt/plantuml && \
     https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar
 
 # Copy PlantUML wrapper script
-COPY docker/plantuml /usr/bin/plantuml
+COPY core/plantuml /usr/bin/plantuml
 RUN chmod a+x /usr/bin/plantuml
 
 # Install required TeX packages (in smaller groups to avoid tlmgr crashes)
@@ -120,9 +120,6 @@ COPY core/custom-template.tex /usr/local/share/pandoc/templates/custom-template.
 COPY core/header.tex /usr/local/share/pandoc/templates/header.tex
 COPY core/defaults.yaml /usr/local/share/pandoc/defaults.yaml
 COPY styles/ /usr/local/share/pandoc/templates/styles/
-
-# Copy Lua filters
-COPY docker/tof-box.lua /usr/local/share/pandoc/filters/tof-box.lua
 
 # Copy extensions
 COPY extensions/ /usr/local/share/pandoc/extensions/
