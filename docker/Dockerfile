@@ -65,6 +65,8 @@ RUN chmod +x /usr/local/bin/mmdc-wrapper && \
 
 # Point pandoc-mermaid-filter to our mmdc wrapper
 ENV MERMAID_BIN=/usr/local/bin/mmdc-wrapper
+# Increase timeout for mermaid CLI (first run is slow)
+ENV MMDC_TIMEOUT=60
 
 # Install pandoc filters and cleanup pip cache
 RUN pip3 install --break-system-packages --no-cache-dir \
@@ -73,6 +75,8 @@ RUN pip3 install --break-system-packages --no-cache-dir \
     pandoc-mermaid-filter && \
     rm -rf /root/.cache/pip
 
+# Warm up mmdc on first Docker run (prevents timeout on first mermaid diagram)
+RUN /usr/local/bin/mmdc-original -i /dev/null -o /tmp/warmup.png -q 2>/dev/null || true
 # Download PlantUML and setup wrapper
 COPY docker/scripts/plantuml /usr/bin/plantuml
 RUN mkdir -p /opt/plantuml && \
