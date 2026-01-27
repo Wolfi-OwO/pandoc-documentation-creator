@@ -104,6 +104,7 @@ ENV LAST_UPDATE=2026-01-27-vscode-light-theme
 # Copy custom template and theme
 COPY core/custom-template.tex /usr/local/share/pandoc/templates/custom-template.tex
 COPY core/header.tex /usr/local/share/pandoc/templates/header.tex
+COPY core/defaults.yaml /usr/local/share/pandoc/defaults.yaml
 COPY styles/ /usr/local/share/pandoc/templates/styles/
 
 # Copy Lua filters
@@ -111,6 +112,9 @@ COPY docker/tof-box.lua /usr/local/share/pandoc/filters/tof-box.lua
 
 # Copy extensions
 COPY extensions/ /usr/local/share/pandoc/extensions/
+
+# Copy templates for project initialization
+COPY templates/ /usr/local/share/pandoc/project-templates/
 
 # Working directory
 WORKDIR /data
