@@ -14,6 +14,34 @@ A complete Docker-based documentation system using Pandoc, LaTeX, and profession
 
 ## Quick Start
 
+### Bootstrap with wget (Recommended)
+
+```bash
+# Download and run init.sh
+wget https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/init.sh
+chmod +x init.sh
+./init.sh build
+```
+
+Or with curl:
+
+```bash
+# Download and run init.sh
+curl -O https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/init.sh
+chmod +x init.sh
+./init.sh build
+```
+
+### From Cloned Repository
+
+If you've already cloned the repository:
+
+```bash
+git clone https://gitlab.com/woofi4/public/pandoc-documentation-creator.git
+cd pandoc-documentation-creator
+./init.sh build
+```
+
 ### 1. Build the Docker Image
 
 ```bash

@@ -10,7 +10,7 @@ IMAGE_NAME="pandoc-documentation-creator"
 VERSION="1.0.0"
 
 # Repository URL for templates
-REPO_RAW_URL="https://raw.githubusercontent.com/yourusername/pandoc-documentation-creator/main/templates"
+REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/templates"
 
 # Colors
 RED='\033[0;31m'
