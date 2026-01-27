@@ -1,14 +1,3 @@
----
-title: "Universal Pandoc & LaTeX Test"
-subtitle: "Visual Studio Light Modern Style Check"
-author: [Dein Name]
-date: "2026-01-27"
-listings: true
-toc: true
-lof: true
-loc: true
----
-
 # Typografie & Layout
 
 Dies ist ein Test für das Schriftbild. Wir prüfen hier, ob die Koma-Script Klasse (`scrartcl`) korrekt geladen wurde und die Abstände stimmen.
@@ -19,7 +8,7 @@ Dies ist ein Test für das Schriftbild. Wir prüfen hier, ob die Koma-Script Kla
 
 ## C# Example
 
-```csharp
+```{.cs}
 using System;
 
 public class Program {
@@ -33,7 +22,7 @@ public class Program {
 
 ## JavaScript Example
 
-```javascript
+```{.js}
 import express from 'express';
 
 const app = express();
@@ -50,7 +39,7 @@ app.listen(PORT, () => {
 
 ## Python Example
 
-```python
+```{.py}
 def calculate_fibonacci(n):
     if n <= 1:
         return n
@@ -63,7 +52,7 @@ for i in range(10):
 
 ## Java Example
 
-```java
+```{.java}
 public class HelloWorld {
     public static void main(String[] args) {
         String message = "Hello, World!";
@@ -79,7 +68,7 @@ public class HelloWorld {
 
 ## TypeScript Example
 
-```typescript
+```{.ts}
 interface User {
     id: number;
     name: string;
@@ -99,7 +88,7 @@ async function fetchUser(userId: number): Promise<User> {
 
 ## Go Example
 
-```go
+```{.go}
 package main
 
 import (
@@ -122,7 +111,7 @@ func main() {
 
 ## Rust Example
 
-```rust
+```{.rust}
 fn main() {
     let numbers = vec![1, 2, 3, 4, 5];
     
@@ -137,7 +126,7 @@ fn main() {
 
 ## PHP Example
 
-```php
+```{.php}
 <?php
 class DatabaseConnection {
     private $host = "localhost";
@@ -157,7 +146,7 @@ class DatabaseConnection {
 
 ## Ruby Example
 
-```ruby
+```{.ruby}
 class BankAccount
   attr_reader :balance
   
@@ -202,7 +191,7 @@ LIMIT 10;
 
 ## Bash/Shell Example
 
-```bash
+```{.bash}
 #!/bin/bash
 
 LOG_FILE="/var/log/backup.log"
@@ -253,7 +242,7 @@ CMD ["node", "server.js"]
 
 ## YAML Example
 
-```yaml
+```{.yaml}
 version: '3.8'
 
 services:
@@ -280,7 +269,7 @@ services:
 
 ## JSON Example
 
-```json
+```{.json}
 {
   "name": "pandoc-documentation-creator",
   "version": "1.0.0",

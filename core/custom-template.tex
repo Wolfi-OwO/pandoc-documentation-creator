@@ -1,31 +1,42 @@
-% Custom Minimal Pandoc Template
-% Uses Pandoc's native syntax highlighting (NOT listings)
+% Modern Pandoc LaTeX Template
+% VSCode Light Theme with Professional Layout
 \documentclass[
   paper=a4,
   fontsize=11pt,
   parskip=half,
-  headings=big
+  headings=standardclasses,
+  numbers=noenddot,
+  toc=bibliographynumbered
 ]{scrartcl}
 
 % =========================================================================
-% Basic Typography & Geometry
+% Modern Typography & Geometry
 % =========================================================================
-\usepackage[margin=2.5cm, includehead, includefoot]{geometry}
+\usepackage[a4paper, left=2cm, right=2cm, top=2.5cm, bottom=2.5cm, includehead, includefoot]{geometry}
 \usepackage{iftex}
+\usepackage{microtype} % Better typography
 
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp}
+  \usepackage{lmodern}
 \else
   \usepackage{fontspec}
   \IfFontExistsTF{Source Sans Pro}{
-    \setmainfont{Source Sans Pro}[Scale=MatchLowercase]
-    \setsansfont{Source Sans Pro}[Scale=MatchLowercase]
-  }{}
-  \IfFontExistsTF{Source Code Pro}{
-    \setmonofont{Source Code Pro}[Scale=MatchLowercase]
-  }{}
+    \setmainfont{Source Sans Pro}[Scale=1.0]
+    \setsansfont{Source Sans Pro}[Scale=1.0]
+  }{
+    \setmainfont{DejaVu Sans}[Scale=1.0]
+    \setsansfont{DejaVu Sans}[Scale=1.0]
+  }
+  \IfFontExistsTF{Fira Code}{
+    \setmonofont{Fira Code}[Scale=0.85]
+  }{\IfFontExistsTF{JetBrains Mono}{
+    \setmonofont{JetBrains Mono}[Scale=0.85]
+  }{
+    \setmonofont{DejaVu Sans Mono}[Scale=0.85]
+  }}
   \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \fi
 
@@ -98,100 +109,154 @@ $endif$
 }
 
 % =========================================================================
-% Code Highlighting - Pandoc's Native Highlighting
+% Modern Code Highlighting - Pandoc Native
 % =========================================================================
-% Let Pandoc define all the highlighting commands
 $if(highlighting-macros)$
 $highlighting-macros$
 $endif$
 
-% Customize the Shaded environment for code blocks
+% Enhanced code block styling
+\usepackage{fancyvrb}
 \usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
 
-% Only define Shaded if not already defined
+% Modern color scheme for code blocks
+\definecolor{codebg}{RGB}{248,248,250}
+\definecolor{codeframe}{RGB}{229,231,235}
+\definecolor{shadecolor}{RGB}{248,248,250}
+
+% Only define Shaded if not already defined by Pandoc
 \makeatletter
-\@ifundefined{Shaded}{%
-  \newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\@ifundefined{Shaded}{
+  \newenvironment{Shaded}{%
+    \begin{snugshade}%
+    \footnotesize
+  }{%
+    \end{snugshade}%
+  }
 }{}
-\makeatother
 
 % =========================================================================
-% Blockquotes (MDFramed)
+% Modern Blockquotes with Shadow Effect
 % =========================================================================
 \usepackage{mdframed}
+\usepackage{tikz}
+
+% Modern blockquote design
 \newmdenv[
-  linewidth=3pt,
-  linecolor=gray!30,
-  topline=false,
-  bottomline=false,
-  rightline=false,
+  linewidth=0pt,
+  leftline=true,
+  linecolor=blue!50,
+  leftmargin=0pt,
+  innerleftmargin=12pt,
+  innerrightmargin=12pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
   skipabove=\parskip,
   skipbelow=\parskip,
-  innertopmargin=0pt,
-  innerbottommargin=0pt,
-  innerrightmargin=0pt,
-  innerleftmargin=1em
-]{customblockquote}
-\renewenvironment{quote}{\begin{customblockquote}}{\end{customblockquote}}
+  backgroundcolor=blue!5,
+  fontcolor=black!80,
+  shadow=true,
+  shadowsize=3pt,
+  shadowcolor=black!10
+]{quotebox}
 
-% =========================================================================
-% Headers & Footers
-% =========================================================================
-\usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}
-\clearpairofpagestyles
-\ihead{$title$}
-\ohead{$date$}
-\cfoot{\pagemark}
-\pagestyle{scrheadings}
+% Redefine quote environment
+\renewenvironment{quote}{\begin{quotebox}}{\end{quotebox}}
 
-% =========================================================================
-% Pandoc Macros
-% =========================================================================
+% Define passthrough command for inline code
+\providecommand{\passthrough}[1]{\texttt{#1}}
+
+% Define tightlist command (used by Pandoc for compact lists)
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
-\usepackage{soul}
-$if(strikeout)$
-\usepackage[normalem]{ulem}
-$endif$
+% =========================================================================
+% Modern Headers & Footers
+% =========================================================================
+\usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}
+\clearpairofpagestyles
+
+% Modern color scheme
+\definecolor{headercolor}{RGB}{71,85,119}
+% Modern Headers & Footers
+% =========================================================================
+\usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}
+\clearpairofpagestyles
+
+% Modern color scheme
+\definecolor{headercolor}{RGB}{71,85,119}
+
+% Header styling
+\ihead{\textcolor{headercolor}{\small\textit{$title$}}}
+\ohead{\textcolor{headercolor}{\small$date$}}
+\cfoot{\textcolor{headercolor}{\thepage}}
+
+% Line styling
+\setkomafont{headsepline}{\color{headercolor}}
+\setkomafont{footsepline}{\color{headercolor}}
 
 % =========================================================================
-% Document Body
+% Document Start
 % =========================================================================
 \begin{document}
 
 $if(title)$
+% Modern title page design
+\begin{titlepage}
 \begin{center}
-{\huge \bfseries \sffamily $title$} \\[1em]
+
+% Top spacing
+\vspace*{3cm}
+
+% Title with modern styling
+{\Huge\bfseries\sffamily\color{headercolor} $title$}
+
+\vspace{1.5em}
+
+% Subtitle
 $if(subtitle)$
-{\Large \sffamily $subtitle$} \\[1em]
+{\Large\sffamily\color{black!70} $subtitle$}
+\vspace{1em}
 $endif$
-$if(author)$
-{\large $for(author)$$author$$sep$, $endfor$} \\
-$endif$
-$if(date)$
-{\large $date$}
-$endif$
-\end{center}
+
+% Decorative line
 \vspace{2em}
+{\color{headercolor}\rule{0.7\textwidth}{2pt}}
+\vspace{2em}
+
+% Author
+$if(author)$
+{\large\sffamily $for(author)$$author$$sep$, $endfor$}
+\vspace{1em}
+$endif$
+
+% Date
+$if(date)$
+{\large\sffamily\color{black!60} $date$}
+$endif$
+
+\vfill
+
+% Bottom decorative element
+{\color{headercolor}\rule{0.4\textwidth}{1pt}}
+
+\end{center}
+\end{titlepage}
+\newpage
 $endif$
 
 $if(toc)$
-{
-\hypersetup{linkcolor=black}
+% Modern TOC styling
+\hypersetup{linkcolor=headercolor}
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
 \newpage
-}
 $endif$
 
 $if(lof)$
-{
-\hypersetup{linkcolor=black}
+\hypersetup{linkcolor=headercolor}
 \listoffigures
 \newpage
-}
 $endif$
 
 $body$

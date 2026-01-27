@@ -1,0 +1,674 @@
+% Individuelle Listings-Definitionen für verschiedene Programmiersprachen
+% Basierend auf VSCode Light Theme Farben
+
+% =========================================================================
+% Grundlegende Farb-Definitionen (VSCode Light Theme)
+% =========================================================================
+\definecolor{vscode-text}{HTML}{000000}
+\definecolor{vscode-background}{HTML}{FFFFFF}
+\definecolor{vscode-keyword}{HTML}{0000FF}          % Blau für Keywords
+\definecolor{vscode-control}{HTML}{AF00DB}          % Lila für Control Flow
+\definecolor{vscode-string}{HTML}{A31515}           % Rot für Strings
+\definecolor{vscode-comment}{HTML}{008000}          % Grün für Kommentare
+\definecolor{vscode-number}{HTML}{098658}           % Dunkelgrün für Zahlen
+\definecolor{vscode-function}{HTML}{795E26}         % Braun für Funktionen
+\definecolor{vscode-type}{HTML}{267F99}             % Cyan für Typen
+\definecolor{vscode-annotation}{HTML}{808080}       % Grau für Annotations
+\definecolor{vscode-linenumber}{HTML}{888888}
+\definecolor{vscode-linenumber-bg}{HTML}{F5F5F5}
+\definecolor{vscode-frame}{HTML}{B3B2B3}
+
+% =========================================================================
+% Basis-Einstellungen für alle Listings
+% =========================================================================
+\lstset{
+  literate=%
+    {–}{{-}}1 {−}{{-}}1 {±}{{+-}}1
+    {Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1
+    {ß}{{\ss}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
+    {€}{{EUR}}1
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {à}{{\`a}}1 {è}{{\'e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+    {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+    {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+    {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+    {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+    {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+    {€}{{\EUR}}1 {£}{{\pounds}}1
+    {«}{{\guillemotleft}}1 {»}{{\guillemotright}}1
+    {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+    {…}{{\ldots}}1 {≥}{{>=}}1 {≤}{{<=}}1
+    {„}{{\glqq}}1 {"}{{\grqq}}1 {"}{{''}}1
+}
+
+% =========================================================================
+% Java Language Style
+% =========================================================================
+\lstdefinestyle{vscode-java}{
+  language=Java,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % Java-spezifische Keywords
+  morekeywords={var, record, sealed, permits, yield, package, import},
+  morekeywords=[2]{if, else, while, for, do, switch, case, break, continue, return, throw, try, catch, finally, synchronized},
+  morekeywords=[3]{int, long, short, byte, boolean, char, float, double, void, String, Integer, Long, Boolean, Object, List, Map, Set},
+  % Annotations
+  morecomment=[s][\color{vscode-annotation}\itshape]{@}{\ },
+  sensitive=true,
+  escapeinside={/*@}{@*/},
+}
+
+% =========================================================================
+% Python Language Style
+% =========================================================================
+\lstdefinestyle{vscode-python}{
+  language=Python,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-function}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % Python-spezifische Keywords
+  morekeywords={self, cls, None, True, False, async, await, match, case, def, class, import, from, as, lambda, pass},
+  morekeywords=[2]{if, elif, else, while, for, break, continue, return, yield, raise, try, except, finally, with},
+  morekeywords=[3]{int, str, float, bool, list, dict, tuple, set, bytes, range, len, print, input, open},
+  sensitive=true,
+  escapeinside={(*@}{@*)},
+}
+
+% =========================================================================
+% JavaScript/TypeScript Language Style
+% =========================================================================
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
+  morekeywords={class, export, boolean, throw, import, this, const, let, async, await, yield, from, as, extends, super, static, get, set, of, console, log},
+  ndkeywords={boolean, number, string, null, undefined, object, symbol, bigint, void},
+  sensitive=true,
+  morestring=[b]',
+  morestring=[b]",
+  % Backtick strings mit höchster Priorität - [s] für multi-line, [d] für delimiter mode
+  morestring=[s][\color{vscode-string}]{`}{`},
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+}
+
+\lstdefinestyle{vscode-javascript}{
+  language=JavaScript,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  ndkeywordstyle=\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  sensitive=true,
+  % Diese Optionen sind KRITISCH für das korrekte String-Handling
+  mathescape=false,
+  texcl=false,
+  escapeinside={/*@}{@*/},
+}
+
+\lstdefinestyle{vscode-typescript}{
+  style=vscode-javascript,
+  % TypeScript-zusätzliche Keywords
+  morekeywords={type, interface, enum, namespace, module, declare, public, private, protected, readonly, abstract, implements},
+  morekeywords=[3]{any, never, unknown, void, Promise},
+}
+
+% =========================================================================
+% C/C++ Language Style
+% =========================================================================
+\lstdefinestyle{vscode-c}{
+  language=C,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % C-spezifische Keywords
+  morekeywords={inline, restrict, _Bool, _Complex, _Imaginary},
+  morekeywords=[2]{if, else, while, for, do, switch, case, break, continue, return, goto},
+  morekeywords=[3]{int, long, short, char, float, double, void, signed, unsigned, size_t, ptrdiff_t},
+  directivestyle=\color{vscode-keyword},
+  escapeinside={/*@}{@*/},
+}
+
+\lstdefinestyle{vscode-cpp}{
+  language=C++,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % C++-spezifische Keywords
+  morekeywords={constexpr, decltype, nullptr, auto, noexcept, override, final, concept, requires, co_await, co_return, co_yield},
+  morekeywords=[2]{if, else, while, for, do, switch, case, break, continue, return, throw, try, catch},
+  morekeywords=[3]{bool, string, vector, map, set, unique_ptr, shared_ptr, weak_ptr},
+  directivestyle=\color{vscode-keyword},
+  escapeinside={/*@}{@*/},
+}
+
+% =========================================================================
+% C# Language Style
+% =========================================================================
+\lstdefinestyle{vscode-csharp}{
+  language=[Sharp]C,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % C#-spezifische Keywords
+  morekeywords={var, async, await, yield, nameof, when, record, init, required, file, scoped},
+  morekeywords=[2]{if, else, while, for, foreach, do, switch, case, break, continue, return, throw, try, catch, finally},
+  morekeywords=[3]{int, long, short, byte, bool, char, float, double, decimal, string, object, dynamic, var},
+  morecomment=[s][\color{vscode-annotation}\itshape]{[}{]},
+  escapeinside={/*@}{@*/},
+}
+
+% =========================================================================
+% Go Language Style
+% =========================================================================
+\lstdefinestyle{vscode-go}{
+  language=Go,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % Go-spezifische Keywords
+  morekeywords={func, var, const, type, struct, interface, map, chan, go, defer, select, range},
+  morekeywords=[2]{if, else, for, switch, case, break, continue, return, goto, fallthrough},
+  morekeywords=[3]{bool, byte, rune, int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, string, error},
+  escapeinside={/*@}{@*/},
+}
+
+% =========================================================================
+% Rust Language Style
+% =========================================================================
+\lstdefinestyle{vscode-rust}{
+  language=Rust,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % Rust-spezifische Keywords
+  morekeywords={let, mut, const, static, fn, struct, enum, trait, impl, type, mod, use, pub, crate, self, super, async, await, move, box, ref},
+  morekeywords=[2]{if, else, match, while, for, loop, break, continue, return},
+  morekeywords=[3]{i8, i16, i32, i64, i128, u8, u16, u32, u64, u128, f32, f64, bool, char, str, String, Vec, Option, Result},
+  escapeinside={/*@}{@*/},
+}
+
+% =========================================================================
+% PHP Language Style
+% =========================================================================
+\lstdefinestyle{vscode-php}{
+  language=PHP,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % PHP-spezifische Keywords
+  morekeywords={class, interface, trait, namespace, use, function, const, var, public, private, protected, static, final, abstract, extends, implements},
+  morekeywords=[2]{if, else, elseif, while, for, foreach, do, switch, case, break, continue, return, throw, try, catch, finally},
+  morekeywords=[3]{int, float, bool, string, array, object, callable, iterable, mixed, void, null},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  escapeinside={/*@}{@*/},
+}
+
+% =========================================================================
+% Ruby Language Style
+% =========================================================================
+\lstdefinestyle{vscode-ruby}{
+  language=Ruby,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % Ruby-spezifische Keywords
+  morekeywords={class, module, def, end, attr_reader, attr_writer, attr_accessor, alias, and, begin, break, case, catch, do, else, elsif, ensure, for, if, in, next, not, or, raise, rescue, retry, return, self, super, then, throw, unless, until, when, while, yield},
+  morekeywords=[2]{if, elsif, else, unless, case, when, while, until, for, break, next, return, yield},
+  morekeywords=[3]{nil, true, false, self},
+  morecomment=[l]{\#},
+  escapeinside={(*@}{@*)},
+  sensitive=true,
+}
+
+% =========================================================================
+% SQL Language Style
+% =========================================================================
+\lstdefinestyle{vscode-sql}{
+  language=SQL,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  keywordstyle=[3]\color{vscode-type}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % SQL-spezifische Keywords
+  morekeywords={DATABASE, SCHEMA, INDEX, CONSTRAINT, TRIGGER, PROCEDURE, FUNCTION, VIEW},
+  morekeywords=[2]{IF, THEN, ELSE, ELSEIF, CASE, WHEN, WHILE, LOOP, REPEAT, RETURN},
+  morekeywords=[3]{INT, INTEGER, BIGINT, SMALLINT, DECIMAL, NUMERIC, FLOAT, DOUBLE, CHAR, VARCHAR, TEXT, DATE, TIME, TIMESTAMP, BOOLEAN, BLOB},
+  morecomment=[l]{--},
+  morecomment=[s]{/*}{*/},
+  escapeinside={/*@}{@*/},
+}
+
+% =========================================================================
+% XML/HTML Language Style
+% =========================================================================
+\lstdefinestyle{vscode-xml}{
+  language=XML,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % XML-spezifisch
+  morestring=[b]",
+  morestring=[b]',
+  moredelim=[s][\color{vscode-keyword}\bfseries]{<}{\ },
+  moredelim=[s][\color{vscode-keyword}\bfseries]{</}{>},
+  moredelim=[l][\color{vscode-keyword}\bfseries]{/>},
+  moredelim=[l][\color{vscode-keyword}\bfseries]{>},
+  morecomment=[s]{<?}{?>},
+  morecomment=[s]{<!--}{-->},
+}
+
+\lstdefinestyle{vscode-html}{
+  style=vscode-xml,
+}
+
+% =========================================================================
+% JSON Language Style
+% =========================================================================
+\lstdefinestyle{vscode-json}{
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  stringstyle=\color{vscode-string},
+  % JSON-spezifisch
+  morestring=[b]",
+  keywords={true, false, null},
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  literate=
+    *{:}{{{\color{vscode-text}{:}}}}{1}
+     {,}{{{\color{vscode-text}{,}}}}{1}
+     {\{}{{{\color{vscode-text}{\{}}}}{1}
+     {\}}{{{\color{vscode-text}{\}}}}}{1}
+     {[}{{{\color{vscode-text}{[}}}}{1}
+     {]}{{{\color{vscode-text}{]}}}}{1}
+     {0}{{{\color{vscode-number}{0}}}}{1}
+     {1}{{{\color{vscode-number}{1}}}}{1}
+     {2}{{{\color{vscode-number}{2}}}}{1}
+     {3}{{{\color{vscode-number}{3}}}}{1}
+     {4}{{{\color{vscode-number}{4}}}}{1}
+     {5}{{{\color{vscode-number}{5}}}}{1}
+     {6}{{{\color{vscode-number}{6}}}}{1}
+     {7}{{{\color{vscode-number}{7}}}}{1}
+     {8}{{{\color{vscode-number}{8}}}}{1}
+     {9}{{{\color{vscode-number}{9}}}}{1},
+}
+
+% =========================================================================
+% YAML Language Style
+% =========================================================================
+\lstdefinestyle{vscode-yaml}{
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  stringstyle=\color{vscode-string},
+  commentstyle=\color{vscode-comment}\itshape,
+  % YAML-spezifisch
+  morecomment=[l]{\#},
+  morestring=[b]",
+  morestring=[b]',
+  keywords={true, false, null, yes, no},
+  keywordstyle=\color{vscode-keyword}\bfseries,
+}
+
+% =========================================================================
+% Bash/Shell Language Style
+% =========================================================================
+\lstdefinestyle{vscode-bash}{
+  language=bash,
+  % Layout
+  numbers=left,
+  xleftmargin=2.7em,
+  framexleftmargin=2.5em,
+  numberstyle=\small\color{vscode-linenumber},
+  % Frame
+  frame=single,
+  framesep=0.19em,
+  rulecolor=\color{vscode-frame},
+  frameround=ffff,
+  % Text
+  basicstyle=\small\ttfamily\color{vscode-text},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false,
+  % Spacing
+  aboveskip=1.0em,
+  belowskip=0.1em,
+  abovecaptionskip=0em,
+  belowcaptionskip=1.0em,
+  % Syntax Highlighting
+  keywordstyle=\color{vscode-keyword}\bfseries,
+  keywordstyle=[2]\color{vscode-control}\bfseries,
+  commentstyle=\color{vscode-comment}\itshape,
+  stringstyle=\color{vscode-string},
+  identifierstyle=\color{vscode-text},
+  % Bash-spezifische Keywords
+  morekeywords={if, then, else, elif, fi, case, esac, for, while, do, done, in, function, select, until},
+  morekeywords=[2]{break, continue, return, exit, shift, export, readonly, declare, local},
+  morecomment=[l]{\#},
+  escapeinside={(*@}{@*)},
+}
+
+% =========================================================================
+% Standard-Style setzen (Java als Default)
+% =========================================================================
+\lstset{style=vscode-java}

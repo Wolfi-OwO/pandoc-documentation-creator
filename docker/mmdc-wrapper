@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/local/bin/mmdc -q -p /root/.puppeteer.json "$@"

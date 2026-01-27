@@ -28,17 +28,19 @@ fi
 
 echo -e "${YELLOW}Processing markdown files...${NC}"
 
-# FIXED: Remove --listings and use --highlight-style instead
+# Using custom VSCode Light theme for syntax highlighting
 docker run --rm \
   -v "$(pwd):/data" \
+  -e PUPPETEER_CFG=/root/.puppeteer.json \
   ${IMAGE_NAME} \
-    example/deckblatt.md example/00-example.md \
+    example/deckblatt.md example/documentation.md \
     --template=custom-template.tex \
-    --highlight-style=/data/styles/code/vscode-light.theme \
+    --highlight-style=/usr/local/share/pandoc/templates/styles/code/vscode-light.theme \
     --pdf-engine=xelatex \
     --toc \
     --number-sections \
     --filter pandoc-plantuml \
+    --filter pandoc-mermaid \
     -o /data/output/documentation.pdf
 
 if [ -f "$OUTPUT_DIR/documentation.pdf" ]; then
