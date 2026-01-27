@@ -50,8 +50,8 @@ download_or_copy_template() {
     local destination="$2"
     
     # First try to copy from local templates directory
-    if [ -f "${SCRIPT_DIR}/templates/${template_name}" ]; then
-        cp "${SCRIPT_DIR}/templates/${template_name}" "${destination}"
+    if [ -f "${SCRIPT_DIR}/../templates/${template_name}" ]; then
+        cp "${SCRIPT_DIR}/../templates/${template_name}" "${destination}"
         return 0
     fi
     

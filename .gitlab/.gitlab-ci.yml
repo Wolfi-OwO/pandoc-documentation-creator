@@ -28,7 +28,7 @@ build_and_push_docker:
         --build-arg VCS_URL="$CI_PROJECT_URL" \
         -t $DOCKER_IMAGE_NAME \
         -t $DOCKER_LATEST_TAG \
-        -f Dockerfile .
+        -f docker/Dockerfile .
     - echo "Pushing image to GitLab Container Registry..."
     - docker push $DOCKER_IMAGE_NAME
     - docker push $DOCKER_LATEST_TAG
@@ -41,8 +41,37 @@ create_release:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
     - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+  before_script:
+    - apk add --no-cache git
   script:
     - echo "Creating release $CI_COMMIT_TAG"
+    - |
+      # Get the previous tag
+      PREV_TAG=$(git describe --tags --abbrev=0 $CI_COMMIT_TAG^ 2>/dev/null || echo "")
+      
+      # Generate changelog
+      if [ -z "$PREV_TAG" ]; then
+        echo "## Changes" > CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        git log --pretty=format:"- %s (%h)" $CI_COMMIT_TAG >> CHANGELOG.md
+      else
+        echo "## Changes since $PREV_TAG" > CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        git log --pretty=format:"- %s (%h)" $PREV_TAG..$CI_COMMIT_TAG >> CHANGELOG.md
+      fi
+      
+      # Add merge requests if any
+      echo "" >> CHANGELOG.md
+      echo "## Merge Requests" >> CHANGELOG.md
+      echo "" >> CHANGELOG.md
+      if [ -z "$PREV_TAG" ]; then
+        git log --merges --pretty=format:"- %s (%h)" $CI_COMMIT_TAG >> CHANGELOG.md || echo "No merge requests found" >> CHANGELOG.md
+      else
+        git log --merges --pretty=format:"- %s (%h)" $PREV_TAG..$CI_COMMIT_TAG >> CHANGELOG.md || echo "No merge requests found" >> CHANGELOG.md
+      fi
+      
+      # Display the changelog
+      cat CHANGELOG.md
   release:
     tag_name: $CI_COMMIT_TAG
     description: |
@@ -55,12 +84,7 @@ create_release:
       docker pull $CI_REGISTRY_IMAGE:latest
       ```
       
-      ## Features
-      - VSCode Light Theme syntax highlighting
-      - Mermaid diagram support
-      - PlantUML diagram support
-      - Modern professional PDF layout
-      - A4 page format with proper margins
+      $(cat CHANGELOG.md)
       
       ## Quick Start
       
@@ -69,7 +93,7 @@ create_release:
       docker pull $CI_REGISTRY_IMAGE:latest
       
       # Run init script
-      curl -fsSL https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/init.sh | bash
+      curl -fsSL https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/scripts/init.sh | bash
       
       # Build your documentation
       ./build-pdf.sh

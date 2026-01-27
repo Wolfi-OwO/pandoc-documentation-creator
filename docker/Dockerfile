@@ -48,15 +48,25 @@ RUN npm install --global mermaid-filter
 # Set puppeteer to use system chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-ENV PUPPETEER_ARGS="--no-sandbox --disable-setuid-sandbox"
 
-# Copy puppeteer and mermaid config
-COPY .puppeteer.json /root/.puppeteer.json
-COPY core/mmdc-wrapper.sh /usr/bin/mmdc-wrapper
-RUN chmod +x /usr/bin/mmdc-wrapper
-ENV PUPPETEER_CFG=/root/.puppeteer.json
-ENV MERMAID_BIN=/usr/bin/mmdc-wrapper
-ENV MERMAID_BIN=/usr/bin/mmdc-wrapper
+# Copy puppeteer config
+COPY docker/.puppeteer.json /root/.puppeteer.json
+
+# Replace all mmdc binaries with our wrapper that adds --no-sandbox
+COPY docker/scripts/mmdc-wrapper.sh /usr/local/bin/mmdc-wrapper
+RUN chmod +x /usr/local/bin/mmdc-wrapper && \
+    mv /usr/local/bin/mmdc /usr/local/bin/mmdc-original && \
+    ln -sf /usr/local/bin/mmdc-wrapper /usr/local/bin/mmdc && \
+    find /usr/local/lib/node_modules -name mmdc -type f 2>/dev/null | while read mmdc_path; do \
+        if [ -x "$mmdc_path" ]; then \
+            mv "$mmdc_path" "${mmdc_path}-original" && \
+            ln -sf /usr/local/bin/mmdc-wrapper "$mmdc_path"; \
+        fi; \
+    done && \
+    find /usr/local/lib/node_modules -path "*/.bin/mmdc" 2>/dev/null | while read mmdc_link; do \
+        rm -f "$mmdc_link" && \
+        ln -sf /usr/local/bin/mmdc-wrapper "$mmdc_link"; \
+    done
 
 # Install pandoc filters
 RUN pip3 install --break-system-packages --no-cache-dir \
@@ -70,7 +80,7 @@ RUN mkdir -p /opt/plantuml && \
     https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar
 
 # Copy PlantUML wrapper script
-COPY core/plantuml /usr/bin/plantuml
+COPY docker/scripts/plantuml /usr/bin/plantuml
 RUN chmod a+x /usr/bin/plantuml
 
 # Install required TeX packages (in smaller groups to avoid tlmgr crashes)
@@ -116,13 +126,13 @@ RUN mkdir -p /usr/local/share/pandoc/templates/ && \
 ENV LAST_UPDATE=2026-01-27-vscode-light-theme
 
 # Copy custom template and theme
-COPY core/custom-template.tex /usr/local/share/pandoc/templates/custom-template.tex
-COPY core/header.tex /usr/local/share/pandoc/templates/header.tex
-COPY core/defaults.yaml /usr/local/share/pandoc/defaults.yaml
-COPY styles/ /usr/local/share/pandoc/templates/styles/
+COPY pandoc/templates/custom-template.tex /usr/local/share/pandoc/templates/custom-template.tex
+COPY pandoc/templates/header.tex /usr/local/share/pandoc/templates/header.tex
+COPY pandoc/defaults.yaml /usr/local/share/pandoc/defaults.yaml
+COPY pandoc/styles/ /usr/local/share/pandoc/templates/styles/
 
 # Copy extensions
-COPY extensions/ /usr/local/share/pandoc/extensions/
+COPY pandoc/extensions/ /usr/local/share/pandoc/extensions/
 
 # Copy templates for project initialization
 COPY templates/ /usr/local/share/pandoc/project-templates/

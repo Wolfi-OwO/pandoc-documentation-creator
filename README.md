@@ -61,12 +61,13 @@ your-project/
 ├── chapters/           # Your markdown documentation
 ├── media/             # Images and diagrams
 ├── output/            # Generated PDFs
-├── .pandoc/           # Pandoc configuration
-│   ├── defaults.yaml
-│   └── metadata.yaml
+├── metadata.yaml      # Document metadata (title, author, etc.)
 ├── build-pdf.sh       # Build script
 └── Help.md           # Comprehensive help
 ```
+
+Note: Pandoc configuration (defaults.yaml) is built into the Docker image.
+You only need to edit metadata.yaml for document customization.
 
 ### 3. Write Your Documentation
 
@@ -109,8 +110,7 @@ pandoc-documentation-creator/
 │   ├── Dockerfile
 │   ├── eisvogel.latex
 │   ├── mmdc-wrapper.sh
-│   ├── plantuml
-│   └── tof-box.lua
+│   └──  plantuml
 ├── templates/             # Project templates
 │   ├── Help.md.template
 │   ├── defaults.yaml.template
@@ -247,13 +247,60 @@ cd /path/to/my-project
 
 ### Adding Custom Filters
 
-Add to `.pandoc/defaults.yaml`:
+Add to `metadata.yaml`:
 
 ```yaml
-filters:
-  - pandoc-plantuml
-  - mermaid-filter
-  - /path/to/your/custom-filter.lua
+# Document metadata is configured here
+# Pandoc defaults.yaml is built into the Docker image
+```
+
+## Project Structure
+
+This repository is organized as follows:
+
+```
+pandoc-documentation-creator/
+├── docker/                     # Docker-related files
+│   ├── Dockerfile             # Multi-stage image build
+│   ├── .dockerignore          # Docker ignore patterns
+│   ├── build-image.sh         # Build script with version management
+│   └── scripts/               # Container scripts
+│       ├── mmdc-wrapper.sh    # Mermaid wrapper
+│       └── plantuml           # PlantUML wrapper
+├── pandoc/                     # Pandoc configurations
+│   ├── defaults.yaml          # Pandoc defaults (built into image)
+│   ├── templates/             # LaTeX templates
+│   │   ├── custom-template.tex
+│   │   ├── header.tex
+│   │   └── listings-languages.tex
+│   ├── styles/                # Syntax highlighting themes
+│   │   └── code/
+│   │       └── vscode-light.theme
+│   ├── extensions/            # Pandoc extensions
+│   │   ├── extensions.yaml
+│   │   └── metadata.yaml
+│   └── filters/               # Custom Lua filters
+├── scripts/                    # Utility scripts
+│   ├── init.sh                # Project initialization
+│   ├── build-pdf-local.sh     # Local build script
+│   └── build-pdf.sh           # Standard build script
+├── templates/                  # User project templates
+│   ├── 01-introduction.md.template
+│   ├── 02-example-content.md.template
+│   ├── build-pdf.sh.template
+│   ├── Help.md.template
+│   ├── metadata.yaml.template
+│   └── README.md
+├── examples/                   # Example projects
+│   ├── basic/                 # Minimal example
+│   └── advanced/              # Full-featured example
+├── docs/                       # Documentation
+│   └── QUICKSTART.md          # Quick start guide
+├── .gitlab/                    # GitLab CI/CD
+│   └── gitlab-ci.yml          # CI/CD pipeline
+├── VERSION                     # Version number
+├── README.md                  # This file
+└── LICENCE                    # License information
 ```
 
 ## Docker Image Details
@@ -323,30 +370,9 @@ Built with:
 ## Support
 
 - Check Help.md for detailed documentation (created with `./init.sh new`)
-- Review example files in `example/`
+- Review example files in `examples/`
 - See Pandoc documentation: https://pandoc.org/MANUAL.html
 
 ---
 
 **Happy documenting! 📚**
-
-```bash
-docker run --rm -v $(pwd):/data pandoc-documentation-creator:latest \
-  my-doc.md \
-  --defaults=/usr/local/share/pandoc/extensions/extensions.yaml \
-  -o /data/output/my-doc.pdf
-  --template=custom-template.tex \
-
-### Mit Custom Template
-
-```bash
-docker run --rm -v $(pwd):/data -v $(pwd)/core:/templates \
-  pandoc-documentation-creator:latest \
-  my-doc.md \
-  --template=/templates/custom-template.tex \
-  -o /data/output/my-doc.pdf
-```
-
-  --template=/templates/custom-template.tex \
-
-MIT License - siehe LICENCE
