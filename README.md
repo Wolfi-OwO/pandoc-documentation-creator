@@ -56,7 +56,7 @@ cd pandoc-documentation-creator
 
 This creates a complete project structure:
 
-```
+```text
 your-project/
 ├── chapters/           # Your markdown documentation
 ├── media/             # Images and diagrams
@@ -96,7 +96,7 @@ Find your PDF in `output/documentation.pdf`!
 
 ## Project Structure
 
-```
+```text
 pandoc-documentation-creator/
 ├── Dockerfile              # Docker image definition
 ├── init.sh                # Initialization and setup script
@@ -371,8 +371,8 @@ Built with:
 
 - Check Help.md for detailed documentation (created with `./init.sh new`)
 - Review example files in `examples/`
-- See Pandoc documentation: https://pandoc.org/MANUAL.html
+- See Pandoc documentation: <https://pandoc.org/MANUAL.html>
 
 ---
 
-**Happy documenting! 📚**
+**Happy documenting!**

@@ -1,5 +1,0 @@
-@startuml
-[Anwender] -> (Pandoc): Markdown Input
-(Pandoc) -> [PDF Engine]: LaTeX Code
-[PDF Engine] -> (Ergebnis): PDF Datei
-@enduml

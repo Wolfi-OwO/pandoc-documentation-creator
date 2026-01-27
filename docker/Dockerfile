@@ -16,7 +16,7 @@ LABEL org.opencontainers.image.version="${VERSION}" \
 
 ENV PLANTUML_VERSION=1.2025.4
 
-# Install system dependencies and fonts
+# Install system dependencies and fonts in one layer
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -36,24 +36,19 @@ RUN apk add --no-cache \
     chromium \
     chromium-chromedriver
 
-# Update font cache
-RUN fc-cache -fv
-
-# Install mermaid-cli globally
-RUN npm install -g @mermaid-js/mermaid-cli
-
-# Install mermaid-filter globally
-RUN npm install --global mermaid-filter
+# Install npm packages and cleanup in one layer
+RUN npm install -g @mermaid-js/mermaid-cli && \
+    npm cache clean --force
 
 # Set puppeteer to use system chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Copy puppeteer config
+# Copy puppeteer config and mmdc wrapper
 COPY docker/.puppeteer.json /root/.puppeteer.json
-
-# Replace all mmdc binaries with our wrapper that adds --no-sandbox
 COPY docker/scripts/mmdc-wrapper.sh /usr/local/bin/mmdc-wrapper
+
+# Setup mmdc wrapper
 RUN chmod +x /usr/local/bin/mmdc-wrapper && \
     mv /usr/local/bin/mmdc /usr/local/bin/mmdc-original && \
     ln -sf /usr/local/bin/mmdc-wrapper /usr/local/bin/mmdc && \
@@ -68,73 +63,52 @@ RUN chmod +x /usr/local/bin/mmdc-wrapper && \
         ln -sf /usr/local/bin/mmdc-wrapper "$mmdc_link"; \
     done
 
-# Install pandoc filters
+# Point pandoc-mermaid-filter to our mmdc wrapper
+ENV MERMAID_BIN=/usr/local/bin/mmdc-wrapper
+
+# Install pandoc filters and cleanup pip cache
 RUN pip3 install --break-system-packages --no-cache-dir \
     pandoc-plantuml-filter \
     pandoc-shortcaption \
-    pandoc-mermaid-filter
+    pandoc-mermaid-filter && \
+    rm -rf /root/.cache/pip
 
-# Download PlantUML
+# Download PlantUML and setup wrapper
+COPY docker/scripts/plantuml /usr/bin/plantuml
 RUN mkdir -p /opt/plantuml && \
     wget -nv -O /opt/plantuml/plantuml.jar \
-    https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar
+    https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar && \
+    chmod a+x /usr/bin/plantuml
 
-# Copy PlantUML wrapper script
-COPY docker/scripts/plantuml /usr/bin/plantuml
-RUN chmod a+x /usr/bin/plantuml
+# Install all TeX packages in optimized groups (combined to reduce layers)
+RUN tlmgr update --self && \
+    tlmgr install \
+        microtype listings fvextra xcolor geometry titlesec \
+        koma-script fancyhdr booktabs multirow colortbl \
+        mathtools amsmath enumitem footmisc adjustbox mdframed needspace \
+        lm lm-math merriweather fontaxes mweights sourcesanspro sourcecodepro \
+        fontawesome5 ly1 fontspec \
+        titling pagecolor collectbox footnotebackref zref sectsty \
+        truncate tocloft wallpaper morefloats etoolbox \
+        ulem upquote csquotes float hyperref iftex xkeyval xpatch \
+        caption bidi scrhack \
+        siunitx threeparttable makecell bbold cleveref forloop lipsum \
+        courier pdfpages lineno hardwrap catchfile pdflscape pdftexcmds && \
+    rm -rf /tmp/*
 
-# Install required TeX packages (in smaller groups to avoid tlmgr crashes)
-RUN tlmgr update --self
-
-# Core packages
-RUN tlmgr install \
-    microtype listings fvextra xcolor geometry titlesec
-
-# Koma-Script and page layout
-RUN tlmgr install \
-    koma-script fancyhdr booktabs multirow colortbl
-
-# Math and special formatting
-RUN tlmgr install \
-    mathtools amsmath enumitem footmisc adjustbox mdframed needspace
-
-# Fonts - includes lm (Latin Modern) and source fonts
-RUN tlmgr install \
-    lm lm-math \
-    merriweather fontaxes mweights sourcesanspro sourcecodepro \
-    fontawesome5 ly1 fontspec
-
-# Page and document setup
-RUN tlmgr install \
-    titling pagecolor collectbox footnotebackref zref sectsty \
-    truncate tocloft wallpaper morefloats etoolbox
-
-# Text formatting and links
-RUN tlmgr install \
-    ulem upquote csquotes float hyperref iftex xkeyval xpatch \
-    caption bidi scrhack
-
-# Advanced packages
-RUN tlmgr install \
-    siunitx threeparttable makecell bbold cleveref forloop lipsum \
-    courier pdfpages lineno hardwrap catchfile pdflscape pdftexcmds
+# Update font cache after all fonts are installed
+RUN fc-cache -fv
 
 # Create directories
-RUN mkdir -p /usr/local/share/pandoc/templates/ && \
-    mkdir -p /usr/local/share/pandoc/filters/
+RUN mkdir -p /usr/local/share/pandoc/templates/ \
+             /usr/local/share/pandoc/filters/
 
-ENV LAST_UPDATE=2026-01-27-vscode-light-theme
-
-# Copy custom template and theme
-COPY pandoc/templates/custom-template.tex /usr/local/share/pandoc/templates/custom-template.tex
-COPY pandoc/templates/header.tex /usr/local/share/pandoc/templates/header.tex
-COPY pandoc/defaults.yaml /usr/local/share/pandoc/defaults.yaml
+# Copy all pandoc files in fewer layers
+COPY pandoc/templates/custom-template.tex /usr/local/share/pandoc/templates/
+COPY pandoc/templates/header.tex /usr/local/share/pandoc/templates/
+COPY pandoc/defaults.yaml /usr/local/share/pandoc/
 COPY pandoc/styles/ /usr/local/share/pandoc/templates/styles/
-
-# Copy extensions
 COPY pandoc/extensions/ /usr/local/share/pandoc/extensions/
-
-# Copy templates for project initialization
 COPY templates/ /usr/local/share/pandoc/project-templates/
 
 # Working directory

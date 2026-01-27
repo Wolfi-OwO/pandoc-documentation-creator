@@ -21,6 +21,7 @@ Run the initialization script to create the project structure:
 ```
 
 This creates:
+
 - `chapters/` - Your documentation chapters
 - `media/` - Images and diagrams
 - `output/` - Generated PDFs
@@ -47,7 +48,7 @@ Your PDF will be in `output/documentation.pdf`
 
 ## Project Structure
 
-```
+```text
 your-project/
 ├── chapters/           # Documentation chapters (markdown)
 ├── media/             # Images, diagrams, assets
@@ -197,6 +198,7 @@ docker run --rm -v $(pwd):/data pandoc-documentation-creator \
 ## Examples
 
 See the `chapters/` directory for example markdown files demonstrating:
+
 - Typography and formatting
 - Code blocks
 - Diagrams
@@ -206,9 +208,10 @@ See the `chapters/` directory for example markdown files demonstrating:
 ## Support
 
 For issues and questions:
+
 - Check this Help file
 - Review example files
-- Check Pandoc documentation: https://pandoc.org/
+- Check Pandoc documentation: <https://pandoc.org/>
 
 ## License
 

@@ -78,12 +78,12 @@ fi
 
 ## Tables
 
-| Feature | Description | Status |
-|---------|-------------|--------|
-| Markdown | Simple syntax | ✓ |
-| PDF Output | Professional | ✓ |
-| Code Highlighting | Syntax colors | ✓ |
-| Diagrams | Visual models | ✓ |
+| Feature           | Description   | Status |
+|-------------------|---------------|--------|
+| Markdown          | Simple syntax | ✓      |
+| PDF Output        | Professional  | ✓      |
+| Code Highlighting | Syntax colors | ✓      |
+| Diagrams          | Visual models | ✓      |
 
 ## Diagrams
 

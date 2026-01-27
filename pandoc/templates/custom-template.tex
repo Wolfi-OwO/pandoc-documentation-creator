@@ -170,14 +170,36 @@ $endif$
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
-% =========================================================================
-% Modern Headers & Footers
-% =========================================================================
-\usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}
-\clearpairofpagestyles
+% Define strikethrough command (used by Pandoc for ~~strikethrough~~)
+\usepackage[normalem]{ulem}
+\DeclareRobustCommand{\st}[1]{\sout{#1}}
 
-% Modern color scheme
-\definecolor{headercolor}{RGB}{71,85,119}
+% =========================================================================
+% Additional Pandoc Commands
+% =========================================================================
+
+% Subscript and superscript
+\newcommand{\textsubscr}[1]{\ensuremath{_{\text{#1}}}}
+\newcommand{\textsuperscr}[1]{\ensuremath{^{\text{#1}}}}
+
+% Line blocks (preserve line breaks)
+$if(csl-refs)$
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2]
+  {\begin{list}{}{%
+    \setlength{\itemindent}{0pt}
+    \setlength{\leftmargin}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\itemsep}{0.5\baselineskip}
+    \setlength{\labelsep}{\csllabelwidth}
+    \setlength{\labelwidth}{\csllabelwidth}}}
+  {\end{list}}
+$endif$
+
+% =========================================================================
 % Modern Headers & Footers
 % =========================================================================
 \usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}

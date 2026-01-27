@@ -16,7 +16,7 @@ pdf-engine: xelatex
 # Filters (executed in order)
 filters:
   - pandoc-plantuml
-  - mermaid-filter
+  - pandoc-mermaid
 
 # Table of contents
 table-of-contents: true
