@@ -82,7 +82,3 @@ create_release:
         $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG \
         -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
       ```
-        --filter pandoc-plantuml \
-        --filter pandoc-mermaid \
-        -o /data/output/documentation.pdf
-      ```
