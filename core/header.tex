@@ -1,0 +1,46 @@
+% Custom LaTeX header configuration
+
+% Microtype for better typography
+\usepackage{microtype}
+
+% Additional math packages
+\usepackage{mathtools}
+
+% Code environment styling
+\usepackage{framed}
+
+% Better code blocks
+\newenvironment{code}{\begin{framed}\small}{\end{framed}}
+
+% PlantUML support
+\usepackage{tikz}
+\usepackage{import}
+
+% Mermaid diagram support (via external tool)
+% Mermaid diagrams should be preprocessed to PNG/PDF before compilation
+
+% Custom commands
+\newcommand{\highlight}[1]{\textcolor{red}{#1}}
+\newcommand{\code}[1]{\texttt{\small #1}}
+
+% Better verbatim
+\usepackage{fancyvrb}
+\RecustomVerbatimEnvironment{Verbatim}{Verbatim}{
+  frame=lines,
+  framesep=5pt,
+  samepage=false,
+  commandchars=\\\{\}
+}
+
+% Title page styling
+\renewcommand{\maketitle}{%
+  \begin{titlepage}%
+    \centering%
+    {\Large\bfseries\@title\par}%
+    \vspace{1.5cm}%
+    {\large\@author\par}%
+    \vspace{1.5cm}%
+    {\large\@date\par}%
+    \vfill%
+  \end{titlepage}%
+}

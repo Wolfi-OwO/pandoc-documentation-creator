@@ -1,0 +1,13 @@
+.git
+.gitignore
+.gitlab-ci.yml
+README.md
+LICENCE
+build-pdf.sh
+output/
+*.pdf
+*.aux
+*.log
+*.out
+.DS_Store
+node_modules/

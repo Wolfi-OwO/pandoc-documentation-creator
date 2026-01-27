@@ -1,0 +1,57 @@
+# Metadata file for Pandoc documentation
+# This file contains default metadata that can be overridden in your markdown files
+
+# Title
+title: "Dokumentation"
+
+# Author
+author: "Your Name"
+
+# Date (leave empty for current date)
+date: ""
+
+# Language
+lang: "de"
+
+# Document class
+documentclass: "scrartcl"
+
+# Font settings
+mainfont: "Liberation Serif"
+sansfont: "Liberation Sans"
+monofont: "Liberation Mono"
+
+# Paper size
+papersize: "a4"
+
+# Font size
+fontsize: "11pt"
+
+# Line spacing
+linestretch: "1.15"
+
+# Geometry
+geometry: 
+  - "left=2.5cm"
+  - "right=2.5cm"
+  - "top=2cm"
+  - "bottom=2cm"
+
+# Colors
+linkcolor: "blue"
+urlcolor: "blue"
+citecolor: "brown"
+
+# Abstract (optional)
+abstract: ""
+
+# Table of contents
+toc: true
+toc-depth: 3
+listings: true
+
+# Number sections
+number-sections: true
+
+# Show code line numbers
+show-code-line-numbers: true

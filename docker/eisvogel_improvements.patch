@@ -1,0 +1,101 @@
+--- eisvogel.tex
++++ htlvil-eisvogel.tex
+@@ -68,7 +68,7 @@
+ ]{$if(book)$scrbook$else$scrartcl$endif$}
+ $if(beamerarticle)$
+ \usepackage{beamerarticle} % needs to be loaded first
+-$endif$
++$endif$ 
+ \usepackage{xcolor}
+ $if(footnotes-pretty)$
+ % load footmisc in order to customize footnotes (footmisc has to be loaded before hyperref, cf. https://tex.stackexchange.com/a/169124/144087)
+@@ -739,8 +739,39 @@
+ \definecolor{listing-string}{HTML}{00999A}
+ \definecolor{listing-comment}{HTML}{8E8E8E}
+ 
++
++% taken from https://github.com/ghammock/LaTeX_Listings_JavaScript_ES6
++\lstdefinelanguage{JavaScript}{
++  morekeywords=[1]{break, continue, delete, else, for, function, if, in,
++    new, return, this, typeof, var, void, while, with},
++  % Literals, primitive types, and reference types.
++  morekeywords=[2]{false, null, true, boolean, number, undefined,
++    Array, Boolean, Date, Math, Number, String, Object},
++  % Built-ins.
++  morekeywords=[3]{eval, parseInt, parseFloat, escape, unescape},
++  sensitive,
++  morecomment=[s]{/*}{*/},
++  morecomment=[l]//,
++  morecomment=[s]{/**}{*/}, % JavaDoc style comments
++  morestring=[b]',
++  morestring=[b]"
++}[keywords, comments, strings]
++
++\lstdefinelanguage[ECMAScript2015]{JavaScript}[]{JavaScript}{
++  morekeywords=[1]{await, async, case, catch, class, const, default, do,
++    enum, export, extends, finally, from, implements, import, instanceof,
++    let, static, super, switch, throw, try},
++  morestring=[b]` % Interpolation strings.
++}
++
++\lstalias[]{ES6}[ECMAScript2015]{JavaScript}
++
+ \lstdefinestyle{eisvogel_listing_style}{
++$if(listings-default-language)$
++  language         = $listings-default-language$,
++$else$
+   language         = java,
++$endif$
+ $if(listings-disable-line-numbers)$
+   xleftmargin      = 0.6em,
+   framexleftmargin = 0.4em,
+@@ -910,6 +941,7 @@
+ \begin{flushleft}
+ \noindent
+ \\[-1em]
++\definecolor{titlepage-text-color}{HTML}{$if(titlepage-text-color)$$titlepage-text-color$$else$5F5F5F$endif$}
+ \color[HTML]{$if(titlepage-text-color)$$titlepage-text-color$$else$5F5F5F$endif$}
+ \makebox[0pt][l]{\colorRule[$if(titlepage-rule-color)$$titlepage-rule-color$$else$435488$endif$]{1.3\textwidth}{$if(titlepage-rule-height)$$titlepage-rule-height$$else$4$endif$pt}}
+ \par
+@@ -941,6 +973,30 @@
+   $endif$
+   \vskip 2em
+   \noindent {\Large \textsf{$for(author)$$author$$sep$, $endfor$}}
++  \vskip 2em
++  \textsf{$date$}
++
++  $if(pointsdist)$
++  \vskip 4em
++  
++  \renewcommand{\arraystretch}{2}
++  
++  \begin{table}[h!]
++    \begin{tabular}{|>{\color{titlepage-text-color}} c |>{\color{titlepage-text-color}} c |>{\color{titlepage-text-color}} c |}
++      \hline
++      \noindent{ \textsf{Aufgabe} } & \textsf{max. Punkte} & \textsf{erreicht} \\
++      \hline
++      $for(pointsdist)$ 
++      $pointsdist.task$ & $pointsdist.points$ & \\
++      \hline
++      $endfor$      
++      \hline            
++      \textbf{Gesamt} & \textbf{$pointstotal$} & \\
++      \hline
++    \end{tabular}
++  \end{table}
++  \renewcommand{\arraystretch}{1}
++  $endif$
+   \vfill
+ }
+ $endif$
+@@ -950,10 +1006,6 @@
+ \includegraphics[width=$if(logo-width)$$logo-width$$else$35mm$endif$, left]{$titlepage-logo$}
+ $endif$
+ 
+-$if(titlepage-background)$
+-$else$
+-\textsf{$date$}
+-$endif$
+ \end{flushleft}
+ \end{titlepage}
+ \restoregeometry

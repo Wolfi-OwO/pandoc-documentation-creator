@@ -1,0 +1,199 @@
+% Custom Minimal Pandoc Template
+% Uses Pandoc's native syntax highlighting (NOT listings)
+\documentclass[
+  paper=a4,
+  fontsize=11pt,
+  parskip=half,
+  headings=big
+]{scrartcl}
+
+% =========================================================================
+% Basic Typography & Geometry
+% =========================================================================
+\usepackage[margin=2.5cm, includehead, includefoot]{geometry}
+\usepackage{iftex}
+
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp}
+\else
+  \usepackage{fontspec}
+  \IfFontExistsTF{Source Sans Pro}{
+    \setmainfont{Source Sans Pro}[Scale=MatchLowercase]
+    \setsansfont{Source Sans Pro}[Scale=MatchLowercase]
+  }{}
+  \IfFontExistsTF{Source Code Pro}{
+    \setmonofont{Source Code Pro}[Scale=MatchLowercase]
+  }{}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+
+% =========================================================================
+% Language & Utilities
+% =========================================================================
+$if(lang)$
+\ifLuaTeX
+  \usepackage[bidi=basic,shorthands=off]{babel}
+\else
+  \usepackage[bidi=default,shorthands=off]{babel}
+\fi
+$endif$
+
+\usepackage{csquotes}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{calc}
+
+% =========================================================================
+% Tables & Graphics
+% =========================================================================
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+\makeatother
+
+\usepackage{float}
+\floatplacement{figure}{H}
+
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{etoolbox}
+
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+
+% =========================================================================
+% Links & Metadata
+% =========================================================================
+\usepackage{hyperref}
+\hypersetup{
+  breaklinks=true,
+  pdfauthor={$author-meta$},
+  pdftitle={$title-meta$},
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=green!60!black,
+  urlcolor=blue!60!black,
+}
+
+% =========================================================================
+% Code Highlighting - Pandoc's Native Highlighting
+% =========================================================================
+% Let Pandoc define all the highlighting commands
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+% Customize the Shaded environment for code blocks
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+
+% Only define Shaded if not already defined
+\makeatletter
+\@ifundefined{Shaded}{%
+  \newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+}{}
+\makeatother
+
+% =========================================================================
+% Blockquotes (MDFramed)
+% =========================================================================
+\usepackage{mdframed}
+\newmdenv[
+  linewidth=3pt,
+  linecolor=gray!30,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  skipabove=\parskip,
+  skipbelow=\parskip,
+  innertopmargin=0pt,
+  innerbottommargin=0pt,
+  innerrightmargin=0pt,
+  innerleftmargin=1em
+]{customblockquote}
+\renewenvironment{quote}{\begin{customblockquote}}{\end{customblockquote}}
+
+% =========================================================================
+% Headers & Footers
+% =========================================================================
+\usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}
+\clearpairofpagestyles
+\ihead{$title$}
+\ohead{$date$}
+\cfoot{\pagemark}
+\pagestyle{scrheadings}
+
+% =========================================================================
+% Pandoc Macros
+% =========================================================================
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\usepackage{soul}
+$if(strikeout)$
+\usepackage[normalem]{ulem}
+$endif$
+
+% =========================================================================
+% Document Body
+% =========================================================================
+\begin{document}
+
+$if(title)$
+\begin{center}
+{\huge \bfseries \sffamily $title$} \\[1em]
+$if(subtitle)$
+{\Large \sffamily $subtitle$} \\[1em]
+$endif$
+$if(author)$
+{\large $for(author)$$author$$sep$, $endfor$} \\
+$endif$
+$if(date)$
+{\large $date$}
+$endif$
+\end{center}
+\vspace{2em}
+$endif$
+
+$if(toc)$
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{$toc-depth$}
+\tableofcontents
+\newpage
+}
+$endif$
+
+$if(lof)$
+{
+\hypersetup{linkcolor=black}
+\listoffigures
+\newpage
+}
+$endif$
+
+$body$
+
+\end{document}

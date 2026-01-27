@@ -1,0 +1,79 @@
+# Pandoc defaults configuration file
+# This file defines default options for pandoc conversion
+
+# Input format
+from: markdown+attributes+yaml_metadata_block+fenced_code_blocks
+
+# Output format  
+to: pdf
+
+# Template
+template: custom-template.tex
+
+# PDF engine
+pdf-engine: xelatex
+
+# Metadata
+metadata-files:
+  - metadata.yaml
+
+# Filters
+filters:
+  - pandoc-plantuml
+  - pandoc-citeproc
+
+# Table of contents
+table-of-contents: true
+toc-depth: 3
+
+# Number sections
+number-sections: true
+
+# Code highlighting
+syntax-definitions:
+  - /usr/share/pandoc/syntax/bash.xml
+  - /usr/share/pandoc/syntax/python.xml
+  - /usr/share/pandoc/syntax/json.xml
+  - /usr/share/pandoc/syntax/yaml.xml
+  - /usr/share/pandoc/syntax/sql.xml
+  - /usr/share/pandoc/syntax/dockerfile.xml
+
+# Variables
+variables:
+  listings: true
+  listings-numbers: true
+  documentclass: scrartcl
+  papersize: a4
+  fontsize: 11pt
+  linestretch: 1.15
+  geometry: "left=2.5cm,right=2.5cm,top=2cm,bottom=2cm"
+
+# Include styles
+include-in-header:
+  - header.tex
+
+# Standalone document
+standalone: true
+
+# Keep intermediate files
+keep-intermediate-files: false
+
+# Markdown extensions
+markdown-extensions:
+  - yaml_metadata_block
+  - fenced_code_blocks
+  - attributes
+  - header_attributes
+  - auto_identifiers
+  - footnotes
+  - definition_lists
+  - strikeout
+  - superscript
+  - subscript
+  - inline_code_attributes
+  - raw_html
+  - raw_tex
+
+# LaTeX options
+latex-options:
+  - "--pdf-engine=xelatex"

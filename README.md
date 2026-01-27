@@ -1,52 +1,128 @@
-# Gitlab component template
+# Pandoc Documentation Creator
 
-<!--
-Update this readme with your component details. Replace content in `< >` with your project information.
-For more information:
+Vollstaendiges CI/CD-Projekt fuer automatisierte PDF-Dokumentationserstellung mit Pandoc, Docker und GitLab CI/CD.
 
-- How to create a CI/CD component: https://docs.gitlab.com/ee/ci/components/#write-a-component
-- How to write a clear README.md file: https://docs.gitlab.com/ee/ci/components/#write-a-clear-readmemd
-- CI/CD Component security best practices: https://docs.gitlab.com/ee/ci/components/#cicd-component-security-best-practices
--->
+## Features
 
-<!-- Uncomment and update the following link to display a release badge: https://docs.gitlab.com/ee/user/project/badges.html#latest-release-badges -->
-<!-- [![Latest Release](https://gitlab.com/<your project path>/-/badges/release.svg)](https://gitlab.com/<your project path>/-/releases) -->
+- Pandoc 3.7 fuer Markdown-zu-PDF-Konvertierung
+- Eigenes LaTeX-Template (custom-template.tex)
+- Code Highlighting mit Listings
+- PlantUML Support fuer Diagramme
+- Docker fuer konsistente Build-Umgebung
+- GitLab CI/CD fuer automatische Registry-Pushes
+- Einfache Nutzung mit init.sh und build-pdf.sh
 
-## Components
+## Quick Start
 
-### `<Component-name>`
+### 1. Initialisierung
 
-Use this component to `<component-description>`.
-
-To add this component to your CI/CD pipeline, add the following include entry to your
-project's CI/CD configuration:
-
-```yaml
-include:
-  - component: https://gitlab.com/<your project path>/<name of your template>@<tag>
+```bash
+./init.sh
 ```
 
-Where `<tag>` is the release tag you want to use ([releases list](https://gitlab.com/<your-project-path>/-/releases)).
+Dies baut das Docker-Image und zeigt Beispiel-Verwendung.
 
-## Inputs
+### 2. Beispiel bauen
 
-The template contains some optional [inputs](https://docs.gitlab.com/ee/ci/yaml/inputs.html):
+```bash
+./build-pdf.sh
+```
 
-<!-- Add or update rows if you change the inputs in the template -->
+Dies erstellt `output/documentation.pdf` aus den Beispiel-Dateien.
 
-| Input      | Default value    | Description |
-|------------|------------------|-------------|
-| `job_name` | `job-template`   | The job name. |
-| `image`    | `busybox:latest` | The container image to use to run the job. |
-| `stage`    | `test`           | The stage name for the job. |
+### 3. Eigene Dokumentation erstellen
 
-## Documentation
+```bash
+docker run --rm -v $(pwd):/data pandoc-documentation-creator:latest \
+  my-doc.md \
+  --template=custom-template.tex \
+  --listings \
+  --pdf-engine=xelatex \
+  --toc \
+  --number-sections \
+  -o /data/output/my-doc.pdf
+```
 
-This project includes a MVC structure to help you get started with [Gitlab CI/CD components](https://docs.gitlab.com/ee/ci/components/).
-The template provides the basic file structure to create your own single component.
-This project should be public, or one of the jobs in the project's pipeline won't work.
+## Projektstruktur
 
-## Licence
+```
+pandoc-documentation-creator/
+|-- docker/               Docker-spezifische Dateien
+|   |-- eisvogel.latex    Eisvogel Template
+|   |-- plantuml          PlantUML Wrapper-Skript
+|   |-- tof-box.lua       Lua Filter
+|   `-- code-printout.tex LaTeX Codedruck-Template
+|
+|-- extensions/           Pandoc Extensions
+|   |-- extensions.yaml   Pandoc Defaults
+|   `-- metadata.yaml     Metadata Defaults
+|
+|-- core/                 Optionale Custom Templates
+|   |-- custom-template.tex
+|   `-- header.tex
+|
+|-- documentation/        Projekt-Dokumentation
+|
+|-- example/              Beispiel-Dokumente
+|   |-- deckblatt.md
+|   `-- 00-example.md
+|
+|-- output/               Generierte PDFs
+|
+|-- init.sh               Initialisierung und Docker-Build
+|-- build-pdf.sh          PDF-Build-Skript
+|-- Dockerfile            Docker-Image Definition
+`-- .gitlab-ci.yml        CI/CD Pipeline
+```
 
-The licence can be changed. By default this project has the [MIT Licence](./LICENCE).
-<!-- You should update the year and name in the license file. -->
+## Docker Image manuell bauen
+
+```bash
+docker build -t pandoc-documentation-creator:1.0.0 .
+```
+
+## CI/CD Pipeline
+
+Das Projekt ist fuer GitLab CI/CD vorbereitet. Bei jedem Git-Tag wird automatisch:
+
+1. Docker-Image gebaut
+2. Zu GitLab Container Registry gepusht
+3. Mit Version und latest getaggt
+
+```bash
+# Tag erstellen
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+## Erweiterte Verwendung
+
+### Mit PlantUML-Diagrammen
+
+```markdown
+```plantuml
+@startuml
+- Pandoc 3.7 fuer Markdown-zu-PDF-Konvertierung
+- Eigenes LaTeX-Template (custom-template.tex)
+- Code Highlighting mit Listings (Dark Modern VS Code Style)
+
+```bash
+docker run --rm -v $(pwd):/data pandoc-documentation-creator:latest \
+  my-doc.md \
+  --defaults=/usr/local/share/pandoc/extensions/extensions.yaml \
+  -o /data/output/my-doc.pdf
+  --template=custom-template.tex \
+
+### Mit Custom Template
+
+```bash
+docker run --rm -v $(pwd):/data -v $(pwd)/core:/templates \
+  pandoc-documentation-creator:latest \
+  my-doc.md \
+  --template=/templates/custom-template.tex \
+  -o /data/output/my-doc.pdf
+```
+
+  --template=/templates/custom-template.tex \
+
+MIT License - siehe LICENCE

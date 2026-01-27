@@ -1,0 +1,16 @@
+@startuml
+class Dokumentation {
+  - title: String
+  - author: String
+  - chapters: List<Chapter>
+  + build(): PDF
+}
+
+class Kapitel {
+  - name: String
+  - content: String
+  + render(): HTML
+}
+
+Dokumentation "1" *-- "many" Kapitel
+@enduml
