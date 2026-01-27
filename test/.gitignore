@@ -1,0 +1,18 @@
+# Output directory
+output/*.pdf
+
+# Temporary files
+*.aux
+*.log
+*.out
+*.toc
+*.lot
+*.lof
+
+# Diagram cache
+plantuml-images/
+mermaid-images/
+
+# OS files
+.DS_Store
+Thumbs.db

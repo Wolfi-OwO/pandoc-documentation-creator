@@ -6,7 +6,9 @@
 set -e
 
 # Configuration
-IMAGE_NAME="pandoc-documentation-creator"
+IMAGE_NAME="registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest"
+# For local development, uncomment the line below:
+# IMAGE_NAME="pandoc-documentation-creator:latest"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_DIR="${PROJECT_DIR}/output"
 CHAPTERS_DIR="${PROJECT_DIR}/chapters"
@@ -28,8 +30,11 @@ echo ""
 # Check if Docker image exists
 if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
     echo -e "${RED}Error: Docker image '${IMAGE_NAME}' not found${NC}"
-    echo -e "${YELLOW}Please run ./init.sh first to build the image${NC}"
-    exit 1
+    echo -e "${YELLOW}Pulling image from GitLab registry...${NC}"
+    docker pull "${IMAGE_NAME}" || {
+        echo -e "${RED}Failed to pull image${NC}"
+        exit 1
+    }
 fi
 
 # Check if chapters directory exists
@@ -62,7 +67,7 @@ docker run --rm \
   "${IMAGE_NAME}" \
   --defaults=/usr/local/share/pandoc/defaults.yaml \
   --metadata-file=/data/metadata.yaml \
-  /data/chapters/*.md \
+  /data/chapters/'*.md' \
   -o /data/output/documentation.pdf
 
 if [ $? -eq 0 ]; then

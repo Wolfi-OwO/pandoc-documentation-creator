@@ -48,7 +48,12 @@ create_release:
     description: |
       Release $CI_COMMIT_TAG of Pandoc Documentation Creator
       
-      Docker Image: `$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG`
+      ## Docker Image
+      
+      ```bash
+      docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+      docker pull $CI_REGISTRY_IMAGE:latest
+      ```
       
       ## Features
       - VSCode Light Theme syntax highlighting
@@ -57,17 +62,28 @@ create_release:
       - Modern professional PDF layout
       - A4 page format with proper margins
       
-      ## Usage
-      ```bash
-      docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+      ## Quick Start
       
+      ```bash
+      # Pull the image
+      docker pull $CI_REGISTRY_IMAGE:latest
+      
+      # Run init script
+      curl -fsSL https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/init.sh | bash
+      
+      # Build your documentation
+      ./build-pdf.sh
+      ```
+      
+      ## Usage Example
+      
+      ```bash
       docker run --rm -v $(pwd):/data $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG \
-        example/deckblatt.md example/documentation.md \
-        --template=custom-template.tex \
-        --highlight-style=/usr/local/share/pandoc/templates/styles/code/vscode-light.theme \
-        --pdf-engine=xelatex \
-        --toc \
-        --number-sections \
+        --defaults=/usr/local/share/pandoc/defaults.yaml \
+        --metadata-file=/data/metadata.yaml \
+        /data/chapters/*.md \
+        -o /data/output/documentation.pdf
+      ```
         --filter pandoc-plantuml \
         --filter pandoc-mermaid \
         -o /data/output/documentation.pdf

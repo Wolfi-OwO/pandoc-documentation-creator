@@ -134,11 +134,11 @@ graph TD
 Edit the build script to customize:
 
 ```bash
-docker run --rm -v "$(pwd):/data" pandoc-documentation-creator \
-  --defaults=/data/.pandoc/defaults.yaml \
-  --metadata-file=/data/.pandoc/metadata.yaml \
-  chapters/*.md \
-  -o output/documentation.pdf
+docker run --rm -v "$(pwd):/data" registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
+  --defaults=/usr/local/share/pandoc/defaults.yaml \
+  --metadata-file=/data/metadata.yaml \
+  /data/chapters/'*.md' \
+  -o /data/output/documentation.pdf
 ```
 
 ### Using Different Templates
@@ -161,19 +161,20 @@ filters:
 
 ## Docker Commands
 
-### Build the Image
+### Pull the Image
 
 ```bash
-docker build -t pandoc-documentation-creator .
+docker pull registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest
 ```
 
 ### Run Manually
 
 ```bash
-docker run --rm -v $(pwd):/data pandoc-documentation-creator \
-  --defaults=/data/.pandoc/defaults.yaml \
-  chapters/*.md \
-  -o output/documentation.pdf
+docker run --rm -v $(pwd):/data registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
+  --defaults=/usr/local/share/pandoc/defaults.yaml \
+  --metadata-file=/data/metadata.yaml \
+  /data/chapters/'*.md' \
+  -o /data/output/documentation.pdf
 ```
 
 ## Troubleshooting
