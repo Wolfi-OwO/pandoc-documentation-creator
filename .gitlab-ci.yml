@@ -70,39 +70,53 @@ create_release:
         git log --merges --pretty=format:"- %s (%h)" $PREV_TAG..$CI_COMMIT_TAG >> CHANGELOG.md || echo "No merge requests found" >> CHANGELOG.md
       fi
       
-      # Display the changelog
-      cat CHANGELOG.md
-  release:
-    tag_name: $CI_COMMIT_TAG
-    description: |
-      Release $CI_COMMIT_TAG of Pandoc Documentation Creator
+      # Build complete release description
+      cat > RELEASE_NOTES.md << EOF
+      Release ${CI_COMMIT_TAG} of Pandoc Documentation Creator
       
       ## Docker Image
       
-      ```bash
-      docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
-      docker pull $CI_REGISTRY_IMAGE:latest
-      ```
+      \`\`\`bash
+      docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
+      docker pull ${CI_REGISTRY_IMAGE}:latest
+      \`\`\`
       
-      $(cat CHANGELOG.md)
+      EOF
+      
+      # Append changelog
+      cat CHANGELOG.md >> RELEASE_NOTES.md
+      
+      # Append Quick Start and Usage
+      cat >> RELEASE_NOTES.md << 'EOF'
       
       ## Quick Start
       
-      ```bash
+      \`\`\`bash
       # Pull the image
-      docker pull $CI_REGISTRY_IMAGE:latest
+      docker pull ${CI_REGISTRY_IMAGE}:latest
       
       # Run init script
       curl -fsSL https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/scripts/init.sh | bash
       
       # Build your documentation
       ./build-pdf.sh
-      ```
+      \`\`\`
       
       ## Usage Example
       
-      ```bash
+      \`\`\`bash
       docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
-        $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG \
+        ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} \
         -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
-      ```
+      \`\`\`
+      EOF
+      
+      # Expand variables in the Quick Start and Usage sections
+      sed -i "s|\${CI_REGISTRY_IMAGE}|${CI_REGISTRY_IMAGE}|g" RELEASE_NOTES.md
+      sed -i "s|\${CI_COMMIT_TAG}|${CI_COMMIT_TAG}|g" RELEASE_NOTES.md
+      
+      # Display the complete release notes
+      cat RELEASE_NOTES.md
+  release:
+    tag_name: $CI_COMMIT_TAG
+    description: ./RELEASE_NOTES.md
