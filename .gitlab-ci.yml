@@ -77,10 +77,10 @@ create_release:
       
       ## Docker Image
       
-      \`\`\`bash
+      ```bash
       docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
       docker pull ${CI_REGISTRY_IMAGE}:latest
-      \`\`\`
+      ```
       
       EOF
       
@@ -92,7 +92,7 @@ create_release:
       
       ## Quick Start
       
-      \`\`\`bash
+      ```bash
       # Pull the image
       docker pull ${CI_REGISTRY_IMAGE}:latest
       
@@ -101,15 +101,15 @@ create_release:
       
       # Build your documentation
       ./build-pdf.sh
-      \`\`\`
+      ```
       
       ## Usage Example
       
-      \`\`\`bash
+      ```bash
       docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
         ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} \
         -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
-      \`\`\`
+      ```
       EOF
       
       # Expand variables in the Quick Start and Usage sections

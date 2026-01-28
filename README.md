@@ -80,10 +80,10 @@ This is **bold** and this is *italic*.
 
 ## Code Example
 
-\`\`\`python
+```python
 def hello():
     print("Hello, World!")
-\`\`\`
+```
 ```
 
 ### 4. Build Your PDF
@@ -201,20 +201,20 @@ Supports multiple languages with VSCode Light theme:
 
 #### PlantUML
 
-\`\`\`plantuml
+```plantuml
 @startuml
 Alice -> Bob: Hello
 Bob -> Alice: Hi!
 @enduml
-\`\`\`
+```
 
 #### Mermaid
 
-\`\`\`mermaid
+```mermaid
 graph TD
     A[Start] --> B[Process]
     B --> C[End]
-\`\`\`
+```
 
 ### Typography
 
