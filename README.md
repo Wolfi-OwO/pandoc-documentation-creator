@@ -84,7 +84,6 @@ This is **bold** and this is *italic*.
 def hello():
     print("Hello, World!")
 ```
-```
 
 ### 4. Build Your PDF
 
@@ -258,7 +257,7 @@ Add to `metadata.yaml`:
 
 This repository is organized as follows:
 
-```
+```text
 pandoc-documentation-creator/
 ├── docker/                     # Docker-related files
 │   ├── Dockerfile             # Multi-stage image build
