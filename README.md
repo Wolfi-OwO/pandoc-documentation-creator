@@ -1,16 +1,9 @@
 # Pandoc Documentation Creator
 
+[![pipeline](https://gitlab.com/woofi4/public/pandoc-documentation-creator/badges/main/pipeline.svg)](https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/pipelines)
+[![latest-tag](https://img.shields.io/gitlab/v/tag/woofi4/public/pandoc-documentation-creator)](https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/tags)
+
 A complete Docker-based documentation system using Pandoc, LaTeX, and professional templates.
-
-## Features
-
-- 🐳 **Docker-based**: No local dependencies needed
-- 📝 **Markdown**: Write in simple Markdown syntax
-- 🎨 **Professional output**: Beautiful PDF generation with LaTeX
-- 💻 **Code highlighting**: VSCode Light theme syntax highlighting
-- 📊 **Diagrams**: PlantUML and Mermaid support
-- ⚙️ **Configurable**: Easy customization through YAML files
-- 🚀 **Ready to use**: Complete templates and examples included
 
 ## Quick Start
 
