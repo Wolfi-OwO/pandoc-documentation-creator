@@ -9,33 +9,66 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
   TAG_PATTERN: /^v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/
 
-build_and_push_docker:
+# Pipeline runs for every merge request and main branch
+# For merge requests and main: saves Docker image as .tar artifact
+# For version tags: pushes to registry
+build_docker:
   stage: build
   image: docker:24-dind
   services:
     - docker:24-dind
   rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_TAG =~ $TAG_PATTERN
   before_script:
-    - echo "Logging into GitLab Container Registry..."
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-  script:
-    - echo "Building Docker image with tag $CI_COMMIT_TAG"
     - |
-      docker build \
-        --build-arg VERSION="${CI_COMMIT_TAG#v}" \
-        --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
-        --build-arg VCS_REF="$CI_COMMIT_SHA" \
-        --build-arg VCS_URL="$CI_PROJECT_URL" \
-        -t $DOCKER_IMAGE_NAME \
-        -t $DOCKER_LATEST_TAG \
-        -f docker/Dockerfile .
-    - echo "Pushing image to GitLab Container Registry..."
-    - docker push $DOCKER_IMAGE_NAME
-    - docker push $DOCKER_LATEST_TAG
-    - echo "Successfully pushed $DOCKER_IMAGE_NAME and $DOCKER_LATEST_TAG"
+      if [[ "$CI_COMMIT_TAG" =~ $TAG_PATTERN ]]; then
+        echo "Logging into GitLab Container Registry for tag push..."
+        echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+      fi
+  script:
+    - |
+      if [[ "$CI_COMMIT_TAG" =~ $TAG_PATTERN ]]; then
+        # Tag push: build and push to registry
+        echo "Building Docker image with tag $CI_COMMIT_TAG"
+        docker build \
+          --build-arg VERSION="${CI_COMMIT_TAG#v}" \
+          --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+          --build-arg VCS_REF="$CI_COMMIT_SHA" \
+          --build-arg VCS_URL="$CI_PROJECT_URL" \
+          -t $DOCKER_IMAGE_NAME \
+          -t $DOCKER_LATEST_TAG \
+          -f docker/Dockerfile .
+        echo "Pushing image to GitLab Container Registry..."
+        docker push $DOCKER_IMAGE_NAME
+        docker push $DOCKER_LATEST_TAG
+        echo "Successfully pushed $DOCKER_IMAGE_NAME and $DOCKER_LATEST_TAG"
+      else
+        # Merge request or main branch: build and save as tar
+        echo "Building Docker image for $CI_COMMIT_BRANCH / MR"
+        docker build \
+          --build-arg VERSION="$CI_COMMIT_SHORT_SHA" \
+          --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+          --build-arg VCS_REF="$CI_COMMIT_SHA" \
+          --build-arg VCS_URL="$CI_PROJECT_URL" \
+          -t pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA \
+          -f docker/Dockerfile .
+        echo "Saving Docker image as artifact..."
+        docker save pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA -o pandoc-image.tar
+        echo "Docker image saved as pandoc-image.tar"
+      fi
   after_script:
-    - docker logout $CI_REGISTRY || true
+    - |
+      if [[ "$CI_COMMIT_TAG" =~ $TAG_PATTERN ]]; then
+        docker logout $CI_REGISTRY || true
+      fi
+  artifacts:
+    paths:
+      - pandoc-image.tar
+    expire_in: 1 day
+    when: on_success
+
 
 create_release:
   stage: release
