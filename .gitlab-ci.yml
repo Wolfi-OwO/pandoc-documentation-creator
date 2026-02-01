@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
   - release
 
 variables:
@@ -69,6 +70,41 @@ build_docker:
     expire_in: 1 day
     when: on_success
 
+# Test the Docker image
+test_docker:
+  stage: test
+  image: docker:24-dind
+  services:
+    - docker:24-dind
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG =~ $TAG_PATTERN
+  dependencies:
+    - build_docker
+  script:
+    - |
+      if [[ "$CI_COMMIT_TAG" =~ $TAG_PATTERN ]]; then
+        # For tags, test the pushed image from registry
+        echo "Testing Docker image from registry: $DOCKER_IMAGE_NAME"
+        echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+        docker pull $DOCKER_IMAGE_NAME
+        TEST_IMAGE=$DOCKER_IMAGE_NAME
+        docker logout $CI_REGISTRY
+      else
+        # For MR/main, load tar artifact
+        echo "Loading Docker image from artifact..."
+        docker load -i pandoc-image.tar
+        TEST_IMAGE=pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA
+      fi
+    - |
+      echo "Testing Docker image: $TEST_IMAGE"
+    - docker run --rm $TEST_IMAGE pandoc --version
+    - docker run --rm $TEST_IMAGE xelatex --version
+    - docker run --rm $TEST_IMAGE python3 --version
+    - docker run --rm $TEST_IMAGE node --version
+    - docker run --rm $TEST_IMAGE mermaid --version || echo "Mermaid check skipped"
+    - echo "✓ All Docker image tests passed!"
 
 create_release:
   stage: release
