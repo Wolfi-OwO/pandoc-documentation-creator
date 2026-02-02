@@ -79,6 +79,8 @@ create_new_project() {
     mkdir -p "${target_dir}/chapters"
     mkdir -p "${target_dir}/media"
     mkdir -p "${target_dir}/output"
+    mkdir -p "${target_dir}/.vscode"
+    mkdir -p "${target_dir}/.vscode/schemas"
     print_success "Directories created"
     
     # Copy or download configuration files
