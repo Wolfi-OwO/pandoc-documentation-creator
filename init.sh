@@ -275,6 +275,25 @@ Thumbs.db
 EOF
 }
 
+pull_with_spinner() {
+    local image="$1"
+    local pid
+    local spin='|/-\'
+    local i=0
+
+    docker pull "$image" >/dev/null 2>&1 &
+    pid=$!
+
+    printf "Pulling Docker image "
+    while kill -0 "$pid" 2>/dev/null; do
+        i=$(( (i+1) %4 ))
+        printf "\rPulling Docker image %s" "${spin:$i:1}"
+        sleep 0.1
+    done
+    wait "$pid"
+    return $?
+}
+
 # Function to check/pull Docker image
 check_docker_image() {
     print_header "Checking Docker Image"
@@ -287,7 +306,7 @@ check_docker_image() {
     
     # Try to pull the latest image
     print_info "Pulling latest Docker image..."
-    if docker pull "${IMAGE_REGISTRY}:latest" >/dev/null 2>&1; then
+    if pull_with_spinner "${IMAGE_REGISTRY}:latest"; then
         print_success "Docker image pulled successfully"
     else
         print_error "Failed to pull Docker image"
