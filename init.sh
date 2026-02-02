@@ -355,3 +355,6 @@ echo "  1. Edit files in the chapters/ directory"
 echo "  2. Customize metadata.yaml"
 echo "  3. Run ./build-pdf.sh to generate your PDF"
 echo ""
+
+# Remove the init script
+rm -rf init.sh
