@@ -145,8 +145,9 @@ create_release:
     description: release_description.md
     assets:
       links:
-        - name: "Docker Image: beamer-full-$CI_COMMIT_TAG"
-          url: "https://$CI_REGISTRY_IMAGE/beamer-full:$CI_COMMIT_TAG"
+        - name: "Docker Image: pandoc-documentation-creator-$CI_COMMIT_TAG"
+
+          url: "https://$DOCKER_IMAGE_NAME"
           link_type: image
   rules:
     - if: $CI_COMMIT_TAG
