@@ -12,6 +12,8 @@ This project provides a complete Pandoc-based documentation system with Docker s
 
 ## Quick Start
 
+> **Note:** Ensure the `.vscode/settings.json` for this project is located in the top-level directory you are working in (your current project root). This is required for the YAML schema settings to apply correctly.
+
 ### 1. Initialize Your Project
 
 Run the initialization script to create the project structure:
