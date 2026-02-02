@@ -8,185 +8,156 @@ variables:
   DOCKER_LATEST_TAG: $CI_REGISTRY_IMAGE:latest
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: "/certs"
-  TAG_PATTERN: /^v[0-9]+\.[0-9]+\.[0-9]+(\.[0-9])?$/
+  TAG_PATTERN: ^v[0-9]+\.[0-9]+\.[0-9]+(\.[0-9])?$
 
-# Pipeline runs for every merge request and main branch
-# For merge requests and main: saves Docker image as .tar artifact
-# For version tags: pushes to registry
+
+# ------------------------
+# BUILD
+# ------------------------
 build_docker:
   stage: build
   image: docker:24-dind
   services:
     - docker:24-dind
   rules:
+    - if: $CI_COMMIT_TAG =~ $TAG_PATTERN
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_TAG =~ $TAG_PATTERN
+
   before_script:
     - |
-      if [[ "$CI_COMMIT_TAG" =~ $TAG_PATTERN ]]; then
-        echo "Logging into GitLab Container Registry for tag push..."
-        echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        echo "Logging into GitLab Container Registry..."
+        echo "$CI_REGISTRY_PASSWORD" | docker login \
+          -u "$CI_REGISTRY_USER" \
+          --password-stdin "$CI_REGISTRY"
       fi
+
   script:
     - |
-      if [[ "$CI_COMMIT_TAG" =~ $TAG_PATTERN ]]; then
-        # Tag push: build and push to registry
-        echo "Building Docker image with tag $CI_COMMIT_TAG"
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        echo "Building & pushing Docker image for tag $CI_COMMIT_TAG"
+
         docker build \
           --build-arg VERSION="${CI_COMMIT_TAG#v}" \
           --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
           --build-arg VCS_REF="$CI_COMMIT_SHA" \
           --build-arg VCS_URL="$CI_PROJECT_URL" \
-          -t $DOCKER_IMAGE_NAME \
-          -t $DOCKER_LATEST_TAG \
+          -t "$DOCKER_IMAGE_NAME" \
+          -t "$DOCKER_LATEST_TAG" \
           -f docker/Dockerfile .
-        echo "Pushing image to GitLab Container Registry..."
-        docker push $DOCKER_IMAGE_NAME
-        docker push $DOCKER_LATEST_TAG
-        echo "Successfully pushed $DOCKER_IMAGE_NAME and $DOCKER_LATEST_TAG"
+
+        docker push "$DOCKER_IMAGE_NAME"
+        docker push "$DOCKER_LATEST_TAG"
       else
-        # Merge request or main branch: build and save as tar
-        echo "Building Docker image for $CI_COMMIT_BRANCH / MR"
+        echo "Building Docker image for branch / merge request"
+
         docker build \
           --build-arg VERSION="$CI_COMMIT_SHORT_SHA" \
           --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
           --build-arg VCS_REF="$CI_COMMIT_SHA" \
           --build-arg VCS_URL="$CI_PROJECT_URL" \
-          -t pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA \
+          -t "pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA" \
           -f docker/Dockerfile .
-        echo "Saving Docker image as artifact..."
-        docker save pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA -o pandoc-image.tar
-        echo "Docker image saved as pandoc-image.tar"
+
+        docker save \
+          "pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA" \
+          -o pandoc-image.tar
       fi
+
   after_script:
     - |
-      if [[ "$CI_COMMIT_TAG" =~ $TAG_PATTERN ]]; then
-        docker logout $CI_REGISTRY || true
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        docker logout "$CI_REGISTRY" || true
       fi
+
   artifacts:
     paths:
       - pandoc-image.tar
     expire_in: 1 day
     when: on_success
 
-# Test the Docker image
+
+# ------------------------
+# TEST
+# ------------------------
 test_docker:
   stage: test
   image: docker:24-dind
   services:
     - docker:24-dind
   rules:
+    - if: $CI_COMMIT_TAG =~ $TAG_PATTERN
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_TAG =~ $TAG_PATTERN
   dependencies:
     - build_docker
+
   script:
     - |
-      if [[ "$CI_COMMIT_TAG" =~ $TAG_PATTERN ]]; then
-        # For tags, test the pushed image from registry
-        echo "Testing Docker image from registry: $DOCKER_IMAGE_NAME"
-        echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-        docker pull $DOCKER_IMAGE_NAME
-        TEST_IMAGE=$DOCKER_IMAGE_NAME
-        docker logout $CI_REGISTRY
-      else
-        # For MR/main, load tar artifact
-        echo "Loading Docker image from artifact..."
-        docker load -i pandoc-image.tar
-        TEST_IMAGE=pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA
-      fi
-    - |
-      echo "Testing Docker image: $TEST_IMAGE"
-    - docker run --rm $TEST_IMAGE pandoc --version
-    - docker run --rm $TEST_IMAGE xelatex --version
-    - docker run --rm $TEST_IMAGE python3 --version
-    - docker run --rm $TEST_IMAGE node --version
-    - docker run --rm $TEST_IMAGE mermaid --version || echo "Mermaid check skipped"
-    - echo "✓ All Docker image tests passed!"
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        echo "Testing image from registry: $DOCKER_IMAGE_NAME"
 
+        echo "$CI_REGISTRY_PASSWORD" | docker login \
+          -u "$CI_REGISTRY_USER" \
+          --password-stdin "$CI_REGISTRY"
+
+        docker pull "$DOCKER_IMAGE_NAME"
+        TEST_IMAGE="$DOCKER_IMAGE_NAME"
+
+        docker logout "$CI_REGISTRY"
+      else
+        echo "Loading Docker image from artifact"
+        docker load -i pandoc-image.tar
+        TEST_IMAGE="pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA"
+      fi
+
+    - docker run --rm "$TEST_IMAGE" pandoc --version
+    - docker run --rm "$TEST_IMAGE" xelatex --version
+    - docker run --rm "$TEST_IMAGE" python3 --version
+    - docker run --rm "$TEST_IMAGE" node --version
+    - docker run --rm "$TEST_IMAGE" mermaid --version || echo "Mermaid skipped"
+
+
+# ------------------------
+# RELEASE
+# ------------------------
 create_release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
-    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/
+    - if: $CI_COMMIT_TAG =~ $TAG_PATTERN
   before_script:
     - apk add --no-cache git
   script:
     - echo "Creating release $CI_COMMIT_TAG"
+
     - |
-      # Get the previous tag
-      PREV_TAG=$(git describe --tags --abbrev=0 $CI_COMMIT_TAG^ 2>/dev/null || echo "")
-      
-      # Generate changelog
+      PREV_TAG=$(git describe --tags --abbrev=0 "$CI_COMMIT_TAG^" 2>/dev/null || echo "")
+
       if [ -z "$PREV_TAG" ]; then
         echo "## Changes" > CHANGELOG.md
-        echo "" >> CHANGELOG.md
-        git log --pretty=format:"- %s (%h)" $CI_COMMIT_TAG >> CHANGELOG.md
+        git log --pretty=format:"- %s (%h)" "$CI_COMMIT_TAG" >> CHANGELOG.md
       else
         echo "## Changes since $PREV_TAG" > CHANGELOG.md
-        echo "" >> CHANGELOG.md
-        git log --pretty=format:"- %s (%h)" $PREV_TAG..$CI_COMMIT_TAG >> CHANGELOG.md
+        git log --pretty=format:"- %s (%h)" "$PREV_TAG..$CI_COMMIT_TAG" >> CHANGELOG.md
       fi
-      
-      # Add merge requests if any
-      echo "" >> CHANGELOG.md
-      echo "## Merge Requests" >> CHANGELOG.md
-      echo "" >> CHANGELOG.md
-      if [ -z "$PREV_TAG" ]; then
-        git log --merges --pretty=format:"- %s (%h)" $CI_COMMIT_TAG >> CHANGELOG.md || echo "No merge requests found" >> CHANGELOG.md
-      else
-        git log --merges --pretty=format:"- %s (%h)" $PREV_TAG..$CI_COMMIT_TAG >> CHANGELOG.md || echo "No merge requests found" >> CHANGELOG.md
-      fi
-      
-      # Build complete release description
+
       cat > RELEASE_NOTES.md << EOF
       Release ${CI_COMMIT_TAG} of Pandoc Documentation Creator
-      
+
       ## Docker Image
-      
-      ```bash
+
+      \`\`\`bash
       docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
       docker pull ${CI_REGISTRY_IMAGE}:latest
-      ```
-      
+      \`\`\`
+
       EOF
-      
-      # Append changelog
+
       cat CHANGELOG.md >> RELEASE_NOTES.md
-      
-      # Append Quick Start and Usage
-      cat >> RELEASE_NOTES.md << 'EOF'
-      
-      ## Quick Start
-      
-      ```bash
-      # Pull the image
-      docker pull ${CI_REGISTRY_IMAGE}:latest
-      
-      # Run init script
-      curl -fsSL https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/scripts/init.sh | bash
-      
-      # Build your documentation
-      ./build-pdf.sh
-      ```
-      
-      ## Usage Example
-      
-      ```bash
-      docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
-        ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} \
-        -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
-      ```
-      EOF
-      
-      # Expand variables in the Quick Start and Usage sections
-      sed -i "s|\${CI_REGISTRY_IMAGE}|${CI_REGISTRY_IMAGE}|g" RELEASE_NOTES.md
-      sed -i "s|\${CI_COMMIT_TAG}|${CI_COMMIT_TAG}|g" RELEASE_NOTES.md
-      
-      # Display the complete release notes
       cat RELEASE_NOTES.md
+
   release:
     tag_name: $CI_COMMIT_TAG
     description: ./RELEASE_NOTES.md
