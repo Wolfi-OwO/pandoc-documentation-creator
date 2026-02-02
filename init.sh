@@ -123,6 +123,15 @@ create_new_project() {
     else
         create_minimal_help "${target_dir}/Help.md"
     fi
+
+    print_info "Adding pandoc-schema for .yaml files..."
+    if download_or_copy_template "pandoc-metadata.json.template" "${target_dir}/.vscode/schemas/pandoc-metadata.json"; then
+        print_success "Created schema template"
+    fi
+
+    if download_or_copy_template "settings.json.template" "${target_dir}/.vscode/settings.json"; then
+        print_success "Created vscode-settings"
+    fi
     
     # Create .gitignore
     create_gitignore "${target_dir}/.gitignore"
