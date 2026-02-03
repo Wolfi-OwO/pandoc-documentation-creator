@@ -31,32 +31,17 @@ RUN apk add --no-cache \
     unzip \
     patch \
     make \
-    curl \
-    nodejs \
-    npm \
-    chromium \
-    nss \
-    freetype \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont
-
-# Install mermaid-cli and configure Chromium for headless rendering
-RUN npm install -g @mermaid-js/mermaid-cli && \
-    npm cache clean --force
-
-# Configure Puppeteer to use system Chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
-    CHROME_BIN=/usr/bin/chromium-browser \
-    PUPPETEER_ARGS="--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu --single-process --no-zygote"
+    curl
 
 # Install pandoc filters and cleanup pip cache
 RUN pip3 install --break-system-packages --no-cache-dir \
     pandoc-plantuml-filter \
-    pandoc-shortcaption \
-    pandoc-mermaid-filter && \
+    pandoc-shortcaption && \
     rm -rf /root/.cache/pip
+
+# Copy and setup custom Kroki filter
+COPY docker/scripts/pandoc-kroki-filter.py /usr/local/bin/pandoc-kroki-filter
+RUN chmod +x /usr/local/bin/pandoc-kroki-filter
 # Download PlantUML and setup wrapper
 COPY docker/scripts/plantuml /usr/bin/plantuml
 RUN mkdir -p /opt/plantuml && \
