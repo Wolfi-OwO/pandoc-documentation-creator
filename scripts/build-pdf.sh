@@ -6,7 +6,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-IMAGE_NAME="registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest"
+IMAGE_NAME="registry.gitlab.com/woofi4/public/pandoc-documentation-creator:1.0.0"
 
 # Colors
 RED='\033[0;31m'

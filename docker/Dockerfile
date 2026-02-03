@@ -31,42 +31,25 @@ RUN apk add --no-cache \
     unzip \
     patch \
     make \
+    curl \
     nodejs \
     npm \
     chromium \
-    chromium-chromedriver
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
 
-# Install npm packages and cleanup in one layer
+# Install mermaid-cli and configure Chromium for headless rendering
 RUN npm install -g @mermaid-js/mermaid-cli && \
     npm cache clean --force
 
-# Set puppeteer to use system chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-
-# Copy puppeteer config and mmdc wrapper
-COPY docker/.puppeteer.json /root/.puppeteer.json
-COPY docker/scripts/mmdc-wrapper.sh /usr/local/bin/mmdc-wrapper
-
-# Setup mmdc wrapper
-RUN chmod +x /usr/local/bin/mmdc-wrapper && \
-    mv /usr/local/bin/mmdc /usr/local/bin/mmdc-original && \
-    ln -sf /usr/local/bin/mmdc-wrapper /usr/local/bin/mmdc && \
-    find /usr/local/lib/node_modules -name mmdc -type f 2>/dev/null | while read mmdc_path; do \
-        if [ -x "$mmdc_path" ]; then \
-            mv "$mmdc_path" "${mmdc_path}-original" && \
-            ln -sf /usr/local/bin/mmdc-wrapper "$mmdc_path"; \
-        fi; \
-    done && \
-    find /usr/local/lib/node_modules -path "*/.bin/mmdc" 2>/dev/null | while read mmdc_link; do \
-        rm -f "$mmdc_link" && \
-        ln -sf /usr/local/bin/mmdc-wrapper "$mmdc_link"; \
-    done
-
-# Point pandoc-mermaid-filter to our mmdc wrapper
-ENV MERMAID_BIN=/usr/local/bin/mmdc-wrapper
-# Increase timeout for mermaid CLI (first run is slow)
-ENV MMDC_TIMEOUT=60
+# Configure Puppeteer to use system Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
+    CHROME_BIN=/usr/bin/chromium-browser \
+    PUPPETEER_ARGS="--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu --single-process --no-zygote"
 
 # Install pandoc filters and cleanup pip cache
 RUN pip3 install --break-system-packages --no-cache-dir \
@@ -74,9 +57,6 @@ RUN pip3 install --break-system-packages --no-cache-dir \
     pandoc-shortcaption \
     pandoc-mermaid-filter && \
     rm -rf /root/.cache/pip
-
-# Warm up mmdc on first Docker run (prevents timeout on first mermaid diagram)
-RUN /usr/local/bin/mmdc-original -i /dev/null -o /tmp/warmup.png -q 2>/dev/null || true
 # Download PlantUML and setup wrapper
 COPY docker/scripts/plantuml /usr/bin/plantuml
 RUN mkdir -p /opt/plantuml && \

@@ -16,7 +16,7 @@ pdf-engine: xelatex
 # Filters (executed in order)
 filters:
   - pandoc-plantuml
-  - pandoc-mermaid
+  - /usr/local/bin/pandoc-kroki-filter
 
 # Table of contents
 table-of-contents: true
