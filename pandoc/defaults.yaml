@@ -31,7 +31,7 @@ highlight-style: /usr/local/share/pandoc/templates/styles/code/vscode-light.them
 # Variables for template
 variables:
   # Use listings for code blocks
-  listings: true
+  listings: false
   
   # Document class
   documentclass: scrartcl

@@ -48,7 +48,7 @@ abstract: ""
 # Table of contents
 toc: true
 toc-depth: 3
-listings: true
+listings: false
 
 # Number sections
 number-sections: true

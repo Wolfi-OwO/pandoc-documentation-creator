@@ -6,6 +6,10 @@ Dies ist ein Test für das Schriftbild. Wir prüfen hier, ob die Koma-Script Kla
 
 # Code-Beispiele
 
+## Referenzen auf Code-Blöcke
+
+Du kannst auf Code-Blöcke über deren ID verlinken. Beispiel: Siehe [Code C# Beispiel](#code-csharp).
+
 ## C# Example
 
 ```{#code-csharp .cs caption="C# example"}

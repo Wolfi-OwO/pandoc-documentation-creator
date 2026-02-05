@@ -10,33 +10,26 @@ BUILD_DIR="${OUTPUT_DIR}/build"
 OUTPUT_NAME="documentation"
 TEMPLATE="${PROJECT_DIR}/pandoc/templates/custom-template.tex"
 HEADER="${PROJECT_DIR}/pandoc/templates/header.tex"
+HIGHLIGHT_THEME="${PROJECT_DIR}/pandoc/styles/code/vscode-light.theme"
 KROKI_FILTER="${PROJECT_DIR}/docker/scripts/pandoc-kroki-filter.py"
 CODE_CAPTION_FILTER="${PROJECT_DIR}/pandoc/filters/code-caption.lua"
 COMMON_ARGS="-interaction=nonstopmode -halt-on-error"
 
 mkdir -p "${BUILD_DIR}"
 
-# 1. Copy local styles to build directory so xelatex can find them
-cp -f "${PROJECT_DIR}/pandoc/templates/listings-languages.tex" "${BUILD_DIR}/listings-languages.tex"
-
-# 2. Run Pandoc (from build dir so kroki-images are created next to .tex)
+# 1. Run Pandoc (from build dir so kroki-images are created next to .tex)
 (cd "${BUILD_DIR}" && pandoc \
   --to=latex \
   --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
   --template="$TEMPLATE" \
   -H "$HEADER" \
-  --listings \
+  --highlight-style="$HIGHLIGHT_THEME" \
   --filter "$KROKI_FILTER" \
   --lua-filter "$CODE_CAPTION_FILTER" \
   --toc \
   --toc-depth=3 \
   --number-sections \
   --standalone \
-  --biblatex \
-  -V lang=de-DE \
-  -V documentclass=scrartcl \
-  -V papersize=a4 \
-  -V fontsize=11pt \
   "${INPUT_FILES[@]}")
 
 # 3. Compile TeX to PDF

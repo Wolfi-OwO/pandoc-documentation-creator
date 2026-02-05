@@ -6,7 +6,9 @@
 set -e
 
 # Configuration
-IMAGE_NAME="registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest"
+# Use a pinned tag when provided by init.sh
+IMAGE_TAG="${IMAGE_TAG:-latest}"
+IMAGE_NAME="registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${IMAGE_TAG}"
 # For local development, uncomment the line below:
 # IMAGE_NAME="pandoc-documentation-creator:latest"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

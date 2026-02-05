@@ -41,6 +41,7 @@ lot: false # List of tables
 numbersections: true
 secnumdepth: 3
 
+listings: false
 # Custom logo (optional, path relative to project root)
 # logo: "media/logo.png"
 

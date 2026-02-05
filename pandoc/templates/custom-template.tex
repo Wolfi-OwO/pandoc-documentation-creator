@@ -1,5 +1,4 @@
 % Modern Pandoc LaTeX Template
-% VSCode Light Theme with Professional Layout
 \documentclass[
   paper=a4,
   fontsize=11pt,
@@ -14,7 +13,11 @@
 % =========================================================================
 \usepackage[a4paper, left=2cm, right=2cm, top=2.5cm, bottom=2.5cm, includehead, includefoot]{geometry}
 \usepackage{iftex}
-\usepackage{microtype} % Better typography
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{fancyvrb} % Loaded early to prevent "undefined" errors
+\usepackage{fvextra}
+\usepackage{framed}
 \emergencystretch=4em
 \sloppy
 \hfuzz=20pt
@@ -75,23 +78,6 @@
 % =========================================================================
 % Language & Utilities
 % =========================================================================
-$if(lang)$
-\ifLuaTeX
-  \usepackage[bidi=basic,shorthands=off]{babel}
-\else
-  \usepackage[bidi=default,shorthands=off]{babel}
-\fi
-$else$
-\usepackage[english]{babel}
-$endif$
-
-\usepackage{csquotes}
-\usepackage{xcolor}
-\usepackage{amsmath,amssymb}
-\usepackage{mathtools}
-\usepackage{calc}
-
-% =========================================================================
 % Tables & Graphics
 % =========================================================================
 \usepackage{graphicx}
@@ -145,41 +131,29 @@ $endif$
 % =========================================================================
 % Modern Code Highlighting - Pandoc Native
 % =========================================================================
+
+% 1. Use Pandoc's internal macros
 $if(highlighting-macros)$
 $highlighting-macros$
 $endif$
 
-% ... (Typography and Header sections remain same) ...
+% Force line numbers in highlighted code blocks (Pandoc native highlighting)
+% Keep line numbers inside the shaded frame with a left margin
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},numbers=left,numbersep=6pt,xleftmargin=2.0em,xrightmargin=1.0em,breaklines=true,breakanywhere=true}
 
-% =========================================================================
-% Listings (line numbers + captions)
-% =========================================================================
-$if(listings)$
-\usepackage{listings}
-% Load the language/style definitions from the build folder
-\IfFileExists{listings-languages.tex}{
-  \input{listings-languages.tex}
-}{}
-
-\lstset{
-  numbers=left,
-  numbersep=8pt,
-  captionpos=b,
-  % Global fallback if no style is provided
-  basicstyle=\small\ttfamily
-}
-$endif$
-
-% Enhanced code block styling
-\usepackage{fancyvrb}
-\usepackage{framed}
-
-% Modern color scheme for code blocks
+% 2. Define colors for VSCode Light feel
+\definecolor{vscode-linenumber}{RGB}{136,136,136}
 \definecolor{codebg}{RGB}{248,248,250}
 \definecolor{codeframe}{RGB}{229,231,235}
-\definecolor{shadecolor}{RGB}{248,248,250}
 
-% Only define Shaded if not already defined by Pandoc
+% 3. Safety check: Only redefine if the command exists
+\makeatletter
+\@ifundefined{theFancyVerbLine}{}{
+  \renewcommand{\theFancyVerbLine}{\textcolor{vscode-linenumber}{\small\arabic{FancyVerbLine}}}
+}
+\makeatother
+
+% 4. Fallback for Shaded environment
 \makeatletter
 \@ifundefined{Shaded}{
   \newenvironment{Shaded}{%
@@ -189,14 +163,36 @@ $endif$
     \end{snugshade}%
   }
 }{}
+\makeatother
 
+% =========================================================================
+% Native Pandoc highlighting (no listings)
 % =========================================================================
 % Modern Blockquotes with Shadow Effect
 % =========================================================================
 \usepackage{mdframed}
 \usepackage{tikz}
 
-% Modern blockquote design
+% Override Shaded to use a light-gray frame
+\renewenvironment{Shaded}{%
+  \begin{mdframed}[
+    backgroundcolor=codebg,
+    linecolor=codeframe,
+    linewidth=0.5pt,
+    roundcorner=2pt,
+    skipabove=6pt,
+    skipbelow=6pt,
+    innerleftmargin=10pt,
+    innerrightmargin=10pt,
+    innertopmargin=8pt,
+    innerbottommargin=8pt
+  ]
+}{%
+  \end{mdframed}
+}
+
+\newcommand{\CodeCaption}[1]{\begin{center}\small\textit{#1}\end{center}}
+
 \newmdenv[
   linewidth=0pt,
   leftline=true,
@@ -215,11 +211,14 @@ $endif$
   shadowcolor=black!10
 ]{quotebox}
 
+\renewenvironment{quote}{\begin{quotebox}}{\end{quotebox}}
+
 % Redefine quote environment
 \renewenvironment{quote}{\begin{quotebox}}{\end{quotebox}}
 
 % Define passthrough command for inline code
 \providecommand{\passthrough}[1]{\texttt{#1}}
+\providecommand{\lstinline}[1]{\texttt{#1}}
 
 % Define tightlist command (used by Pandoc for compact lists)
 \providecommand{\tightlist}{%

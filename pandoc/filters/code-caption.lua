@@ -1,56 +1,59 @@
 -- code-caption.lua
-function CodeBlock(el)
-  local id = el.identifier or ""
-  local classes = el.classes or {}
+local code_counter = 0
 
-  -- Mapping table for VSCode styles defined in listings-languages.tex
-  local style_map = {
-    cs = "vscode-csharp",
-    csharp = "vscode-csharp",
-    c = "vscode-c",
-    cpp = "vscode-cpp",
-    ["c++"] = "vscode-cpp",
-    java = "vscode-java",
-    js = "vscode-javascript",
-    javascript = "vscode-javascript",
-    ts = "vscode-typescript",
-    typescript = "vscode-typescript",
-    py = "vscode-python",
-    python = "vscode-python",
-    go = "vscode-go",
-    rust = "vscode-rust",
-    php = "vscode-php",
-    ruby = "vscode-ruby",
-    sql = "vscode-sql",
-    bash = "vscode-bash",
-    sh = "vscode-bash",
-    shell = "vscode-bash",
-    yaml = "vscode-yaml",
-    yml = "vscode-yaml",
-    json = "vscode-json",
-    html = "vscode-html",
-    xml = "vscode-xml",
-    dockerfile = "vscode-docker"
-  }
-
-  -- IMPORTANT: Use 'style' attribute. 
-  -- Pandoc --listings maps this to [style=...] in LaTeX.
-  if not el.attributes["style"] then
-    for _, cls in ipairs(classes) do
-      local key = cls:lower()
-      if style_map[key] then
-        el.attributes["style"] = style_map[key]
-        break
-      end
+local function latex_escape(text)
+    local function escape_pattern(s)
+        return (s:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1"))
     end
-  end
+    local replacements = {
+        {"\\", "\\textbackslash{}"},
+        {"{", "\\{"},
+        {"}", "\\}"},
+        {"%", "\\%"},
+        {"&", "\\&"},
+        {"#", "\\#"},
+        {"_", "\\_"},
+        {"$", "\\$"},
+        {"~", "\\textasciitilde{}"},
+        {"^", "\\textasciicircum{}"},
+    }
+    for _, pair in ipairs(replacements) do
+        text = text:gsub(escape_pattern(pair[1]), pair[2])
+    end
+    return text
+end
 
-  -- Clean Caption Logic:
-  -- We rely on Pandoc's --listings to handle "Listing X:" automatically.
-  local user_caption = el.attributes["caption"] or ""
-  if user_caption ~= "" then
-    el.attributes["caption"] = user_caption
-  end
+function CodeBlock(el)
+    local id = el.identifier or ""
+    local user_caption = el.attributes["caption"] or el.attributes["name"] or ""
 
-  return el
+    el.attributes["numberLines"] = el.attributes["numberLines"] or "true"
+    el.attributes["startFrom"] = el.attributes["startFrom"] or "1"
+    local has_number = false
+    for _, cls in ipairs(el.classes or {}) do
+        if cls == "numberLines" then
+            has_number = true
+            break
+        end
+    end
+    if not has_number then
+        table.insert(el.classes, "numberLines")
+    end
+
+    if user_caption == "" and id:match("^code%-") then
+        user_caption = id:gsub("^code%-", ""):gsub("%-", " ")
+    end
+
+    code_counter = code_counter + 1
+    local text = "Code " .. tostring(code_counter)
+    if user_caption ~= "" then
+        text = text .. ": " .. user_caption
+    end
+
+    if FORMAT:match("latex") then
+        local escaped = latex_escape(text)
+        return { el, pandoc.RawBlock("latex", "\\CodeCaption{" .. escaped .. "}") }
+    end
+
+    return { el, pandoc.Para({ pandoc.Str(text) }) }
 end

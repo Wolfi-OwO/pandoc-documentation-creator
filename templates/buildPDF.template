@@ -41,7 +41,6 @@ fi
     --standalone \
     --verbose \
     --biblatex \
-    --listings \
     ${CODE_CAPTION_ARG} \
     ${PANDOC_EXTRA_ARGS} \
     "$@" \

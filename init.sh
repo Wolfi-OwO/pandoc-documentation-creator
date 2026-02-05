@@ -114,6 +114,9 @@ create_new_project() {
     print_info "Creating build script..."
     if download_or_copy_template "build-pdf.sh.template" "${target_dir}/build-pdf.sh"; then
         chmod +x "${target_dir}/build-pdf.sh"
+        if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
+            sed -i "s#IMAGE_TAG=\"\${IMAGE_TAG:-latest}\"#IMAGE_TAG=\"${VERSION}\"#" "${target_dir}/build-pdf.sh" || true
+        fi
         print_success "Created build-pdf.sh"
     else
         create_minimal_build_script "${target_dir}/build-pdf.sh"
@@ -358,8 +361,12 @@ check_docker_image() {
         print_info "Could not determine image version, using default: ${VERSION}"
     fi
     
-    # Set the full image name with version
-    IMAGE_NAME="${IMAGE_REGISTRY}:latest"
+    # Set the full image name with version if available
+    if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
+        IMAGE_NAME="${IMAGE_REGISTRY}:${VERSION}"
+    else
+        IMAGE_NAME="${IMAGE_REGISTRY}:latest"
+    fi
 }
 
 # Main script logic
