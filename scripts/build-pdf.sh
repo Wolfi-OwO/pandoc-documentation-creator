@@ -40,7 +40,6 @@ if docker run --rm \
     --entrypoint=/bin/sh \
     -e OUTPUT_NAME="${OUTPUT_NAME}" \
     -e INPUT_FILES="/data/examples/advanced/deckblatt.md /data/examples/advanced/documentation.md" \
-    -e PANDOC_EXTRA_ARGS="--template=/usr/local/share/pandoc/templates/custom-template.tex --highlight-style=/usr/local/share/pandoc/templates/styles/code/vscode-light.theme --metadata=title:Example\\ Documentation --metadata=author:Pandoc\\ Documentation\\ Creator --metadata=lang:de" \
     "${IMAGE_NAME}" \
     -c "/data/buildPDF"; then
     echo ""

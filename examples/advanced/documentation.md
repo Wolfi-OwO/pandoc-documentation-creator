@@ -18,7 +18,7 @@ Du kannst auf Code-Blöcke über deren ID verlinken. Beispiel: Siehe [Code C# Be
 
 ## C# Example
 
-```{#code-csharp .cs caption="C# example"}
+```csharp{#code-csharp .cs caption="C# example"}
 using System;
 
 public class Program {
@@ -28,11 +28,17 @@ public class Program {
         }
     }
 }
+
+public class MyClass {
+    public static void Main() {
+        Console.WriteLine("Hallo MyClass");
+    }
+}
 ```
 
 ## JavaScript Example
 
-```{#code-javascript .js caption="JavaScript example"}
+```javascript{#code-js .js caption="JavaScript example"}
 import express from 'express';
 
 const app = express();
@@ -49,7 +55,7 @@ app.listen(PORT, () => {
 
 ## Python Example
 
-```{#code-python .py caption="Python example"}
+```python{#code-python .py caption="Python example"}
 def calculate_fibonacci(n):
     if n <= 1:
         return n
@@ -62,7 +68,7 @@ for i in range(10):
 
 ## Java Example
 
-```{#code-java .java caption="Java example"}
+```java{#code-java .java caption="Java example"}
 public class HelloWorld {
     public static void main(String[] args) {
         String message = "Hello, World!";
@@ -78,7 +84,7 @@ public class HelloWorld {
 
 ## TypeScript Example
 
-```{#code-typescript .ts caption="TypeScript example"}
+```typescript{#code-typescript .ts caption="TypeScript example"}
 interface User {
     id: number;
     name: string;
@@ -98,7 +104,7 @@ async function fetchUser(userId: number): Promise<User> {
 
 ## Go Example
 
-```{#code-go .go caption="Go example"}
+```go{#code-go .go caption="Go example"}
 package main
 
 import (
@@ -121,7 +127,7 @@ func main() {
 
 ## Rust Example
 
-```{#code-rust .rust caption="Rust example"}
+```rust{#code-rust .rust caption="Rust example"}
 fn main() {
     let numbers = vec![1, 2, 3, 4, 5];
     
@@ -136,7 +142,7 @@ fn main() {
 
 ## PHP Example
 
-```{#code-php .php caption="PHP example"}
+```php{#code-php .php caption="PHP example"}
 <?php
 class DatabaseConnection {
     private $host = "localhost";
@@ -156,7 +162,7 @@ class DatabaseConnection {
 
 ## Ruby Example
 
-```{#code-ruby .ruby caption="Ruby example"}
+```ruby{#code-ruby .ruby caption="Ruby example"}
 class BankAccount
   attr_reader :balance
   
@@ -184,7 +190,7 @@ end
 
 ## SQL Example
 
-```{#code-sql .sql caption="SQL example"}
+```sql{#code-sql .sql caption="SQL example"}
 SELECT 
     u.id,
     u.name,
@@ -201,7 +207,7 @@ LIMIT 10;
 
 ## Bash/Shell Example
 
-```{#code-bash .bash caption="Bash example"}
+```bash{#code-bash .bash caption="Bash example"}
 #!/bin/bash
 
 LOG_FILE="/var/log/backup.log"
@@ -232,7 +238,7 @@ backup_database "production_db"
 
 ## Dockerfile Example
 
-```{#code-dockerfile .dockerfile caption="Dockerfile example"}
+```dockerfile{#code-dockerfile .dockerfile caption="Dockerfile example"}
 FROM node:18-alpine
 
 WORKDIR /app
@@ -252,7 +258,7 @@ CMD ["node", "server.js"]
 
 ## YAML Example
 
-```{#code-yaml .yaml caption="YAML example"}
+```yaml{#code-yaml .yaml caption="YAML example"}
 version: '3.8'
 
 services:
@@ -279,7 +285,7 @@ services:
 
 ## JSON Example
 
-```{#code-json .json caption="JSON example"}
+```json{#code-json .json caption="JSON example"}
 {
   "name": "pandoc-documentation-creator",
   "version": "1.0.0",
@@ -307,7 +313,7 @@ LaTeX-Support Test für komplexe Formeln (Standardabweichung): $$ \sigma = \sqrt
 
 ## PlantUML
 
-```{#code-plantuml .plantuml caption="PlantUML diagram"}
+```plantuml{#code-plantuml .plantuml caption="PlantUML diagram"}
 @startuml
 [Anwender] -> (Pandoc): Markdown Input
 (Pandoc) -> [PDF Engine]: LaTeX Code
@@ -317,7 +323,7 @@ LaTeX-Support Test für komplexe Formeln (Standardabweichung): $$ \sigma = \sqrt
 
 ## Mermaid
 
-```{#code-mermaid .mermaid caption="Mermaid diagram"}
+```mermaid{#code-mermaid .mermaid caption="Mermaid diagram"}
 graph LR
     A[Markdown] --> B(Pandoc Filter)
     B --> C{LaTeX Engine}

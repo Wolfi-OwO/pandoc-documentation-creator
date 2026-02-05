@@ -24,6 +24,9 @@ fi
 
 PANDOC_EXTRA_ARGS="${PANDOC_EXTRA_ARGS:-}"
 CODE_CAPTION_FILTER="/data/pandoc/filters/code-caption.lua"
+if [ ! -f "${CODE_CAPTION_FILTER}" ]; then
+    CODE_CAPTION_FILTER="/usr/local/share/pandoc/filters/code-caption.lua"
+fi
 CODE_CAPTION_ARG=""
 if [ -f "${CODE_CAPTION_FILTER}" ]; then
     CODE_CAPTION_ARG="--lua-filter=${CODE_CAPTION_FILTER}"
@@ -35,7 +38,6 @@ fi
     --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
     --standalone \
     --verbose \
-    --biblatex \
     ${CODE_CAPTION_ARG} \
     ${PANDOC_EXTRA_ARGS} \
     "$@" \
