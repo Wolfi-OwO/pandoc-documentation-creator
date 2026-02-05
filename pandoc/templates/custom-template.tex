@@ -18,6 +18,11 @@
 \usepackage{fancyvrb}
 \usepackage{fvextra}
 \usepackage{framed}
+\makeatletter
+\@ifundefined{Highlighting}{
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},fontsize=\small}
+}{}
+\makeatother
 \emergencystretch=4em
 \sloppy
 \hfuzz=20pt
@@ -62,8 +67,13 @@
 % =========================================================================
 \usepackage{listings}
 \usepackage{xcolor}
-\IfFileExists{listings-languages.tex}{
-  \input{listings-languages.tex}
+\definecolor{codebg}{HTML}{F7F7F7}
+\definecolor{codeframe}{HTML}{B3B2B3}
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+\IfFileExists{/data/pandoc/templates/listings-languages.tex}{
+  \input{/data/pandoc/templates/listings-languages.tex}
 }{
   \IfFileExists{/usr/local/share/pandoc/templates/listings-languages.tex}{
     \input{/usr/local/share/pandoc/templates/listings-languages.tex}
@@ -110,23 +120,27 @@
 \usepackage{mdframed}
 \usepackage{tikz}
 
-% Define Shaded to use a light-gray frame
-\newenvironment{Shaded}{%
-  \begin{mdframed}[
-    backgroundcolor=codebg,
-    linecolor=codeframe,
-    linewidth=0.5pt,
-    roundcorner=2pt,
-    skipabove=6pt,
-    skipbelow=6pt,
-    innerleftmargin=10pt,
-    innerrightmargin=10pt,
-    innertopmargin=8pt,
-    innerbottommargin=8pt
-  ]
-}{%
-  \end{mdframed}
-}
+% Define Shaded to use a light-gray frame (only if not provided by Pandoc)
+\makeatletter
+\@ifundefined{Shaded}{
+  \newenvironment{Shaded}{%
+    \begin{mdframed}[
+      backgroundcolor=codebg,
+      linecolor=codeframe,
+      linewidth=0.5pt,
+      roundcorner=2pt,
+      skipabove=6pt,
+      skipbelow=6pt,
+      innerleftmargin=10pt,
+      innerrightmargin=10pt,
+      innertopmargin=8pt,
+      innerbottommargin=8pt
+    ]
+  }{%
+    \end{mdframed}
+  }
+}{}
+\makeatother
 
 \newcommand{\CodeCaption}[1]{\begin{center}\small\textit{#1}\end{center}}  % FIXED: #1 not ##1
 
