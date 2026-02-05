@@ -15,7 +15,7 @@
 \usepackage{iftex}
 \usepackage{microtype}
 \usepackage{xcolor}
-\usepackage{fancyvrb} % Loaded early to prevent "undefined" errors
+\usepackage{fancyvrb}
 \usepackage{fvextra}
 \usepackage{framed}
 \emergencystretch=4em
@@ -32,30 +32,12 @@
   \DeclareUnicodeCharacter{2713}{\ding{51}}
 \else
   \usepackage{fontspec}
-  \def\IconFallbackFonts{}
-  \def\IconFallbackOption{}
-  \newcommand{\AddFallbackFont}[1]{%
-    \ifx\IconFallbackFonts\empty
-      \def\IconFallbackFonts{#1}%
-    \else
-      \edef\IconFallbackFonts{\IconFallbackFonts,#1}%
-    \fi
-  }
-  \IfFontExistsTF{Noto Sans Symbols2}{\AddFallbackFont{Noto Sans Symbols2}}{}
-  \IfFontExistsTF{Noto Sans Symbols}{\AddFallbackFont{Noto Sans Symbols}}{}
-  \IfFontExistsTF{Noto Emoji}{\AddFallbackFont{Noto Emoji}}{}
-  \IfFontExistsTF{DejaVu Sans}{\AddFallbackFont{DejaVu Sans}}{}
-  \ifx\IconFallbackFonts\empty
-    \def\IconFallbackOption{}
-  \else
-    \edef\IconFallbackOption{,FallbackFonts={\IconFallbackFonts}}
-  \fi
   \IfFontExistsTF{Source Sans Pro}{
-    \setmainfont{Source Sans Pro}[Scale=1.0\IconFallbackOption]
-    \setsansfont{Source Sans Pro}[Scale=1.0\IconFallbackOption]
+    \setmainfont{Source Sans Pro}[Scale=1.0]
+    \setsansfont{Source Sans Pro}[Scale=1.0]
   }{
-    \setmainfont{DejaVu Sans}[Scale=1.0\IconFallbackOption]
-    \setsansfont{DejaVu Sans}[Scale=1.0\IconFallbackOption]
+    \setmainfont{DejaVu Sans}[Scale=1.0]
+    \setsansfont{DejaVu Sans}[Scale=1.0]
   }
   \IfFontExistsTF{Fira Code}{
     \IfFontExistsTF{Fira Code Italic}{
@@ -76,30 +58,24 @@
 \fi
 
 % =========================================================================
+% Code Highlighting (listings)
+% =========================================================================
+\usepackage{listings}
+\usepackage{xcolor}
+\IfFileExists{listings-languages.tex}{
+  \input{listings-languages.tex}
+}{
+  \IfFileExists{/usr/local/share/pandoc/templates/listings-languages.tex}{
+    \input{/usr/local/share/pandoc/templates/listings-languages.tex}
+  }{}
+}
+
+% =========================================================================
 % Language & Utilities
 % =========================================================================
-% Tables & Graphics
-% =========================================================================
 \usepackage{graphicx}
-\makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-
-\makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{%
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
-\makeatother
-
+\setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
+\providecommand{\pandocbounded}[1]{#1}
 \usepackage{float}
 \floatplacement{figure}{H}
 
@@ -129,52 +105,13 @@
 }
 
 % =========================================================================
-% Modern Code Highlighting - Pandoc Native
-% =========================================================================
-
-% 1. Use Pandoc's internal macros
-$if(highlighting-macros)$
-$highlighting-macros$
-$endif$
-
-% Force line numbers in highlighted code blocks (Pandoc native highlighting)
-% Keep line numbers inside the shaded frame with a left margin
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},numbers=left,numbersep=6pt,xleftmargin=2.0em,xrightmargin=1.0em,breaklines=true,breakanywhere=true}
-
-% 2. Define colors for VSCode Light feel
-\definecolor{vscode-linenumber}{RGB}{136,136,136}
-\definecolor{codebg}{RGB}{248,248,250}
-\definecolor{codeframe}{RGB}{229,231,235}
-
-% 3. Safety check: Only redefine if the command exists
-\makeatletter
-\@ifundefined{theFancyVerbLine}{}{
-  \renewcommand{\theFancyVerbLine}{\textcolor{vscode-linenumber}{\small\arabic{FancyVerbLine}}}
-}
-\makeatother
-
-% 4. Fallback for Shaded environment
-\makeatletter
-\@ifundefined{Shaded}{
-  \newenvironment{Shaded}{%
-    \begin{snugshade}%
-    \footnotesize
-  }{%
-    \end{snugshade}%
-  }
-}{}
-\makeatother
-
-% =========================================================================
-% Native Pandoc highlighting (no listings)
-% =========================================================================
-% Modern Blockquotes with Shadow Effect
+% Modern Blockquotes with mdframed
 % =========================================================================
 \usepackage{mdframed}
 \usepackage{tikz}
 
-% Override Shaded to use a light-gray frame
-\renewenvironment{Shaded}{%
+% Define Shaded to use a light-gray frame
+\newenvironment{Shaded}{%
   \begin{mdframed}[
     backgroundcolor=codebg,
     linecolor=codeframe,
@@ -191,8 +128,9 @@ $endif$
   \end{mdframed}
 }
 
-\newcommand{\CodeCaption}[1]{\begin{center}\small\textit{#1}\end{center}}
+\newcommand{\CodeCaption}[1]{\begin{center}\small\textit{#1}\end{center}}  % FIXED: #1 not ##1
 
+% Fixed quotebox definition without shadow parameter
 \newmdenv[
   linewidth=0pt,
   leftline=true,
@@ -205,40 +143,39 @@ $endif$
   skipabove=\parskip,
   skipbelow=\parskip,
   backgroundcolor=blue!5,
-  fontcolor=black!80,
-  shadow=true,
-  shadowsize=3pt,
-  shadowcolor=black!10
+  fontcolor=black!80
 ]{quotebox}
-
-\renewenvironment{quote}{\begin{quotebox}}{\end{quotebox}}
 
 % Redefine quote environment
 \renewenvironment{quote}{\begin{quotebox}}{\end{quotebox}}
 
 % Define passthrough command for inline code
-\providecommand{\passthrough}[1]{\texttt{#1}}
-\providecommand{\lstinline}[1]{\texttt{#1}}
+\providecommand{\passthrough}[1]{\texttt{#1}}  % FIXED: #1 not ##1
+\providecommand{\lstinline}[1]{\texttt{#1}}    % FIXED: #1 not ##1
 
 % Define tightlist command (used by Pandoc for compact lists)
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
-% Define strikethrough command (used by Pandoc for ~~strikethrough~~)
+% Define strikethrough command
 \IfFileExists{ulem.sty}{
   \usepackage[normalem]{ulem}
-  \DeclareRobustCommand{\st}[1]{\sout{#1}}
+}{}
+\makeatletter
+\@ifpackageloaded{ulem}{
+  \DeclareRobustCommand{\st}[1]{\sout{#1}}  % FIXED: #1 not ##1
 }{
   \DeclareRobustCommand{\st}{\@firstofone}
 }
+\makeatother
 
 % =========================================================================
 % Additional Pandoc Commands
 % =========================================================================
 
 % Subscript and superscript
-\newcommand{\textsubscr}[1]{\ensuremath{_{\text{#1}}}}
-\newcommand{\textsuperscr}[1]{\ensuremath{^{\text{#1}}}}
+\newcommand{\textsubscr}[1]{\ensuremath{_{\text{#1}}}}  % FIXED: #1 not ##1
+\newcommand{\textsuperscr}[1]{\ensuremath{^{\text{#1}}}} % FIXED: #1 not ##1
 
 % Line blocks (preserve line breaks)
 $if(csl-refs)$
@@ -260,7 +197,7 @@ $endif$
 % =========================================================================
 % Modern Headers & Footers
 % =========================================================================
-\usepackage[automark,headsepline,footsepline]{scrlayer-scrpage}
+\usepackage[headsepline,footsepline]{scrlayer-scrpage}
 \clearpairofpagestyles
 
 % Modern color scheme

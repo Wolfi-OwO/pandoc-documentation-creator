@@ -1,4 +1,4 @@
-% Custom LaTeX header configuration
+% header.tex - Safe version
 
 % Microtype for better typography
 \usepackage{microtype}
@@ -16,12 +16,9 @@
 \usepackage{tikz}
 \usepackage{import}
 
-% Mermaid diagram support (via external tool)
-% Mermaid diagrams should be preprocessed to PNG/PDF before compilation
-
 % Custom commands
-\newcommand{\highlight}[1]{\textcolor{red}{#1}}
-\newcommand{\code}[1]{\texttt{\small #1}}
+\newcommand{\highlight}[1]{\textcolor{red}{#1}}  % FIXED: #1 not ###1
+\newcommand{\code}[1]{\texttt{\small #1}}       % FIXED: #1 not ###1
 
 % Better verbatim
 \usepackage{fancyvrb}

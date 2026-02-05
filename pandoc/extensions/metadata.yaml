@@ -50,6 +50,12 @@ toc: true
 toc-depth: 3
 listings: false
 
+# Use biblatex for bibliography (moved from top-level to variables)
+biblatex: true
+
+# In user's metadata.yaml
+bibliography: references.bib
+
 # Number sections
 number-sections: true
 
