@@ -39,5 +39,5 @@ docker-compose.override.yml
 
 # images from mermaid and plantuml
 
-plantuml-images/*
-mermaid-images/*
+kroki-images
+out/*

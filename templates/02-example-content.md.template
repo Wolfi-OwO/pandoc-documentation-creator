@@ -30,7 +30,7 @@ You can use **bold text**, *italic text*, ***bold and italic***, `inline code`, 
 
 ### Python
 
-```python
+```{#code-python .python caption="Python example"}
 def fibonacci(n):
     """Calculate the nth Fibonacci number."""
     if n <= 1:
@@ -44,7 +44,7 @@ for i in range(10):
 
 ### JavaScript
 
-```javascript
+```{#code-javascript .javascript caption="JavaScript example"}
 // Express.js server example
 const express = require('express');
 const app = express();
@@ -61,7 +61,7 @@ app.listen(port, () => {
 
 ### Bash
 
-```bash
+```{#code-bash .bash caption="Bash example"}
 #!/bin/bash
 # Build script example
 
@@ -89,7 +89,7 @@ fi
 
 ### Mermaid Flowchart
 
-```mermaid
+```{#code-mermaid .mermaid caption="Mermaid flowchart"}
 graph LR
     A[Start] --> B{Decision}
     B -->|Yes| C[Action 1]
@@ -100,7 +100,7 @@ graph LR
 
 ### PlantUML Sequence Diagram
 
-```plantuml
+```{#code-plantuml .plantuml caption="PlantUML sequence diagram"}
 @startuml
 actor User
 participant "Web App" as Web
@@ -120,7 +120,7 @@ Web --> User: Render page
 
 Place your images in the `media/` directory and reference them like this:
 
-```markdown
+```{#code-image .markdown caption="Image reference example"}
 ![Image caption](media/your-image.png)
 ```
 

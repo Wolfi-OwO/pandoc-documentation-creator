@@ -10,6 +10,11 @@ LOG_FILE="${BUILD_DIR}/pandoc.log"
 
 mkdir -p "${BUILD_DIR}"
 
+# Ensure listings styles are available in build directory
+if [ -f /data/pandoc/templates/listings-languages.tex ]; then
+    cp -f /data/pandoc/templates/listings-languages.tex "${BUILD_DIR}/listings-languages.tex"
+fi
+
 if [ -n "${INPUT_FILES}" ]; then
     # shellcheck disable=SC2086
     set -- ${INPUT_FILES}
@@ -23,24 +28,32 @@ if [ -f /data/metadata.yaml ]; then
 fi
 
 PANDOC_EXTRA_ARGS="${PANDOC_EXTRA_ARGS:-}"
+CODE_CAPTION_FILTER="/data/pandoc/filters/code-caption.lua"
+CODE_CAPTION_ARG=""
+if [ -f "${CODE_CAPTION_FILTER}" ]; then
+    CODE_CAPTION_ARG="--lua-filter=${CODE_CAPTION_FILTER}"
+fi
 
-pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
-  ${META_ARG} \
-  "$@" \
-  --to=latex \
-  --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
-  --standalone \
-  --verbose \
-  --biblatex \
-  --top-level-division=chapter \
-  ${PANDOC_EXTRA_ARGS} \
-  > "${LOG_FILE}" 2>&1
+(cd "${BUILD_DIR}" && pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
+    ${META_ARG} \
+    "$@" \
+    --to=latex \
+    --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
+    --standalone \
+    --verbose \
+    --biblatex \
+    --listings \
+    ${CODE_CAPTION_ARG} \
+    ${PANDOC_EXTRA_ARGS} \
+    > "${LOG_FILE}" 2>&1)
 
 cd "${BUILD_DIR}"
 
-pdflatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
-bibtex "${OUTPUT_NAME}"
-pdflatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
-pdflatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+if grep -q "\\bibdata" "${OUTPUT_NAME}.aux"; then
+    bibtex "${OUTPUT_NAME}"
+fi
+xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
 
 mv -f "${BUILD_DIR}/${OUTPUT_NAME}.pdf" "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"

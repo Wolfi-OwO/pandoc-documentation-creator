@@ -15,25 +15,57 @@
 \usepackage[a4paper, left=2cm, right=2cm, top=2.5cm, bottom=2.5cm, includehead, includefoot]{geometry}
 \usepackage{iftex}
 \usepackage{microtype} % Better typography
+\emergencystretch=4em
+\sloppy
+\hfuzz=20pt
+\hbadness=9999
 
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp}
   \usepackage{lmodern}
+  \usepackage{pifont}
+  \DeclareUnicodeCharacter{2713}{\ding{51}}
 \else
   \usepackage{fontspec}
+  \def\IconFallbackFonts{}
+  \def\IconFallbackOption{}
+  \newcommand{\AddFallbackFont}[1]{%
+    \ifx\IconFallbackFonts\empty
+      \def\IconFallbackFonts{#1}%
+    \else
+      \edef\IconFallbackFonts{\IconFallbackFonts,#1}%
+    \fi
+  }
+  \IfFontExistsTF{Noto Sans Symbols2}{\AddFallbackFont{Noto Sans Symbols2}}{}
+  \IfFontExistsTF{Noto Sans Symbols}{\AddFallbackFont{Noto Sans Symbols}}{}
+  \IfFontExistsTF{Noto Emoji}{\AddFallbackFont{Noto Emoji}}{}
+  \IfFontExistsTF{DejaVu Sans}{\AddFallbackFont{DejaVu Sans}}{}
+  \ifx\IconFallbackFonts\empty
+    \def\IconFallbackOption{}
+  \else
+    \edef\IconFallbackOption{,FallbackFonts={\IconFallbackFonts}}
+  \fi
   \IfFontExistsTF{Source Sans Pro}{
-    \setmainfont{Source Sans Pro}[Scale=1.0]
-    \setsansfont{Source Sans Pro}[Scale=1.0]
+    \setmainfont{Source Sans Pro}[Scale=1.0\IconFallbackOption]
+    \setsansfont{Source Sans Pro}[Scale=1.0\IconFallbackOption]
   }{
-    \setmainfont{DejaVu Sans}[Scale=1.0]
-    \setsansfont{DejaVu Sans}[Scale=1.0]
+    \setmainfont{DejaVu Sans}[Scale=1.0\IconFallbackOption]
+    \setsansfont{DejaVu Sans}[Scale=1.0\IconFallbackOption]
   }
   \IfFontExistsTF{Fira Code}{
-    \setmonofont{Fira Code}[Scale=0.85]
+    \IfFontExistsTF{Fira Code Italic}{
+      \setmonofont{Fira Code}[Scale=0.85,ItalicFont={Fira Code Italic}]
+    }{
+      \setmonofont{Fira Code}[Scale=0.85,ItalicFont={Fira Code},SlantedFont={Fira Code}]
+    }
   }{\IfFontExistsTF{JetBrains Mono}{
-    \setmonofont{JetBrains Mono}[Scale=0.85]
+    \IfFontExistsTF{JetBrains Mono Italic}{
+      \setmonofont{JetBrains Mono}[Scale=0.85,ItalicFont={JetBrains Mono Italic}]
+    }{
+      \setmonofont{JetBrains Mono}[Scale=0.85,ItalicFont={JetBrains Mono},SlantedFont={JetBrains Mono}]
+    }
   }{
     \setmonofont{DejaVu Sans Mono}[Scale=0.85]
   }}
@@ -49,6 +81,8 @@ $if(lang)$
 \else
   \usepackage[bidi=default,shorthands=off]{babel}
 \fi
+$else$
+\usepackage[english]{babel}
 $endif$
 
 \usepackage{csquotes}
@@ -115,6 +149,27 @@ $if(highlighting-macros)$
 $highlighting-macros$
 $endif$
 
+% ... (Typography and Header sections remain same) ...
+
+% =========================================================================
+% Listings (line numbers + captions)
+% =========================================================================
+$if(listings)$
+\usepackage{listings}
+% Load the language/style definitions from the build folder
+\IfFileExists{listings-languages.tex}{
+  \input{listings-languages.tex}
+}{}
+
+\lstset{
+  numbers=left,
+  numbersep=8pt,
+  captionpos=b,
+  % Global fallback if no style is provided
+  basicstyle=\small\ttfamily
+}
+$endif$
+
 % Enhanced code block styling
 \usepackage{fancyvrb}
 \usepackage{framed}
@@ -171,8 +226,12 @@ $endif$
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
 % Define strikethrough command (used by Pandoc for ~~strikethrough~~)
-\usepackage[normalem]{ulem}
-\DeclareRobustCommand{\st}[1]{\sout{#1}}
+\IfFileExists{ulem.sty}{
+  \usepackage[normalem]{ulem}
+  \DeclareRobustCommand{\st}[1]{\sout{#1}}
+}{
+  \DeclareRobustCommand{\st}[1]{##1}
+}
 
 % =========================================================================
 % Additional Pandoc Commands

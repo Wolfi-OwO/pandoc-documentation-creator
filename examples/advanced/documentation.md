@@ -8,7 +8,7 @@ Dies ist ein Test für das Schriftbild. Wir prüfen hier, ob die Koma-Script Kla
 
 ## C# Example
 
-```{.cs}
+```{#code-csharp .cs caption="C# example"}
 using System;
 
 public class Program {
@@ -22,7 +22,7 @@ public class Program {
 
 ## JavaScript Example
 
-```{.js}
+```{#code-javascript .js caption="JavaScript example"}
 import express from 'express';
 
 const app = express();
@@ -39,7 +39,7 @@ app.listen(PORT, () => {
 
 ## Python Example
 
-```{.py}
+```{#code-python .py caption="Python example"}
 def calculate_fibonacci(n):
     if n <= 1:
         return n
@@ -52,7 +52,7 @@ for i in range(10):
 
 ## Java Example
 
-```{.java}
+```{#code-java .java caption="Java example"}
 public class HelloWorld {
     public static void main(String[] args) {
         String message = "Hello, World!";
@@ -68,7 +68,7 @@ public class HelloWorld {
 
 ## TypeScript Example
 
-```{.ts}
+```{#code-typescript .ts caption="TypeScript example"}
 interface User {
     id: number;
     name: string;
@@ -88,7 +88,7 @@ async function fetchUser(userId: number): Promise<User> {
 
 ## Go Example
 
-```{.go}
+```{#code-go .go caption="Go example"}
 package main
 
 import (
@@ -111,7 +111,7 @@ func main() {
 
 ## Rust Example
 
-```{.rust}
+```{#code-rust .rust caption="Rust example"}
 fn main() {
     let numbers = vec![1, 2, 3, 4, 5];
     
@@ -126,7 +126,7 @@ fn main() {
 
 ## PHP Example
 
-```{.php}
+```{#code-php .php caption="PHP example"}
 <?php
 class DatabaseConnection {
     private $host = "localhost";
@@ -146,7 +146,7 @@ class DatabaseConnection {
 
 ## Ruby Example
 
-```{.ruby}
+```{#code-ruby .ruby caption="Ruby example"}
 class BankAccount
   attr_reader :balance
   
@@ -174,7 +174,7 @@ end
 
 ## SQL Example
 
-```sql
+```{#code-sql .sql caption="SQL example"}
 SELECT 
     u.id,
     u.name,
@@ -191,7 +191,7 @@ LIMIT 10;
 
 ## Bash/Shell Example
 
-```{.bash}
+```{#code-bash .bash caption="Bash example"}
 #!/bin/bash
 
 LOG_FILE="/var/log/backup.log"
@@ -222,7 +222,7 @@ backup_database "production_db"
 
 ## Dockerfile Example
 
-```dockerfile
+```{#code-dockerfile .dockerfile caption="Dockerfile example"}
 FROM node:18-alpine
 
 WORKDIR /app
@@ -242,7 +242,7 @@ CMD ["node", "server.js"]
 
 ## YAML Example
 
-```{.yaml}
+```{#code-yaml .yaml caption="YAML example"}
 version: '3.8'
 
 services:
@@ -269,7 +269,7 @@ services:
 
 ## JSON Example
 
-```{.json}
+```{#code-json .json caption="JSON example"}
 {
   "name": "pandoc-documentation-creator",
   "version": "1.0.0",
@@ -297,7 +297,7 @@ LaTeX-Support Test für komplexe Formeln (Standardabweichung): $$ \sigma = \sqrt
 
 ## PlantUML
 
-```plantuml
+```{#code-plantuml .plantuml caption="PlantUML diagram"}
 @startuml
 [Anwender] -> (Pandoc): Markdown Input
 (Pandoc) -> [PDF Engine]: LaTeX Code
@@ -307,7 +307,7 @@ LaTeX-Support Test für komplexe Formeln (Standardabweichung): $$ \sigma = \sqrt
 
 ## Mermaid
 
-```mermaid
+```{#code-mermaid .mermaid caption="Mermaid diagram"}
 graph LR
     A[Markdown] --> B(Pandoc Filter)
     B --> C{LaTeX Engine}

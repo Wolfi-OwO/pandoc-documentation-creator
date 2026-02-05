@@ -80,7 +80,7 @@ def process_code_block(block):
     ident, classes, keyvals = attrs
     
     # Check if this is a supported diagram type
-    diagram_types = {'mermaid', 'graphviz', 'dot', 'ditaa', 'erd', 'nomnoml', 'svgbob'}
+    diagram_types = {'mermaid', 'plantuml', 'graphviz', 'dot', 'ditaa', 'erd', 'nomnoml', 'svgbob'}
     diagram_type = None
     
     for cls in classes:

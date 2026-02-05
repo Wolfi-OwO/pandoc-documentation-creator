@@ -250,7 +250,7 @@ docker run --rm \
     -c "set -e
 COMMON_ARGS='-halt-on-error'
 mkdir -p /data/out/build
-pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \\\n+  --metadata-file=/data/metadata.yaml \\\n+  /data/chapters/*.md \\\n+  --to=latex \\\n+  --output /data/out/build/${OUTPUT_NAME}.tex \\\n+  --standalone \\\n+  --verbose \\\n+  --biblatex \\\n+  --top-level-division=chapter \\\n+  > /data/out/build/pandoc.log 2>&1
+pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \\\n+  --metadata-file=/data/metadata.yaml \\\n+  /data/chapters/*.md \\\n+  --to=latex \\\n+  --output /data/out/build/${OUTPUT_NAME}.tex \\\n+  --standalone \\\n+  --verbose \\\n+  --biblatex \\\n+  > /data/out/build/pandoc.log 2>&1
 cd /data/out/build
 pdflatex $COMMON_ARGS ${OUTPUT_NAME}.tex
 bibtex ${OUTPUT_NAME}
