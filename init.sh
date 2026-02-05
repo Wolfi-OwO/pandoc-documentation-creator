@@ -311,7 +311,7 @@ EOF
 pull_with_spinner() {
     local image="$1"
     local pid
-    local spin='|/-\\'
+    local spin="|/-\\"
     local i=0
 
     docker pull "$image" >/dev/null 2>&1 &
