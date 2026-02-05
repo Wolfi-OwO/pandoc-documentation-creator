@@ -311,7 +311,7 @@ EOF
 pull_with_spinner() {
     local image="$1"
     local pid
-    local spin='|/-\'
+    local spin='|/-\\'
     local i=0
 
     docker pull "$image" >/dev/null 2>&1 &
@@ -367,6 +367,7 @@ check_docker_image() {
     else
         IMAGE_NAME="${IMAGE_REGISTRY}:latest"
     fi
+    print_info "Selected image: ${IMAGE_NAME}"
 }
 
 # Main script logic

@@ -17,27 +17,28 @@ else
     set -- /data/chapters/*.md
 fi
 
-META_ARG=""
+CODE_CAPTION_FILTER="/data/pandoc/filters/code-caption.lua"
+PANDOC_EXTRA_ARGS="${PANDOC_EXTRA_ARGS:-}"
+
 if [ -f /data/metadata.yaml ]; then
-    META_ARG="--metadata-file=/data/metadata.yaml"
+    set -- --metadata-file=/data/metadata.yaml "$@"
 fi
 
-PANDOC_EXTRA_ARGS="${PANDOC_EXTRA_ARGS:-}"
-CODE_CAPTION_FILTER="/data/pandoc/filters/code-caption.lua"
-CODE_CAPTION_ARG=""
 if [ -f "${CODE_CAPTION_FILTER}" ]; then
-    CODE_CAPTION_ARG="--lua-filter=${CODE_CAPTION_FILTER}"
+    set -- --lua-filter="${CODE_CAPTION_FILTER}" "$@"
+fi
+
+if [ -n "${PANDOC_EXTRA_ARGS}" ]; then
+    # shellcheck disable=SC2086
+    set -- ${PANDOC_EXTRA_ARGS} "$@"
 fi
 
 (cd "${BUILD_DIR}" && pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
-    ${META_ARG} \
     --to=latex \
     --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
     --standalone \
     --verbose \
     --biblatex \
-    ${CODE_CAPTION_ARG} \
-    ${PANDOC_EXTRA_ARGS} \
     "$@" \
     > "${LOG_FILE}" 2>&1)
 
