@@ -26,13 +26,25 @@ workflow:
 # ------------------------
 validate_scripts:
   stage: validate
-  image: koalaman/shellcheck:stable
+  image: python:3.12-alpine
   rules:
     - if: $CI_COMMIT_TAG =~ $TAG_REGEX
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - shellcheck init.sh buildPDF scripts/*.sh docker/scripts/*.sh
+    - apk add --no-cache shellcheck
+    - |
+      set -e
+      shellcheck -f json init.sh buildPDF scripts/*.sh docker/scripts/*.sh > shellcheck-report.json || SC_EXIT=$?
+      python3 scripts/shellcheck-to-codeclimate.py shellcheck-report.json gl-code-quality-report.json
+      exit ${SC_EXIT:-0}
+  artifacts:
+    when: always
+    reports:
+      codequality: gl-code-quality-report.json
+    paths:
+      - shellcheck-report.json
+      - gl-code-quality-report.json
 
 # ------------------------
 # BUILD
