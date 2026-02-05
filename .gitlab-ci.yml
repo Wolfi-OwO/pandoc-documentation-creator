@@ -116,9 +116,9 @@ build_docker:
 # ------------------------
 container_scan:
   stage: scan
-  image:
-    name: docker.io/aquasec/trivy:latest
-    entrypoint: [""]
+  image: docker:24
+  services:
+    - docker:24-dind
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -126,36 +126,70 @@ container_scan:
   dependencies:
     - build_docker
   variables:
+    DOCKER_TLS_CERTDIR: "/certs"
     TRIVY_USERNAME: "$CI_REGISTRY_USER"
     TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
     TRIVY_AUTH_URL: "$CI_REGISTRY"
     TRIVY_NO_PROGRESS: "true"
     TRIVY_CACHE_DIR: ".trivycache/"
   script:
-    - trivy --version
-    - time trivy image --download-db-only
     - |
       IGNORE_FILE_ARG=""
       if [ -f "$CI_PROJECT_DIR/.trivyignore" ]; then
         IGNORE_FILE_ARG="--ignorefile $CI_PROJECT_DIR/.trivyignore"
       fi
-      touch "$CI_PROJECT_DIR/gl-container-scanning-report.json"
       if [ -n "$CI_COMMIT_TAG" ]; then
         IMAGE_TAG="${CI_COMMIT_TAG#v}"
         FULL_IMAGE_NAME="$CI_REGISTRY_IMAGE:${IMAGE_TAG}"
-        time trivy image --scanners vuln --vuln-type os,library --format template --template "@/contrib/gitlab.tpl" \
-          --output "$CI_PROJECT_DIR/gl-container-scanning-report.json" --exit-code 0 \
+        docker run --rm \
+          -e TRIVY_USERNAME \
+          -e TRIVY_PASSWORD \
+          -e TRIVY_AUTH_URL \
+          -e TRIVY_NO_PROGRESS \
+          -v "$CI_PROJECT_DIR:/work" \
+          -v "$CI_PROJECT_DIR/$TRIVY_CACHE_DIR:/root/.cache/" \
+          -w /work \
+          aquasec/trivy:latest image --scanners vuln --vuln-type os,library \
+          --format template --template "@/contrib/gitlab.tpl" \
+          --output /work/gl-container-scanning-report.json --exit-code 0 \
           --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --no-progress --list-all-pkgs=false \
           $IGNORE_FILE_ARG "$FULL_IMAGE_NAME"
-        time trivy image --scanners vuln --vuln-type os,library --exit-code 0 "$FULL_IMAGE_NAME"
-        time trivy image --scanners vuln --vuln-type os,library --exit-code 1 --severity CRITICAL "$FULL_IMAGE_NAME"
+        docker run --rm \
+          -e TRIVY_USERNAME \
+          -e TRIVY_PASSWORD \
+          -e TRIVY_AUTH_URL \
+          -e TRIVY_NO_PROGRESS \
+          -v "$CI_PROJECT_DIR:/work" \
+          -v "$CI_PROJECT_DIR/$TRIVY_CACHE_DIR:/root/.cache/" \
+          -w /work \
+          aquasec/trivy:latest image --scanners vuln --vuln-type os,library \
+          --format table --exit-code 1 --severity HIGH,CRITICAL --no-progress --list-all-pkgs=false \
+          $IGNORE_FILE_ARG "$FULL_IMAGE_NAME"
       else
-        time trivy image --scanners vuln --vuln-type os,library --format template --template "@/contrib/gitlab.tpl" \
-          --output "$CI_PROJECT_DIR/gl-container-scanning-report.json" --exit-code 0 \
+        docker run --rm \
+          -e TRIVY_USERNAME \
+          -e TRIVY_PASSWORD \
+          -e TRIVY_AUTH_URL \
+          -e TRIVY_NO_PROGRESS \
+          -v "$CI_PROJECT_DIR:/work" \
+          -v "$CI_PROJECT_DIR/$TRIVY_CACHE_DIR:/root/.cache/" \
+          -w /work \
+          aquasec/trivy:latest image --scanners vuln --vuln-type os,library \
+          --format template --template "@/contrib/gitlab.tpl" \
+          --output /work/gl-container-scanning-report.json --exit-code 0 \
           --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --no-progress --list-all-pkgs=false \
-          $IGNORE_FILE_ARG --input pandoc-image.tar
-        time trivy image --scanners vuln --vuln-type os,library --exit-code 0 --input pandoc-image.tar
-        time trivy image --scanners vuln --vuln-type os,library --exit-code 1 --severity CRITICAL --input pandoc-image.tar
+          $IGNORE_FILE_ARG --input /work/pandoc-image.tar
+        docker run --rm \
+          -e TRIVY_USERNAME \
+          -e TRIVY_PASSWORD \
+          -e TRIVY_AUTH_URL \
+          -e TRIVY_NO_PROGRESS \
+          -v "$CI_PROJECT_DIR:/work" \
+          -v "$CI_PROJECT_DIR/$TRIVY_CACHE_DIR:/root/.cache/" \
+          -w /work \
+          aquasec/trivy:latest image --scanners vuln --vuln-type os,library \
+          --format table --exit-code 1 --severity HIGH,CRITICAL --no-progress --list-all-pkgs=false \
+          $IGNORE_FILE_ARG --input /work/pandoc-image.tar
       fi
   cache:
     paths:
