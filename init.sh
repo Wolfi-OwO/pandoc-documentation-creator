@@ -186,6 +186,7 @@ numbersections: true
 linestretch: 1.15
 linkcolor: blue
 urlcolor: blue
+listings: true
 EOF
     print_success "Created minimal metadata.yaml"
 }
