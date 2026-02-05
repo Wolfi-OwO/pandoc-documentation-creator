@@ -165,7 +165,11 @@ $endif$
 
 % Define passthrough command for inline code
 \providecommand{\passthrough}[1]{\texttt{#1}}  % FIXED: #1 not ##1
-\providecommand{\lstinline}[1]{\texttt{#1}}    % FIXED: #1 not ##1
+\makeatletter
+\@ifundefined{lstinline}{
+  \newcommand{\lstinline}[1]{\texttt{#1}}
+}{}
+\makeatother
 
 % Define tightlist command (used by Pandoc for compact lists)
 \providecommand{\tightlist}{%
