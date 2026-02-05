@@ -36,8 +36,10 @@ mkdir -p "${BUILD_DIR}"
 cd "${BUILD_DIR}"
 xelatex "${COMMON_ARGS[@]}" "${OUTPUT_NAME}.tex"
 
-# Bibtex check
-if grep -q "citation" "${OUTPUT_NAME}.aux" || grep -q "bibdata" "${OUTPUT_NAME}.aux"; then
+# Bibliography
+if [ -f "${OUTPUT_NAME}.bcf" ] && command -v biber >/dev/null 2>&1; then
+  biber "${OUTPUT_NAME}" || true
+elif grep -q "citation" "${OUTPUT_NAME}.aux" || grep -q "bibdata" "${OUTPUT_NAME}.aux"; then
   bibtex "${OUTPUT_NAME}" || true
 fi
 

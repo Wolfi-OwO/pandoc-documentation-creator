@@ -44,7 +44,9 @@ fi
 cd "${BUILD_DIR}"
 
 xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
-if grep -q "\\bibdata" "${OUTPUT_NAME}.aux"; then
+if [ -f "${OUTPUT_NAME}.bcf" ] && command -v biber >/dev/null 2>&1; then
+    biber "${OUTPUT_NAME}"
+elif grep -q "\\bibdata" "${OUTPUT_NAME}.aux"; then
     bibtex "${OUTPUT_NAME}"
 fi
 xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
