@@ -317,3 +317,5 @@ graph LR
     B --> C{LaTeX Engine}
     C --> D[Visual Studio Light Style]
 ```
+
+Thanks for your trust in testing this advanced documentation example!
