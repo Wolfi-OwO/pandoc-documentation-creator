@@ -229,7 +229,7 @@ $endif$
   \usepackage[normalem]{ulem}
   \DeclareRobustCommand{\st}[1]{\sout{#1}}
 }{
-  \DeclareRobustCommand{\st}[1]{#1}
+  \DeclareRobustCommand{\st}{\@firstofone}
 }
 
 % =========================================================================

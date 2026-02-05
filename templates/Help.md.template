@@ -135,11 +135,11 @@ graph TD
 
 ### Custom Build Options
 
-Edit the build script to customize:
+Edit the build script to customize (preferred):
 
 ```bash
 docker run --rm -v "$(pwd):/data" --entrypoint=/bin/sh \
-  registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
+  registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${IMAGE_TAG} \
   -c "/data/buildPDF"
 ```
 
@@ -165,15 +165,17 @@ filters:
 
 ### Pull the Image
 
+Use the tag configured in `build-pdf.sh` (the `IMAGE_TAG` value), or export `IMAGE_TAG` before running the commands below.
+
 ```bash
-docker pull registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest
+docker pull registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${IMAGE_TAG}
 ```
 
 ### Run Manually
 
 ```bash
 docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
-  registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
+  registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${IMAGE_TAG} \
   -c "/data/buildPDF"
 ```
 
