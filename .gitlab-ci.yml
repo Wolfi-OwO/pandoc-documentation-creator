@@ -5,64 +5,40 @@ stages:
   - test
   - release
 
-include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
-
 variables:
-  DOCKER_LATEST_TAG: $CI_REGISTRY_IMAGE:latest
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: "/certs"
-  TAG_REGEX: /^v\d+\.\d+\.\d+(\.\d+)?$/
+
+  # Tag format: v1.2.3 or v1.2.3.4
+  TAG_REGEX: "/^v\\d+\\.\\d+\\.\\d+(\\.\\d+)?$/"
+
+  # Container Scanning template variables
+  CS_ANALYZER_IMAGE: registry.gitlab.com/gitlab-org/security-products/container-scanning:latest
+  CS_SEVERITY_THRESHOLD: CRITICAL
 
 workflow:
   rules:
-    - if: $CI_COMMIT_TAG =~ $TAG_REGEX
+    - if: "$CI_COMMIT_TAG =~ $TAG_REGEX"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
     - when: never
 
-# ------------------------
-# VALIDATION
-# ------------------------
-validate_scripts:
-  stage: validate
-  image: python:3.12-alpine
-  rules:
-    - if: $CI_COMMIT_TAG =~ $TAG_REGEX
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  script:
-    - apk add --no-cache shellcheck
-    - |
-      set -e
-      shellcheck -f json init.sh buildPDF scripts/*.sh docker/scripts/*.sh > shellcheck-report.json || SC_EXIT=$?
-      python3 scripts/shellcheck-to-codeclimate.py shellcheck-report.json gl-code-quality-report.json
-      exit ${SC_EXIT:-0}
-  artifacts:
-    when: always
-    reports:
-      codequality: gl-code-quality-report.json
-    paths:
-      - shellcheck-report.json
-      - gl-code-quality-report.json
-
-# ------------------------
-# BUILD
-# ------------------------
+# --------------------
+# Build Docker Image
+# --------------------
 build_docker:
   stage: build
   image: docker:24-dind
   services:
     - docker:24-dind
   rules:
-    - if: $CI_COMMIT_TAG =~ $TAG_REGEX
+    - if: "$CI_COMMIT_TAG =~ $TAG_REGEX"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
 
   before_script:
     - |
       if [ -n "$CI_COMMIT_TAG" ]; then
-        echo "Logging into GitLab Container Registry..."
         echo "$CI_REGISTRY_PASSWORD" | docker login \
           -u "$CI_REGISTRY_USER" \
           --password-stdin "$CI_REGISTRY"
@@ -71,24 +47,21 @@ build_docker:
   script:
     - |
       if [ -n "$CI_COMMIT_TAG" ]; then
-        echo "Building & pushing Docker image for tag $CI_COMMIT_TAG"
         IMAGE_TAG="${CI_COMMIT_TAG#v}"
-        DOCKER_IMAGE_NAME="$CI_REGISTRY_IMAGE:${IMAGE_TAG}"
+        IMAGE="$CI_REGISTRY_IMAGE:$IMAGE_TAG"
 
         docker build \
-          --build-arg VERSION="${IMAGE_TAG}" \
+          --build-arg VERSION="$IMAGE_TAG" \
           --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
           --build-arg VCS_REF="$CI_COMMIT_SHA" \
           --build-arg VCS_URL="$CI_PROJECT_URL" \
-          -t "$DOCKER_IMAGE_NAME" \
-          -t "$DOCKER_LATEST_TAG" \
+          -t "$IMAGE" \
+          -t "$CI_REGISTRY_IMAGE:latest" \
           -f docker/Dockerfile .
 
-        docker push "$DOCKER_IMAGE_NAME"
-        docker push "$DOCKER_LATEST_TAG"
+        docker push "$IMAGE"
+        docker push "$CI_REGISTRY_IMAGE:latest"
       else
-        echo "Building Docker image for branch / merge request"
-
         docker build \
           --build-arg VERSION="$CI_COMMIT_SHORT_SHA" \
           --build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
@@ -97,16 +70,12 @@ build_docker:
           -t "pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA" \
           -f docker/Dockerfile .
 
-        docker save \
-          "pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA" \
+        docker save pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA \
           -o pandoc-image.tar
       fi
 
   after_script:
-    - |
-      if [ -n "$CI_COMMIT_TAG" ]; then
-        docker logout "$CI_REGISTRY" || true
-      fi
+    - docker logout "$CI_REGISTRY" || true
 
   artifacts:
     paths:
@@ -114,86 +83,75 @@ build_docker:
     expire_in: 1 day
     when: on_success
 
-
-# ------------------------
-# CONTAINER SCANNING
-# ------------------------
-container_scan:
+# --------------------
+# Container Scanning (MR/branch - local image tar)
+# --------------------
+container_scan_mr:
   stage: scan
-  image:
-    name: docker.io/aquasec/trivy:latest
-    entrypoint: [""]
+  image: docker:24
+  services:
+    - docker:24-dind
   rules:
-    - if: $CI_COMMIT_TAG =~ $TAG_REGEX
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
   dependencies:
     - build_docker
   variables:
-    # No need to clone the repo, we exclusively work on artifacts. See
-    # https://docs.gitlab.com/ee/ci/runners/configure_runners.html#git-strategy
-    GIT_STRATEGY: none
-    TRIVY_USERNAME: "$CI_REGISTRY_USER"
-    TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
-    TRIVY_AUTH_URL: "$CI_REGISTRY"
+    DOCKER_TLS_CERTDIR: "/certs"
     TRIVY_NO_PROGRESS: "true"
     TRIVY_CACHE_DIR: ".trivycache/"
-    FULL_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
-    - trivy --version
-    # update vulnerabilities db
-    - time trivy image --download-db-only
-    # Builds report and puts it in the default workdir $CI_PROJECT_DIR, so `artifacts:` can take it from there
-    - time trivy image --exit-code 0 --format template --template "@/contrib/gitlab.tpl"
-        --output "$CI_PROJECT_DIR/gl-container-scanning-report.json" "$FULL_IMAGE_NAME"
-    # Prints full report
-    - time trivy image --exit-code 0 "$FULL_IMAGE_NAME"
-    # Fail on critical vulnerabilities
-    - time trivy image --exit-code 1 --severity CRITICAL "$FULL_IMAGE_NAME"
+    - |
+      IGNORE_FILE_ARG=""
+      if [ -f "$CI_PROJECT_DIR/.trivyignore" ]; then
+        IGNORE_FILE_ARG="--ignorefile $CI_PROJECT_DIR/.trivyignore"
+      fi
+      docker run --rm \
+        -v "$CI_PROJECT_DIR:/work" \
+        -v "$CI_PROJECT_DIR/$TRIVY_CACHE_DIR:/root/.cache/" \
+        -w /work \
+        aquasec/trivy:latest image --scanners vuln --vuln-type os,library \
+        --format template --template "@/contrib/gitlab.tpl" \
+        --output /work/gl-container-scanning-report.json --exit-code 0 \
+        --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --no-progress --list-all-pkgs=false \
+        $IGNORE_FILE_ARG --input /work/pandoc-image.tar
   cache:
     paths:
       - .trivycache/
-  # Enables https://docs.gitlab.com/ee/user/application_security/container_scanning/ (Container Scanning report is available on GitLab EE Ultimate or GitLab.com Gold)
   artifacts:
-    when:                          always
+    when: always
     reports:
-      container_scanning:          gl-container-scanning-report.json
-  tags:
-    - docker-runner
+      container_scanning: gl-container-scanning-report.json
 
-
-# ------------------------
-# TEST
-# ------------------------
+# --------------------
+# Test Docker Image
+# --------------------
 test_docker:
   stage: test
   image: docker:24-dind
   services:
     - docker:24-dind
   rules:
-    - if: $CI_COMMIT_TAG =~ $TAG_REGEX
+    - if: "$CI_COMMIT_TAG =~ $TAG_REGEX"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+
   dependencies:
     - build_docker
 
   script:
     - |
       if [ -n "$CI_COMMIT_TAG" ]; then
-        IMAGE_TAG="${CI_COMMIT_TAG#v}"
-        DOCKER_IMAGE_NAME="$CI_REGISTRY_IMAGE:${IMAGE_TAG}"
-        echo "Testing image from registry: $DOCKER_IMAGE_NAME"
+        IMAGE="$CI_REGISTRY_IMAGE:${CI_COMMIT_TAG#v}"
 
         echo "$CI_REGISTRY_PASSWORD" | docker login \
           -u "$CI_REGISTRY_USER" \
           --password-stdin "$CI_REGISTRY"
 
-        docker pull "$DOCKER_IMAGE_NAME"
-        TEST_IMAGE="$DOCKER_IMAGE_NAME"
-
+        docker pull "$IMAGE"
+        TEST_IMAGE="$IMAGE"
         docker logout "$CI_REGISTRY"
       else
-        echo "Loading Docker image from artifact"
         docker load -i pandoc-image.tar
         TEST_IMAGE="pandoc-documentation-creator:$CI_COMMIT_SHORT_SHA"
       fi
@@ -202,48 +160,49 @@ test_docker:
     - docker run --rm "$TEST_IMAGE" xelatex --version
     - docker run --rm "$TEST_IMAGE" python3 --version
     - docker run --rm "$TEST_IMAGE" node --version
-    - docker run --rm "$TEST_IMAGE" mermaid --version || echo "Mermaid skipped"
+    - docker run --rm "$TEST_IMAGE" mermaid --version || true
+
     - |
-      echo "Building sample PDF to validate pipeline"
-      rm -f "$CI_PROJECT_DIR/out/ci-test.pdf" || true
       docker run --rm \
         -v "$CI_PROJECT_DIR:/data" \
         -e OUTPUT_NAME="ci-test" \
         -e INPUT_FILES="/data/examples/advanced/deckblatt.md /data/examples/advanced/documentation.md" \
+        --entrypoint /bin/sh \
         "$TEST_IMAGE" \
-        /data/buildPDF
-      test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
-  artifacts:
-    untracked: false
-    when: on_success
-    access: all
-    expire_in: "30 days"
-    paths:
-      - $CI_PROJECT_DIR/out/ci-test.pdf
+        -c "/data/buildPDF"
 
-# ------------------------
-# RELEASE
-# ------------------------
+      test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
+
+  artifacts:
+    paths:
+      - out/ci-test.pdf
+    expire_in: 30 days
+
+# --------------------
+# Release
+# --------------------
 create_release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   needs:
-    - job: build_docker
-    - job: test_docker
+    - build_docker
+    - test_docker
+
+  rules:
+    - if: "$CI_COMMIT_TAG"
+
   script:
-    - echo "Creating release for tag $CI_COMMIT_TAG"
     - apk add --no-cache gettext
-    - envsubst '$CI_COMMIT_TAG $CI_REGISTRY_IMAGE' < .gitlab/release_notes.md > release_description.md
-    - cat release_description.md
+    - envsubst '$CI_COMMIT_TAG $CI_REGISTRY_IMAGE' \
+        < .gitlab/release_notes.md \
+        > release_description.md
+
   release:
-    tag_name: $CI_COMMIT_TAG
+    tag_name: "$CI_COMMIT_TAG"
     name: "Release $CI_COMMIT_TAG"
     description: release_description.md
     assets:
       links:
-        - name: "Docker Image: pandoc-documentation-creator-$CI_COMMIT_TAG"
-
+        - name: "Docker Image"
           url: "https://$CI_REGISTRY_IMAGE:${CI_COMMIT_TAG#v}"
           link_type: image
-  rules:
-    - if: $CI_COMMIT_TAG

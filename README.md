@@ -158,29 +158,38 @@ pdf-engine: xelatex
 ### Basic Build
 
 ```bash
-docker run --rm -v $(pwd):/data pandoc-documentation-creator \
-  --defaults=/data/.pandoc/defaults.yaml \
-  /data/chapters/*.md \
-  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md --to=latex --output /data/out/build/documentation.tex --standalone --verbose --biblatex --top-level-division=chapter > /data/out/build/pandoc.log 2>&1 && cd /data/out/build && pdflatex -halt-on-error documentation.tex && bibtex documentation && pdflatex -halt-on-error documentation.tex && pdflatex -halt-on-error documentation.tex && mv -f /data/out/build/documentation.pdf /data/out/documentation.pdf"
+docker run --rm \
+  -v $(pwd):/data \
+  --entrypoint=/bin/sh \
+  -e OUTPUT_NAME="documentation" \
+  pandoc-documentation-creator \
+  -c "/data/buildPDF"
 ```
 
 ### Custom Template
 
 ```bash
-docker run --rm -v $(pwd):/data pandoc-documentation-creator \
-  --template=custom-template.tex \
-  chapters/*.md \
-  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --template=custom-template.tex chapters/*.md --to=latex --output out/build/doc.tex --standalone --verbose --biblatex --top-level-division=chapter > out/build/pandoc.log 2>&1 && cd out/build && pdflatex -halt-on-error doc.tex && bibtex doc && pdflatex -halt-on-error doc.tex && pdflatex -halt-on-error doc.tex && mv -f out/build/doc.pdf out/doc.pdf"
+docker run --rm \
+  -v $(pwd):/data \
+  --entrypoint=/bin/sh \
+  -e OUTPUT_NAME="doc" \
+  -e INPUT_FILES="/data/chapters/*.md" \
+  -e PANDOC_EXTRA_ARGS="--template=/usr/local/share/pandoc/templates/custom-template.tex" \
+  pandoc-documentation-creator \
+  -c "/data/buildPDF"
 ```
 
 ### With Table of Contents
 
 ```bash
-docker run --rm -v $(pwd):/data pandoc-documentation-creator \
-  --toc \
-  --toc-depth=3 \
-  chapters/*.md \
-  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --toc --toc-depth=3 chapters/*.md --to=latex --output out/build/doc.tex --standalone --verbose --biblatex --top-level-division=chapter > out/build/pandoc.log 2>&1 && cd out/build && pdflatex -halt-on-error doc.tex && bibtex doc && pdflatex -halt-on-error doc.tex && pdflatex -halt-on-error doc.tex && mv -f out/build/doc.pdf out/doc.pdf"
+docker run --rm \
+  -v $(pwd):/data \
+  --entrypoint=/bin/sh \
+  -e OUTPUT_NAME="doc" \
+  -e INPUT_FILES="/data/chapters/*.md" \
+  -e PANDOC_EXTRA_ARGS="--toc --toc-depth=3" \
+  pandoc-documentation-creator \
+  -c "/data/buildPDF"
 ```
 
 ## Features in Detail

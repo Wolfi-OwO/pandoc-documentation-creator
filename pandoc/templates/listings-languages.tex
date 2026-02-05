@@ -12,12 +12,14 @@
 % Color Definitions (VSCode Light Theme)
 % =========================================================================
 \definecolor{vscode-text}{HTML}{000000}
-\definecolor{vscode-keyword}{HTML}{0000FF}
+\definecolor{vscode-keyword}{HTML}{1F4E79}
 \definecolor{vscode-control}{HTML}{AF00DB}
 \definecolor{vscode-string}{HTML}{A31515}
 \definecolor{vscode-comment}{HTML}{008000}
 \definecolor{vscode-number}{HTML}{098658}
 \definecolor{vscode-type}{HTML}{267F99}
+\definecolor{vscode-variable}{HTML}{001080}
+\definecolor{vscode-function}{HTML}{795E26}
 \definecolor{vscode-linenumber}{HTML}{888888}
 \definecolor{vscode-frame}{HTML}{B3B2B3}
 \definecolor{vscode-background}{HTML}{FFFFFF}
@@ -40,7 +42,12 @@
     framesep=0.2em,
     rulecolor=\color{vscode-frame},
     tabsize=2,
-    captionpos=b
+    captionpos=b,
+    keywordstyle=\color{vscode-keyword}\bfseries,
+    ndkeywordstyle=\color{vscode-type}\bfseries,
+    commentstyle=\color{vscode-comment}\itshape,
+    stringstyle=\color{vscode-string},
+    identifierstyle=\color{vscode-variable}
 }
 
 % =========================================================================
@@ -55,7 +62,7 @@
 }
 
 % =========================================================================
-% RUST (Complete Definition)
+% RUST (Complete Definition) - FIXED COMMENTS
 % =========================================================================
 \lstdefinelanguage{Rust}{
     keywords={
@@ -73,8 +80,8 @@
         HashMap, HashSet, BTreeMap, BTreeSet
     },
     sensitive=true,
-    morecomment=[l]{//},
-    morecomment=[s]{/*}{*/},
+    morecomment=[l]{//},                    % Fixed: Single-line comments
+    morecomment=[s]{/*}{*/},                % Fixed: Multi-line comments
     morestring=[b]",
     morestring=[b]',
 }
@@ -88,7 +95,7 @@
 }
 
 % =========================================================================
-% GO (Complete Definition)
+% GO (Complete Definition) - FIXED COMMENTS
 % =========================================================================
 \lstdefinelanguage{Go}{
     keywords={
@@ -125,11 +132,13 @@
     keywordstyle=\color{vscode-keyword}\bfseries,
     keywordstyle=[2]\color{vscode-control}\bfseries,
     keywordstyle=[3]\color{vscode-type}\bfseries,
+    keywordstyle=[4]\color{vscode-function},
     commentstyle=\color{vscode-comment}\itshape,
     stringstyle=\color{vscode-string},
     morekeywords={var, record, sealed, permits, yield},
     morekeywords=[2]{if, else, for, while, do, switch, case, break, continue, return, throw, try, catch, finally},
-    morekeywords=[3]{int, long, short, byte, boolean, char, float, double, void, String, Object, List, Map, Set, ArrayList, HashMap}
+    morekeywords=[3]{int, long, short, byte, boolean, char, float, double, void, String, Object, List, Map, Set, ArrayList, HashMap},
+    morekeywords=[4]{main, println, print, printf, toString, equals, hashCode, valueOf, get, set, add, remove, size, stream, collect}
 }
 
 % =========================================================================
@@ -163,7 +172,7 @@
     morestring=[b]",
     morestring=[b]',
     morestring=[s]{`}{`},
-    comment=[l]{//},
+    morecomment=[l]{//},
     morecomment=[s]{/*}{*/},
 }
 
@@ -171,13 +180,16 @@
     language=JavaScript,
     keywordstyle=\color{vscode-keyword}\bfseries,
     ndkeywordstyle=\color{vscode-type}\bfseries,
+    keywordstyle=[4]\color{vscode-function},
     commentstyle=\color{vscode-comment}\itshape,
     stringstyle=\color{vscode-string},
+    morekeywords=[4]{get, post, put, delete, patch, listen, send, log, fetch, then, catch, map, filter, reduce, forEach, join, split, parse, stringify},
 }
 
 \lstdefinestyle{vscode-typescript}{
     style=vscode-javascript,
-    morekeywords={type, interface, enum, implements, readonly, public, private, protected, abstract, namespace, declare, any, unknown, never, keyof}
+    morekeywords={type, interface, enum, implements, readonly, public, private, protected, abstract, namespace, declare, any, unknown, never, keyof},
+    morekeywords=[4]{get, post, put, delete, patch, listen, send, log, fetch, then, catch, map, filter, reduce, forEach, join, split, parse, stringify}
 }
 
 % =========================================================================
@@ -205,19 +217,38 @@
 % =========================================================================
 % C#
 % =========================================================================
+% C# palette (custom)
+\definecolor{csharp-keyword}{HTML}{0000FF}
+\definecolor{csharp-control}{HTML}{AF00DB}
+\definecolor{csharp-type}{HTML}{267F99}
+\definecolor{csharp-function}{HTML}{795E26}
+\definecolor{csharp-identifier}{HTML}{001088}
+\definecolor{csharp-string}{HTML}{C13215}
+
 \lstdefinelanguage{CSharp}{
     sensitive=true,
     keywords={
-        abstract, as, base, bool, break, byte, case, catch, char, checked,
-        class, const, continue, decimal, default, delegate, do, double, else,
-        enum, event, explicit, extern, false, finally, fixed, float, for,
-        foreach, goto, if, implicit, in, int, interface, internal, is, lock,
-        long, namespace, new, null, object, operator, out, override, params,
-        private, protected, public, readonly, ref, return, sbyte, sealed,
-        short, sizeof, stackalloc, static, string, struct, switch, this,
-        throw, true, try, typeof, uint, ulong, unchecked, unsafe, ushort,
-        using, virtual, void, volatile, while, record, init, required, var,
+        abstract, as, base, bool, byte, char, checked,
+        class, const, decimal, default, delegate, double,
+        enum, event, explicit, extern, false, fixed, float,
+        foreach, goto, implicit, in, int, interface, internal, is, lock,
+        long, new, null, object, operator, out, override, params,
+        private, protected, public, readonly, ref, sbyte, sealed,
+        short, sizeof, stackalloc, static, string, struct, this,
+        true, typeof, uint, ulong, unchecked, unsafe, ushort,
+        virtual, void, volatile, record, init, required, var,
         dynamic, async, await
+    },
+    morekeywords=[2]{
+        using, namespace, if, else, for, while, do, switch, case, break,
+        continue, return, throw, try, catch, finally
+    },
+    morekeywords=[3]{
+        System, String, Object, List, Dictionary, Task, IEnumerable,
+        Exception, DateTime, Guid, Program
+    },
+    morekeywords=[4]{
+        Main, WriteLine, ReadLine, ToString, Equals, GetHashCode
     },
     morecomment=[l]{//},
     morecomment=[s]{/*}{*/},
@@ -226,9 +257,13 @@
 
 \lstdefinestyle{vscode-csharp}{
     language=CSharp,
-    keywordstyle=\color{vscode-keyword}\bfseries,
+    keywordstyle=\color{csharp-keyword},
+    keywordstyle=[2]\color{csharp-control},
+    keywordstyle=[3]\color{csharp-type},
+    keywordstyle=[4]\color{csharp-function},
     commentstyle=\color{vscode-comment}\itshape,
-    stringstyle=\color{vscode-string},
+    stringstyle=\color{csharp-string},
+    identifierstyle=\color{csharp-identifier}
 }
 
 % =========================================================================
@@ -262,7 +297,7 @@
 }
 
 % =========================================================================
-% RUBY
+% RUBY - FIXED COMMENT CHARACTER
 % =========================================================================
 \lstdefinelanguage{Ruby}{
     keywords={
@@ -272,7 +307,7 @@
         unless, until, when, while, yield
     },
     sensitive=true,
-    morecomment=[l]{\#},
+    morecomment=[l]{\#},  % Fixed: Use \# for comment character
     morestring=[b]",
     morestring=[b]',
 }
@@ -387,13 +422,13 @@
 }
 
 % =========================================================================
-% YAML
+% YAML - FIXED COMMENT CHARACTER
 % =========================================================================
 \lstdefinelanguage{YAML}{
     keywords={true, false, null, True, False, Null, TRUE, FALSE, NULL},
     keywordstyle=\color{vscode-type}\bfseries,
     sensitive=true,
-    comment=[l]{\#},
+    morecomment=[l]{\#},  % Fixed: Use \# for comment character
     morecomment=[s]{/*}{*/},
     morestring=[b]',
     morestring=[b]",
@@ -451,7 +486,7 @@
 }
 
 % =========================================================================
-% MATLAB
+% MATLAB - FIXED COMMENT CHARACTER
 % =========================================================================
 \lstdefinelanguage{Matlab}{
     keywords={
@@ -459,7 +494,7 @@
         global, if, otherwise, persistent, return, switch, try, while
     },
     sensitive=true,
-    morecomment=[l]{\%},
+    morecomment=[l]{\%},  % Fixed: Use \% for comment character
     morestring=[b]",
     morestring=[b]'
 }
@@ -472,7 +507,7 @@
 }
 
 % =========================================================================
-% R
+% R - FIXED COMMENT CHARACTER
 % =========================================================================
 \lstdefinelanguage{R}{
     keywords={
@@ -480,7 +515,7 @@
         TRUE, FALSE, NULL, NA, Inf, NaN
     },
     sensitive=true,
-    morecomment=[l]{\#},
+    morecomment=[l]{\#},  % Fixed: Use \# for comment character
     morestring=[b]",
     morestring=[b]'
 }
@@ -511,7 +546,7 @@
         USER, WORKDIR, ARG, ONBUILD, STOPSIGNAL, HEALTHCHECK, SHELL
     },
     sensitive=false,
-    comment=[l]{\#},
+    morecomment=[l]{\#},  % Fixed: Use \# for comment character
     morestring=[b]"
 }
 

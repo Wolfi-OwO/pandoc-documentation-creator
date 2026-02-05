@@ -7,6 +7,20 @@ OUTPUT_NAME="${OUTPUT_NAME:-documentation}"
 OUTPUT_DIR="/data/out"
 BUILD_DIR="${OUTPUT_DIR}/build"
 LOG_FILE="${BUILD_DIR}/pandoc.log"
+TEMPLATE="${TEMPLATE:-/data/pandoc/templates/custom-template.tex}"
+HEADER="${HEADER:-/data/pandoc/templates/header.tex}"
+HIGHLIGHT_THEME="${HIGHLIGHT_THEME:-/data/pandoc/styles/code/vscode-light.theme}"
+KROKI_FILTER="${KROKI_FILTER:-/usr/local/bin/pandoc-kroki-filter}"
+
+if [ ! -f "${TEMPLATE}" ]; then
+    TEMPLATE="/usr/local/share/pandoc/templates/custom-template.tex"
+fi
+if [ ! -f "${HEADER}" ]; then
+    HEADER="/usr/local/share/pandoc/templates/header.tex"
+fi
+if [ ! -f "${HIGHLIGHT_THEME}" ]; then
+    HIGHLIGHT_THEME="/usr/local/share/pandoc/styles/code/vscode-light.theme"
+fi
 
 mkdir -p "${BUILD_DIR}"
 
@@ -14,7 +28,15 @@ if [ -n "${INPUT_FILES}" ]; then
     # shellcheck disable=SC2086
     set -- ${INPUT_FILES}
 else
-    set -- /data/chapters/*.md
+    if [ -d /data/chapters ] && ls /data/chapters/*.md >/dev/null 2>&1; then
+        set -- /data/chapters/*.md
+    elif [ -d /data/examples/advanced ] && ls /data/examples/advanced/*.md >/dev/null 2>&1; then
+        set -- /data/examples/advanced/*.md
+    else
+        echo "ERROR: No input markdown files found."
+        echo "Expected /data/chapters/*.md or /data/examples/advanced/*.md"
+        exit 1
+    fi
 fi
 
 META_ARG=""
@@ -23,31 +45,90 @@ if [ -f /data/metadata.yaml ]; then
 fi
 
 PANDOC_EXTRA_ARGS="${PANDOC_EXTRA_ARGS:-}"
+case " ${PANDOC_EXTRA_ARGS} " in
+    *" --listings "*) ;;
+    *) PANDOC_EXTRA_ARGS="${PANDOC_EXTRA_ARGS} --listings" ;;
+esac
 CODE_CAPTION_FILTER="/data/pandoc/filters/code-caption.lua"
+if [ ! -f "${CODE_CAPTION_FILTER}" ]; then
+    CODE_CAPTION_FILTER="/usr/local/share/pandoc/filters/code-caption.lua"
+fi
 CODE_CAPTION_ARG=""
 if [ -f "${CODE_CAPTION_FILTER}" ]; then
     CODE_CAPTION_ARG="--lua-filter=${CODE_CAPTION_FILTER}"
 fi
 
+TEMPLATE_ARG=""
+if [ -f "${TEMPLATE}" ]; then
+    TEMPLATE_ARG="--template=${TEMPLATE}"
+fi
+
+HEADER_ARG=""
+if [ -f "${HEADER}" ]; then
+    HEADER_ARG="-H ${HEADER}"
+fi
+
+HIGHLIGHT_ARG=""
+if [ -f "${HIGHLIGHT_THEME}" ]; then
+    HIGHLIGHT_ARG="--highlight-style=${HIGHLIGHT_THEME}"
+fi
+
+KROKI_ARG=""
+if [ -f "${KROKI_FILTER}" ]; then
+    KROKI_ARG="--filter ${KROKI_FILTER}"
+fi
+
+echo "=== Starting Pandoc processing ==="
+echo "Template: ${TEMPLATE}"
+echo "Header: ${HEADER}"
+echo "Code caption filter: ${CODE_CAPTION_FILTER}"
+echo "Input files: $@"
+echo "Working directory: $(pwd)"
+
+# REMOVED --biblatex from this command!
 (cd "${BUILD_DIR}" && pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     ${META_ARG} \
+    ${TEMPLATE_ARG} \
+    ${HEADER_ARG} \
+    ${HIGHLIGHT_ARG} \
+    ${KROKI_ARG} \
     --to=latex \
     --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
     --standalone \
     --verbose \
-    --biblatex \
     ${CODE_CAPTION_ARG} \
     ${PANDOC_EXTRA_ARGS} \
     "$@" \
-    > "${LOG_FILE}" 2>&1)
+    2>&1 | tee "${LOG_FILE}")
+
+if [ ! -f "${BUILD_DIR}/${OUTPUT_NAME}.tex" ]; then
+    echo "ERROR: Pandoc failed to generate ${OUTPUT_NAME}.tex"
+    echo "Check the log file: ${LOG_FILE}"
+    exit 1
+fi
+
+echo "=== Pandoc processing complete ==="
+echo "Generated: ${BUILD_DIR}/${OUTPUT_NAME}.tex"
+echo "=== Starting LaTeX compilation ==="
 
 cd "${BUILD_DIR}"
 
+echo "Running xelatex (first pass)..."
 xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+
 if grep -q "\\bibdata" "${OUTPUT_NAME}.aux"; then
+    echo "Running bibtex..."
     bibtex "${OUTPUT_NAME}"
 fi
+
+echo "Running xelatex (second pass)..."
 xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+
+echo "Running xelatex (third pass)..."
 xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
 
 mv -f "${BUILD_DIR}/${OUTPUT_NAME}.pdf" "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
+
+echo "=== Build complete ==="
+echo "PDF created at: ${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
+echo "Log file: ${LOG_FILE}"
