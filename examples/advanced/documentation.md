@@ -1,6 +1,12 @@
+---
+bibliography: references.bib
+---
+
 # Typografie & Layout
 
 Dies ist ein Test für das Schriftbild. Wir prüfen hier, ob die Koma-Script Klasse (`scrartcl`) korrekt geladen wurde und die Abstände stimmen.
+
+Beispiel für ein Zitat mit BibTeX: Siehe @knuth1984.
 
 > **Blockquote Test:** Dies ist ein Test für Zitate. In deinem Template sollte dies durch das `mdframed` Paket mit einem vertikalen grauen Balken am linken Rand hervorgehoben werden.
 
