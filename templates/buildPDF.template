@@ -10,11 +10,6 @@ LOG_FILE="${BUILD_DIR}/pandoc.log"
 
 mkdir -p "${BUILD_DIR}"
 
-# Ensure listings styles are available in build directory
-if [ -f /data/pandoc/templates/listings-languages.tex ]; then
-    cp -f /data/pandoc/templates/listings-languages.tex "${BUILD_DIR}/listings-languages.tex"
-fi
-
 if [ -n "${INPUT_FILES}" ]; then
     # shellcheck disable=SC2086
     set -- ${INPUT_FILES}

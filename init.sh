@@ -179,7 +179,7 @@ linestretch: 1.15
 linkcolor: blue
 urlcolor: blue
 toc-title: "Table of Contents"
-numbersections: trpt
+numbersections: true
 linestretch: 1.15
 linkcolor: blue
 urlcolor: blue
