@@ -126,7 +126,23 @@ test_docker:
     - docker run --rm "$TEST_IMAGE" python3 --version
     - docker run --rm "$TEST_IMAGE" node --version
     - docker run --rm "$TEST_IMAGE" mermaid --version || echo "Mermaid skipped"
-
+    - |
+      echo "Building sample PDF to validate pipeline"
+      rm -f "$CI_PROJECT_DIR/out/ci-test.pdf" || true
+      docker run --rm \
+        -v "$CI_PROJECT_DIR:/data" \
+        -e OUTPUT_NAME="ci-test" \
+        -e INPUT_FILES="/data/examples/advanced/deckblatt.md /data/examples/advanced/documentation.md" \
+        "$TEST_IMAGE" \
+        /data/buildPDF
+      test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
+  artifacts:
+    untracked: false
+    when: on_success
+    access: all
+    expire_in: "30 days"
+    paths:
+      - $CI_PROJECT_DIR/out/ci-test.pdf
 
 # ------------------------
 # RELEASE
