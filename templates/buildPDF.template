@@ -36,7 +36,6 @@ fi
 
 (cd "${BUILD_DIR}" && pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     ${META_ARG} \
-    "$@" \
     --to=latex \
     --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
     --standalone \
@@ -45,6 +44,7 @@ fi
     --listings \
     ${CODE_CAPTION_ARG} \
     ${PANDOC_EXTRA_ARGS} \
+    "$@" \
     > "${LOG_FILE}" 2>&1)
 
 cd "${BUILD_DIR}"

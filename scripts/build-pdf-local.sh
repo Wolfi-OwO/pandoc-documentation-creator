@@ -20,7 +20,7 @@ mkdir -p "${BUILD_DIR}"
 cp -f "${PROJECT_DIR}/pandoc/templates/listings-languages.tex" "${BUILD_DIR}/listings-languages.tex"
 
 # 2. Run Pandoc (from build dir so kroki-images are created next to .tex)
-(cd "${BUILD_DIR}" && pandoc "${INPUT_FILES[@]}" \
+(cd "${BUILD_DIR}" && pandoc \
   --to=latex \
   --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
   --template="$TEMPLATE" \
@@ -36,7 +36,8 @@ cp -f "${PROJECT_DIR}/pandoc/templates/listings-languages.tex" "${BUILD_DIR}/lis
   -V lang=de-DE \
   -V documentclass=scrartcl \
   -V papersize=a4 \
-  -V fontsize=11pt)
+  -V fontsize=11pt \
+  "${INPUT_FILES[@]}")
 
 # 3. Compile TeX to PDF
 cd "${BUILD_DIR}"
