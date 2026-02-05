@@ -53,9 +53,11 @@ This creates a complete project structure:
 your-project/
 ├── chapters/           # Your markdown documentation
 ├── media/             # Images and diagrams
-├── output/            # Generated PDFs
+├── out/               # Generated PDFs
+│   └── build/         # Build logs and LaTeX artifacts
 ├── metadata.yaml      # Document metadata (title, author, etc.)
 ├── build-pdf.sh       # Build script
+├── buildPDF           # Build helper run inside Docker
 └── Help.md           # Comprehensive help
 ```
 
@@ -84,7 +86,9 @@ def hello():
 ./build-pdf.sh
 ```
 
-Find your PDF in `output/documentation.pdf`!
+The Docker container executes buildPDF to run Pandoc, pdflatex, and bibtex in sequence.
+
+Find your PDF in `out/documentation.pdf`!
 
 ## Project Structure
 
@@ -94,6 +98,7 @@ pandoc-documentation-creator/
 ├── init.sh                # Initialization and setup script
 ├── build-pdf.sh           # PDF build script (for examples)
 ├── build-pdf-local.sh     # Local build variant
+├── buildPDF               # Build helper run inside Docker
 ├── core/                  # LaTeX templates and headers
 │   ├── custom-template.tex
 │   ├── header.tex
@@ -109,7 +114,8 @@ pandoc-documentation-creator/
 │   ├── metadata.yaml.template
 │   ├── 01-introduction.md.template
 │   ├── 02-example-content.md.template
-│   └── build-pdf.sh.template
+│   ├── build-pdf.sh.template
+│   └── buildPDF.template
 ├── example/               # Example documentation
 │   ├── deckblatt.md
 │   └── documentation.md
@@ -155,7 +161,7 @@ pdf-engine: xelatex
 docker run --rm -v $(pwd):/data pandoc-documentation-creator \
   --defaults=/data/.pandoc/defaults.yaml \
   /data/chapters/*.md \
-  -o /data/output/documentation.pdf
+  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md --to=latex --output /data/out/build/documentation.tex --standalone --verbose --biblatex --top-level-division=chapter > /data/out/build/pandoc.log 2>&1 && cd /data/out/build && pdflatex -halt-on-error documentation.tex && bibtex documentation && pdflatex -halt-on-error documentation.tex && pdflatex -halt-on-error documentation.tex && mv -f /data/out/build/documentation.pdf /data/out/documentation.pdf"
 ```
 
 ### Custom Template
@@ -164,7 +170,7 @@ docker run --rm -v $(pwd):/data pandoc-documentation-creator \
 docker run --rm -v $(pwd):/data pandoc-documentation-creator \
   --template=custom-template.tex \
   chapters/*.md \
-  -o output/doc.pdf
+  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --template=custom-template.tex chapters/*.md --to=latex --output out/build/doc.tex --standalone --verbose --biblatex --top-level-division=chapter > out/build/pandoc.log 2>&1 && cd out/build && pdflatex -halt-on-error doc.tex && bibtex doc && pdflatex -halt-on-error doc.tex && pdflatex -halt-on-error doc.tex && mv -f out/build/doc.pdf out/doc.pdf"
 ```
 
 ### With Table of Contents
@@ -174,7 +180,7 @@ docker run --rm -v $(pwd):/data pandoc-documentation-creator \
   --toc \
   --toc-depth=3 \
   chapters/*.md \
-  -o output/doc.pdf
+  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --toc --toc-depth=3 chapters/*.md --to=latex --output out/build/doc.tex --standalone --verbose --biblatex --top-level-division=chapter > out/build/pandoc.log 2>&1 && cd out/build && pdflatex -halt-on-error doc.tex && bibtex doc && pdflatex -halt-on-error doc.tex && pdflatex -halt-on-error doc.tex && mv -f out/build/doc.pdf out/doc.pdf"
 ```
 
 ## Features in Detail

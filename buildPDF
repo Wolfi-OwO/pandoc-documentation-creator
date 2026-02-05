@@ -1,0 +1,46 @@
+#!/bin/sh
+
+set -e
+
+COMMON_ARGS="-halt-on-error"
+OUTPUT_NAME="${OUTPUT_NAME:-documentation}"
+OUTPUT_DIR="/data/out"
+BUILD_DIR="${OUTPUT_DIR}/build"
+LOG_FILE="${BUILD_DIR}/pandoc.log"
+
+mkdir -p "${BUILD_DIR}"
+
+if [ -n "${INPUT_FILES}" ]; then
+    # shellcheck disable=SC2086
+    set -- ${INPUT_FILES}
+else
+    set -- /data/chapters/*.md
+fi
+
+META_ARG=""
+if [ -f /data/metadata.yaml ]; then
+    META_ARG="--metadata-file=/data/metadata.yaml"
+fi
+
+PANDOC_EXTRA_ARGS="${PANDOC_EXTRA_ARGS:-}"
+
+pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
+  ${META_ARG} \
+  "$@" \
+  --to=latex \
+  --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
+  --standalone \
+  --verbose \
+  --biblatex \
+  --top-level-division=chapter \
+  ${PANDOC_EXTRA_ARGS} \
+  > "${LOG_FILE}" 2>&1
+
+cd "${BUILD_DIR}"
+
+pdflatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+bibtex "${OUTPUT_NAME}"
+pdflatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+pdflatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+
+mv -f "${BUILD_DIR}/${OUTPUT_NAME}.pdf" "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"

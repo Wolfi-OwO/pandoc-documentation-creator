@@ -6,7 +6,9 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 IMAGE_NAME="registry.gitlab.com/woofi4/public/pandoc-documentation-creator:1.0.0"
+OUTPUT_NAME="example-documentation"
 
 # Colors
 RED='\033[0;31m'
@@ -27,35 +29,31 @@ if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
     exit 1
 fi
 
-# Create output directory
-mkdir -p "${SCRIPT_DIR}/output"
+# Create output directories
+mkdir -p "${PROJECT_DIR}/out/build"
 
 # Build PDF from example files
 echo -e "${YELLOW}Generating PDF from examples...${NC}"
 
 docker run --rm \
-  -v "${SCRIPT_DIR}:/data" \
-  "${IMAGE_NAME}" \
-  --defaults=/usr/local/share/pandoc/defaults.yaml \
-  --template=/usr/local/share/pandoc/templates/custom-template.tex \
-  --highlight-style=/usr/local/share/pandoc/templates/styles/code/vscode-light.theme \
-  --metadata=title:"Example Documentation" \
-  --metadata=author:"Pandoc Documentation Creator" \
-  --metadata=lang:"de" \
-  /data/example/deckblatt.md \
-  /data/example/documentation.md \
-  -o /data/output/example-documentation.pdf
+    -v "${PROJECT_DIR}:/data" \
+    --entrypoint=/bin/sh \
+    -e OUTPUT_NAME="${OUTPUT_NAME}" \
+    -e INPUT_FILES="/data/examples/advanced/deckblatt.md /data/examples/advanced/documentation.md" \
+    -e PANDOC_EXTRA_ARGS="--template=/usr/local/share/pandoc/templates/custom-template.tex --highlight-style=/usr/local/share/pandoc/templates/styles/code/vscode-light.theme --metadata=title:Example\\ Documentation --metadata=author:Pandoc\\ Documentation\\ Creator --metadata=lang:de" \
+    "${IMAGE_NAME}" \
+    -c "/data/buildPDF"
 
 if [ $? -eq 0 ]; then
     echo ""
     echo -e "${GREEN}Build successful!${NC}"
-    echo -e "${GREEN}Output: output/example-documentation.pdf${NC}"
-    
-    if [ -f "${SCRIPT_DIR}/output/example-documentation.pdf" ]; then
-        SIZE=$(du -h "${SCRIPT_DIR}/output/example-documentation.pdf" | cut -f1)
+    echo -e "${GREEN}Output: out/${OUTPUT_NAME}.pdf${NC}"
+
+    if [ -f "${PROJECT_DIR}/out/${OUTPUT_NAME}.pdf" ]; then
+        SIZE=$(du -h "${PROJECT_DIR}/out/${OUTPUT_NAME}.pdf" | cut -f1)
         echo -e "${BLUE}File size: ${SIZE}${NC}"
     fi
-    
+
     echo ""
     echo -e "${BLUE}To create your own project:${NC}"
     echo -e "  ./init.sh new"

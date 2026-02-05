@@ -10,9 +10,10 @@ IMAGE_NAME="registry.gitlab.com/woofi4/public/pandoc-documentation-creator:lates
 # For local development, uncomment the line below:
 # IMAGE_NAME="pandoc-documentation-creator:latest"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OUTPUT_DIR="${PROJECT_DIR}/output"
+OUTPUT_DIR="${PROJECT_DIR}/out"
+BUILD_DIR="${OUTPUT_DIR}/build"
 CHAPTERS_DIR="${PROJECT_DIR}/chapters"
-PANDOC_DIR="${PROJECT_DIR}/.pandoc"
+OUTPUT_NAME="${OUTPUT_NAME:-documentation}"
 
 # Colors
 RED='\033[0;31m'
@@ -51,8 +52,8 @@ if ! ls "${CHAPTERS_DIR}"/*.md >/dev/null 2>&1; then
     exit 1
 fi
 
-# Create output directory if it doesn't exist
-mkdir -p "${OUTPUT_DIR}"
+# Create output directories if they don't exist
+mkdir -p "${BUILD_DIR}"
 
 # Count markdown files
 FILE_COUNT=$(ls -1 "${CHAPTERS_DIR}"/*.md 2>/dev/null | wc -l)
@@ -63,21 +64,22 @@ echo ""
 echo -e "${YELLOW}Generating PDF...${NC}"
 
 docker run --rm \
-  -v "${PROJECT_DIR}:/data" \
-  --entrypoint=/bin/sh \
-  "${IMAGE_NAME}" \
-  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
+    -v "${PROJECT_DIR}:/data" \
+    --entrypoint=/bin/sh \
+    -e OUTPUT_NAME="${OUTPUT_NAME}" \
+    "${IMAGE_NAME}" \
+    -c "/data/buildPDF"
 
 if [ $? -eq 0 ]; then
     echo ""
     echo -e "${GREEN}=======================================${NC}"
     echo -e "${GREEN}Build successful!${NC}"
     echo -e "${GREEN}=======================================${NC}"
-    echo -e "${GREEN}Output: ${OUTPUT_DIR}/documentation.pdf${NC}"
+    echo -e "${GREEN}Output: ${OUTPUT_DIR}/${OUTPUT_NAME}.pdf${NC}"
     
     # Get file size
-    if [ -f "${OUTPUT_DIR}/documentation.pdf" ]; then
-        SIZE=$(du -h "${OUTPUT_DIR}/documentation.pdf" | cut -f1)
+    if [ -f "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf" ]; then
+        SIZE=$(du -h "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf" | cut -f1)
         echo -e "${BLUE}File size: ${SIZE}${NC}"
     fi
 else

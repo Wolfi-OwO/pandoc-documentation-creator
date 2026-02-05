@@ -3,28 +3,43 @@
 set -e
 
 # Configuration
-INPUT_FILE="example/documentation.md"
-OUTPUT_FILE="./output/documentation.pdf"
-TEMPLATE="core/custom-template.tex"
-HEADER="core/header.tex"
-HIGHLIGHT_THEME="styles/code/vscode-light.theme"
+INPUT_FILES=("examples/advanced/deckblatt.md" "examples/advanced/documentation.md")
+OUTPUT_DIR="./out"
+BUILD_DIR="${OUTPUT_DIR}/build"
+OUTPUT_NAME="documentation"
+TEMPLATE="pandoc/templates/custom-template.tex"
+HEADER="pandoc/templates/header.tex"
+HIGHLIGHT_THEME="pandoc/templates/styles/code/vscode-light.theme"
+COMMON_ARGS="-halt-on-error"
 
-# Create output directory if it doesn't exist
-mkdir -p output
+# Create output directories if they don't exist
+mkdir -p "${BUILD_DIR}"
 
-# Build PDF with custom VSCode Light highlighting theme
-pandoc "$INPUT_FILE" \
-  -o "$OUTPUT_FILE" \
+# Build TeX with custom VSCode Light highlighting theme
+pandoc "${INPUT_FILES[@]}" \
+  --to=latex \
+  --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
   --template="$TEMPLATE" \
   -H "$HEADER" \
   --highlight-style="$HIGHLIGHT_THEME" \
   --toc \
   --toc-depth=3 \
   --number-sections \
-  --pdf-engine=xelatex \
+  --standalone \
+  --verbose \
+  --biblatex \
+  --top-level-division=chapter \
   -V lang=de-DE \
   -V documentclass=scrartcl \
   -V papersize=a4 \
-  -V fontsize=11pt
+  -V fontsize=11pt \
+  > "${BUILD_DIR}/pandoc.log" 2>&1
 
-echo "PDF created: $OUTPUT_FILE"
+cd "${BUILD_DIR}"
+pdflatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+bibtex "${OUTPUT_NAME}"
+pdflatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+pdflatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+mv -f "${BUILD_DIR}/${OUTPUT_NAME}.pdf" "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
+
+echo "PDF created: ${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"

@@ -25,7 +25,7 @@ Run the initialization script to create the project structure:
 This creates:
 - `chapters/` - Your documentation chapters
 - `media/` - Images and diagrams
-- `output/` - Generated PDFs
+- `out/` - Generated PDFs
 - Default configuration files
 
 ### 2. Write Your Documentation
@@ -45,7 +45,7 @@ chapters/
 ./build-pdf.sh
 ```
 
-Your PDF will be in `output/documentation.pdf`
+Your PDF will be in `out/documentation.pdf`
 
 ## Project Structure
 
@@ -53,9 +53,11 @@ Your PDF will be in `output/documentation.pdf`
 your-project/
 ├── chapters/           # Documentation chapters (markdown)
 ├── media/             # Images, diagrams, assets
-├── output/            # Generated PDF output
+├── out/               # Generated PDF output
+│   └── build/         # Build logs and LaTeX artifacts
 ├── metadata.yaml      # Document metadata (title, author, etc.)
-└── build-pdf.sh       # Build script
+├── build-pdf.sh       # Build script
+└── buildPDF           # Build helper run inside Docker
 ```
 
 ## Configuration
@@ -138,7 +140,7 @@ Edit the build script to customize:
 ```bash
 docker run --rm -v "$(pwd):/data" --entrypoint=/bin/sh \
   registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
-  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
+  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md --to=latex --output /data/out/build/documentation.tex --standalone --verbose --biblatex --top-level-division=chapter > /data/out/build/pandoc.log 2>&1 && cd /data/out/build && pdflatex -halt-on-error documentation.tex && bibtex documentation && pdflatex -halt-on-error documentation.tex && pdflatex -halt-on-error documentation.tex && mv -f /data/out/build/documentation.pdf /data/out/documentation.pdf"
 ```
 
 ### Using Different Templates
@@ -172,7 +174,7 @@ docker pull registry.gitlab.com/woofi4/public/pandoc-documentation-creator:lates
 ```bash
 docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
   registry.gitlab.com/woofi4/public/pandoc-documentation-creator:latest \
-  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md -o /data/output/documentation.pdf"
+  -c "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml --metadata-file=/data/metadata.yaml /data/chapters/*.md --to=latex --output /data/out/build/documentation.tex --standalone --verbose --biblatex --top-level-division=chapter > /data/out/build/pandoc.log 2>&1 && cd /data/out/build && pdflatex -halt-on-error documentation.tex && bibtex documentation && pdflatex -halt-on-error documentation.tex && pdflatex -halt-on-error documentation.tex && mv -f /data/out/build/documentation.pdf /data/out/documentation.pdf"
 ```
 
 ## Troubleshooting

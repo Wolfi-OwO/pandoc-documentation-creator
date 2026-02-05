@@ -78,7 +78,8 @@ create_new_project() {
     print_info "Creating directory structure..."
     mkdir -p "${target_dir}/chapters"
     mkdir -p "${target_dir}/media"
-    mkdir -p "${target_dir}/output"
+    mkdir -p "${target_dir}/out"
+    mkdir -p "${target_dir}/out/build"
     mkdir -p "${target_dir}/.vscode"
     mkdir -p "${target_dir}/.vscode/schemas"
     print_success "Directories created"
@@ -116,6 +117,13 @@ create_new_project() {
         print_success "Created build-pdf.sh"
     else
         create_minimal_build_script "${target_dir}/build-pdf.sh"
+    fi
+
+    # Build helper script
+    print_info "Creating build helper script..."
+    if download_or_copy_template "buildPDF.template" "${target_dir}/buildPDF"; then
+        chmod +x "${target_dir}/buildPDF"
+        print_success "Created buildPDF"
     fi
     
     # Help file
@@ -225,22 +233,32 @@ EOF
 }
 
 create_minimal_build_script() {
-    cat > "$1" << 'EOF'
+        cat > "$1" << 'EOF'
 #!/bin/bash
 set -e
 IMAGE_NAME="pandoc-documentation-creator"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OUTPUT_NAME="${OUTPUT_NAME:-documentation}"
 
 echo "Building PDF..."
 
 docker run --rm \
-  -v "${PROJECT_DIR}:/data" \
-  "${IMAGE_NAME}" \
-  --defaults=/data/.pandoc/defaults.yaml \
-  /data/chapters/*.md \
-  -o /data/output/documentation.pdf
+    -v "${PROJECT_DIR}:/data" \
+    --entrypoint=/bin/sh \
+    -e OUTPUT_NAME="${OUTPUT_NAME}" \
+    "${IMAGE_NAME}" \
+    -c "set -e
+COMMON_ARGS='-halt-on-error'
+mkdir -p /data/out/build
+pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \\\n+  --metadata-file=/data/metadata.yaml \\\n+  /data/chapters/*.md \\\n+  --to=latex \\\n+  --output /data/out/build/${OUTPUT_NAME}.tex \\\n+  --standalone \\\n+  --verbose \\\n+  --biblatex \\\n+  --top-level-division=chapter \\\n+  > /data/out/build/pandoc.log 2>&1
+cd /data/out/build
+pdflatex $COMMON_ARGS ${OUTPUT_NAME}.tex
+bibtex ${OUTPUT_NAME}
+pdflatex $COMMON_ARGS ${OUTPUT_NAME}.tex
+pdflatex $COMMON_ARGS ${OUTPUT_NAME}.tex
+mv -f /data/out/build/${OUTPUT_NAME}.pdf /data/out/${OUTPUT_NAME}.pdf"
 
-echo "Done! Output: output/documentation.pdf"
+echo "Done! Output: out/${OUTPUT_NAME}.pdf"
 EOF
     chmod +x "$1"
     print_success "Created minimal build script"
@@ -254,11 +272,11 @@ create_minimal_help() {
 
 1. Write markdown files in `chapters/` directory
 2. Run `./build-pdf.sh` to generate PDF
-3. Find output in `output/documentation.pdf`
+3. Find output in `out/documentation.pdf`
 
 ## Configuration
 
-Edit `.pandoc/metadata.yaml` to customize document properties.
+Edit `metadata.yaml` to customize document properties.
 EOF
     print_success "Created minimal help file"
 }
@@ -266,7 +284,8 @@ EOF
 create_gitignore() {
     cat > "$1" << 'EOF'
 # Output directory
-output/*.pdf
+out/*.pdf
+out/build/
 
 # Temporary files
 *.aux
