@@ -76,7 +76,9 @@ def main():
     issues = convert(payload)
 
     with output_path.open("w", encoding="utf-8") as handle:
-        json.dump(issues, handle, ensure_ascii=False)
+        for issue in issues:
+            handle.write(json.dumps(issue, ensure_ascii=False))
+            handle.write("\n")
     return 0
 
 
