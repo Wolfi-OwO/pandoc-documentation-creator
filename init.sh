@@ -132,6 +132,9 @@ create_new_project() {
     # Help file
     print_info "Creating help documentation..."
     if download_or_copy_template "Help.md.template" "${target_dir}/Help.md"; then
+        if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
+            sed -i "s#\${IMAGE_TAG}#${VERSION}#g" "${target_dir}/Help.md" || true
+        fi
         print_success "Created Help.md"
     else
         create_minimal_help "${target_dir}/Help.md"
@@ -351,15 +354,15 @@ check_docker_image() {
         print_info "Using local image"
     fi
     
-    # Get version from Docker image
-    IMAGE_VERSION=$(docker inspect --format='{{index .Config.Labels "org.opencontainers.image.version"}}' "${IMAGE_REGISTRY}:latest" 2>/dev/null || echo "unknown")
-    
-    if [ "$IMAGE_VERSION" != "unknown" ] && [ -n "$IMAGE_VERSION" ]; then
-        VERSION="$IMAGE_VERSION"
-        print_info "Using image version: ${VERSION}"
-    else
-        print_info "Could not determine image version, using default: ${VERSION}"
-    fi
+        # Get version from Docker image
+        IMAGE_VERSION=$(docker inspect --format='{{index .Config.Labels "org.opencontainers.image.version"}}' "${IMAGE_REGISTRY}:latest" 2>/dev/null || echo "unknown")
+        
+        if [ "$IMAGE_VERSION" != "unknown" ] && [ -n "$IMAGE_VERSION" ]; then
+            VERSION="$IMAGE_VERSION"
+            print_info "Using image version: ${VERSION}"
+        else
+            print_info "Could not determine image version, using default: ${VERSION}"
+        fi
     
     # Set the full image name with version if available
     if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
