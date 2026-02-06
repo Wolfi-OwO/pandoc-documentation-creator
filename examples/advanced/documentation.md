@@ -2,19 +2,19 @@
 bibliography: references.bib
 ---
 
-# Typografie & Layout
+# Typography & Layout
 
-Dies ist ein Test für das Schriftbild. Wir prüfen hier, ob die Koma-Script Klasse (`scrartcl`) korrekt geladen wurde und die Abstände stimmen.
+This is a test for the typography. We check here whether the KOMA-Script class (`scrartcl`) is loaded correctly and the spacing is correct.
 
-Beispiel für ein Zitat mit BibTeX: Siehe @knuth1984.
+Example of a citation with BibTeX: see @knuth1984.
 
-> **Blockquote Test:** Dies ist ein Test für Zitate. In deinem Template sollte dies durch das `mdframed` Paket mit einem vertikalen grauen Balken am linken Rand hervorgehoben werden.
+> **Blockquote Test:** This is a test for quotations. In your template, this should be highlighted by the `mdframed` package with a vertical gray bar on the left edge.
 
-# Code-Beispiele
+# Code Examples
 
-## Referenzen auf Code-Blöcke
+## References to Code Blocks
 
-Du kannst auf Code-Blöcke über deren ID verlinken. Beispiel: Siehe [Code C# Beispiel](#code-csharp).
+You can link to code blocks by their ID. Example: see [C# code example](#code-csharp).
 
 ## C# Example
 
@@ -24,14 +24,14 @@ using System;
 public class Program {
     public static void Main() {
         if (true) {
-            Console.WriteLine("Alles formatiert und in einer Box!");
+            Console.WriteLine("Everything formatted and in a box!");
         }
     }
 }
 
 public class MyClass {
     public static void Main() {
-        Console.WriteLine("Hallo MyClass");
+        Console.WriteLine("Hello MyClass");
     }
 }
 ```
@@ -45,11 +45,11 @@ const app = express();
 const PORT = 3000;
 
 app.get('/', (req, res) => {
-    res.send('Hello, World!');
+  res.send('Hello, World!');
 });
 
 app.listen(PORT, () => {
-    console.log(`Server läuft auf http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
 ```
 
@@ -305,19 +305,19 @@ services:
 }
 ```
 
-# Mathematik
+# Mathematics
 
-LaTeX-Support Test für komplexe Formeln (Standardabweichung): $$ \sigma = \sqrt{\frac{(p - o)^2}{36}} $$
+LaTeX support test for complex formulas (standard deviation): $$ \sigma = \sqrt{\frac{(p - o)^2}{36}} $$
 
-# Diagramme
+# Diagrams
 
 ## PlantUML
 
 ```plantuml{#code-plantuml .plantuml caption="PlantUML diagram"}
 @startuml
-[Anwender] -> (Pandoc): Markdown Input
+[User] -> (Pandoc): Markdown Input
 (Pandoc) -> [PDF Engine]: LaTeX Code
-[PDF Engine] -> (Ergebnis): PDF Datei
+[PDF Engine] -> (Result): PDF File
 @enduml
 ```
 
@@ -331,3 +331,18 @@ graph LR
 ```
 
 Thanks for your trust in testing this advanced documentation example!
+
+# Tables
+
+| Language   | Code Example      | Description                                    |
+|------------|-------------------|------------------------------------------------|
+| C#         | `code-csharp`     | A simple C# program                            |
+| JavaScript | `code-js`         | A simple Express.js server                     |
+| Python     | `code-python`     | A simple Fibonacci program                     |
+| Java       | `code-java`       | A simple Java HelloWorld                       |
+| TypeScript | `code-typescript` | A simple TypeScript example                    |
+| Go         | `code-go`         | A simple Go goroutine example                  |
+| Rust       | `code-rust`       | A simple Rust example                          |
+| PHP        | `code-php`        | A simple PHP database connection example       |
+| Ruby       | `code-ruby`       | A simple Ruby BankAccount example              |
+| Test row to see how the table reacts to extremely long text in a small column.  | —                 | This row verifies table formatting             |

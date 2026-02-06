@@ -84,6 +84,10 @@ if [ -f "${KROKI_FILTER}" ]; then
     KROKI_ARG="--filter ${KROKI_FILTER}"
 fi
 
+# Clean and recreate build directory
+rm -rf "${BUILD_DIR}"
+mkdir -p "${BUILD_DIR}"
+
 echo "=== Starting Pandoc processing ==="
 echo "Template: ${TEMPLATE}"
 echo "Header: ${HEADER}"

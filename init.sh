@@ -179,13 +179,13 @@ monofont: "Liberation Mono"
 papersize: a4
 fontsize: 11pt
 linestretch: 1.15
-linkcolor: blue
-urlcolor: blue
+linkcolor: black
+urlcolor: black
 toc-title: "Table of Contents"
 numbersections: true
 linestretch: 1.15
-linkcolor: blue
-urlcolor: blue
+linkcolor: black
+urlcolor: black
 listings: true
 EOF
     print_success "Created minimal metadata.yaml"
