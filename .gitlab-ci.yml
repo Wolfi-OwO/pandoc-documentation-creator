@@ -1,5 +1,5 @@
 stages:
-  - validate_security
+  - validate_and_security
   - build
   - scan_and_test
   - release
@@ -28,7 +28,7 @@ workflow:
 # Secret Detection
 # --------------------
 secret_detection:
-  stage: validate_security
+  stage: validate_and_security
   image:
     name: zricethezav/gitleaks:latest
     entrypoint: [""]
@@ -49,7 +49,7 @@ secret_detection:
 # SAST (Semgrep)
 # --------------------
 sast:
-  stage: validate_security
+  stage: validate_and_security
   image:
     name: returntocorp/semgrep
     entrypoint: [""]
@@ -71,7 +71,13 @@ sast:
     reports:
       sast: gl-sast-report.json
 
+# --------------------
+# Dependency Scanning
+# --------------------
 
+dependency_scanning:
+  stage: scan_and_test
+  extends: Dependency-Scanning
 
 # --------------------
 # Build Docker Image
