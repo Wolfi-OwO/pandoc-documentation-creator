@@ -91,10 +91,16 @@ $endif$
 
 \usepackage{longtable}
 \usepackage{booktabs}
+\usepackage{calc}
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{colortbl}
 \usepackage{etoolbox}
+
+% Provide \real for Pandoc-generated column width expressions like
+% p{(\linewidth - 4\tabcolsep) * \real{0.1938}}. If \real is not
+% defined by the engine, make it a no-op that returns its numeric arg.
+\providecommand{\real}[1]{#1}
 
 \makeatletter
 \patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
