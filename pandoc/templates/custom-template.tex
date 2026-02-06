@@ -163,50 +163,7 @@ $endif$
 % Load external language definitions if available
 \IfFileExists{/usr/local/share/pandoc/templates/listings-languages.tex}{
   \input{/usr/local/share/pandoc/templates/listings-languages.tex}
-}{
-  \IfFileExists{listings-languages.tex}{
-    \input{listings-languages.tex}
-  }{
-    % Fallback: Basic configuration if external file not found
-    \lstset{%
-    basicstyle=\ttfamily\small,%
-    backgroundcolor=\color{codebg},%
-    rulecolor=\color{codeframe},%
-    frame=single,%
-    framesep=0.19em,%
-    frameround=ffff,%
-    xleftmargin=6pt,%
-    xrightmargin=6pt,%
-    tabsize=4,%
-    columns=flexible,%
-    keepspaces=true,%
-    showstringspaces=false,%
-    breaklines=true,%
-    breakatwhitespace=false,%
-    breakautoindent=true,%
-    breakindent=0pt,%
-    postbreak=\mbox{\textcolor{gray}{\(\hookrightarrow\)}\space},%
-    prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},%
-    keywordstyle=\color{listing-keyword}\bfseries,%
-    keywordstyle={[2]\color{listing-keyword-2}\bfseries},%
-    keywordstyle={[3]\color{listing-keyword-3}\bfseries\itshape},%
-    stringstyle=\color{listing-string},%
-    commentstyle=\color{listing-comment},%
-    identifierstyle=\color{listing-identifier},%
-    numberstyle=\tiny\color{listing-numbers},%
-    }
-  }
 }
-
-% Ensure vscode-bash style exists even if external styles are missing
-\makeatletter
-\@ifundefined{lst@style@vscode-bash}{
-  \lstdefinestyle{vscode-bash}{
-    style=vscode-java,
-    language=sh
-  }
-}{}
-\makeatother
 
 % Pandoc Highlighting
 $if(highlighting-macros)$
@@ -227,51 +184,6 @@ $else$
 }{}
 \makeatother
 $endif$
-
-% Language definitions
-\lstdefinelanguage{JavaScript}{
-  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, const, let, async, await, class, extends, export, import, from},
-  keywordstyle=\color{listing-keyword}\bfseries,
-  ndkeywords={class, export, boolean, throw, implements, import, this},
-  ndkeywordstyle=\color{listing-keyword-2}\bfseries,
-  identifierstyle=\color{listing-identifier},
-  sensitive=false,
-  comment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  commentstyle=\color{listing-comment}\ttfamily,
-  stringstyle=\color{listing-string}\ttfamily,
-  morestring=[b]',
-  morestring=[b]"
-}
-
-\lstdefinelanguage{TypeScript}{
-  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, const, let, async, await, class, extends, export, import, from, type, interface, enum, namespace, public, private, protected, readonly},
-  keywordstyle=\color{listing-keyword}\bfseries,
-  ndkeywords={class, export, boolean, throw, implements, import, this, string, number, any, void, never},
-  ndkeywordstyle=\color{listing-keyword-2}\bfseries,
-  identifierstyle=\color{listing-identifier},
-  sensitive=false,
-  comment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  commentstyle=\color{listing-comment}\ttfamily,
-  stringstyle=\color{listing-string}\ttfamily,
-  morestring=[b]',
-  morestring=[b]"
-}
-
-\lstdefinelanguage{Python}{
-  keywords={and, as, assert, break, class, continue, def, del, elif, else, except, False, finally, for, from, global, if, import, in, is, lambda, None, nonlocal, not, or, pass, raise, return, True, try, while, with, yield},
-  keywordstyle=\color{listing-keyword}\bfseries,
-  ndkeywords={self, cls},
-  ndkeywordstyle=\color{listing-keyword-2}\bfseries,
-  identifierstyle=\color{listing-identifier},
-  sensitive=true,
-  comment=[l]{\#},
-  commentstyle=\color{listing-comment}\ttfamily,
-  stringstyle=\color{listing-string}\ttfamily,
-  morestring=[b]',
-  morestring=[b]"
-}
 
 % =========================================================================
 % GRAPHICS & FIGURES
