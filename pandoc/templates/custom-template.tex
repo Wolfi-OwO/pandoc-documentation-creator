@@ -7,8 +7,6 @@
   numbers=noenddot,
   toc=bibliographynumbered
 ]{scrartcl}
-
-% =========================================================================
 % Modern Typography & Geometry
 % =========================================================================
 \usepackage[a4paper, left=2cm, right=2cm, top=2.5cm, bottom=2.5cm, includehead, includefoot]{geometry}
@@ -20,7 +18,13 @@
 \usepackage{framed}
 \makeatletter
 \@ifundefined{Highlighting}{
-  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},fontsize=\small}
+  % Define the Highlighting verbatim environment with line-wrapping
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{
+    commandchars=\\\{\},
+    fontsize=\small,
+    breaklines=true,
+    breakanywhere=true
+  }
 }{}
 \makeatother
 \emergencystretch=4em
@@ -69,6 +73,16 @@
 \usepackage{xcolor}
 \definecolor{codebg}{HTML}{F7F7F7}
 \definecolor{codeframe}{HTML}{B3B2B3}
+\lstset{%
+  basicstyle=\ttfamily\small,%
+  breaklines=true,% allow automatic line breaking
+  breakatwhitespace=true,% prefer to break at whitespace
+  breakautoindent=true,% keep indent after break
+  postbreak=\mbox{\textcolor{gray}{\(\hookrightarrow\)}\space},%
+  backgroundcolor=\color{codebg},%
+  rulecolor=\color{codeframe},%
+  xleftmargin=6pt, xrightmargin=6pt%
+}
 $if(highlighting-macros)$
 $highlighting-macros$
 $endif$
@@ -101,6 +115,12 @@ $endif$
 % p{(\linewidth - 4\tabcolsep) * \real{0.1938}}. If \real is not
 % defined by the engine, make it a no-op that returns its numeric arg.
 \providecommand{\real}[1]{#1}
+
+% Improve table row spacing to avoid visual overlap when cells have
+% different internal minipage baselines (prevents text from overlapping
+% adjacent columns). Adjust as needed.
+\setlength{\extrarowheight}{2pt}
+\renewcommand{\arraystretch}{1.15}
 
 \makeatletter
 \patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}

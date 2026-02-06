@@ -13,13 +13,19 @@ HIGHLIGHT_THEME="${HIGHLIGHT_THEME:-/data/pandoc/styles/code/vscode-light.theme}
 KROKI_FILTER="${KROKI_FILTER:-/usr/local/bin/pandoc-kroki-filter}"
 
 if [ ! -f "${TEMPLATE}" ]; then
-    TEMPLATE="/usr/local/share/pandoc/templates/custom-template.tex"
+    echo "ERROR: Template not found at ${TEMPLATE}"
+    echo "Ensure the repo is mounted to /data and the template exists."
+    exit 1
 fi
 if [ ! -f "${HEADER}" ]; then
-    HEADER="/usr/local/share/pandoc/templates/header.tex"
+    echo "ERROR: Header not found at ${HEADER}"
+    echo "Ensure the repo is mounted to /data and the header exists."
+    exit 1
 fi
 if [ ! -f "${HIGHLIGHT_THEME}" ]; then
-    HIGHLIGHT_THEME="/usr/local/share/pandoc/styles/code/vscode-light.theme"
+    echo "ERROR: Highlight theme not found at ${HIGHLIGHT_THEME}"
+    echo "Ensure the repo is mounted to /data and the theme exists."
+    exit 1
 fi
 
 mkdir -p "${BUILD_DIR}"
@@ -84,6 +90,21 @@ echo "Header: ${HEADER}"
 echo "Code caption filter: ${CODE_CAPTION_FILTER}"
 echo "Input files: $@"
 echo "Working directory: $(pwd)"
+
+echo 'pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
+    ${META_ARG} \
+    ${TEMPLATE_ARG} \
+    ${HEADER_ARG} \
+    ${HIGHLIGHT_ARG} \
+    ${KROKI_ARG} \
+    --to=latex \
+    --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
+    --standalone \
+    --verbose \
+    ${CODE_CAPTION_ARG} \
+    ${PANDOC_EXTRA_ARGS} \
+    "$@" \
+    2>&1'
 
 # REMOVED --biblatex from this command!
 (cd "${BUILD_DIR}" && pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
