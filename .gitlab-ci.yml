@@ -164,7 +164,7 @@ container_scan:
         --format template --template "@/contrib/gitlab.tpl" \
         --output gl-container-scanning-report.json \
         --severity CRITICAL,HIGH,MEDIUM \
-        --exit-code 0 \
+        --exit-code 1 \
         $IGNORE_FILE_ARG \
         --input pandoc-image.tar
 
