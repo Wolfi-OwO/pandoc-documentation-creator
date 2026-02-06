@@ -1,8 +1,7 @@
 stages:
   - validate_security
   - build
-  - scan
-  - test
+  - scan_and_test
   - release
 
 variables:
@@ -138,7 +137,7 @@ build_docker:
 # Container Scanning (Trivy)
 # --------------------
 container_scan:
-  stage: scan
+  stage: scan_and_test
   image: docker:24
   services:
     - docker:24-dind
@@ -181,7 +180,7 @@ container_scan:
 # Test Docker Image
 # --------------------
 test_docker:
-  stage: test
+  stage: scan_and_test
   image: docker:24
   services:
     - docker:24-dind
