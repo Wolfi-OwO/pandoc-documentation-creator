@@ -35,15 +35,16 @@ mkdir -p "${PROJECT_DIR}/out/build"
 # Build PDF from example files
 echo -e "${YELLOW}Generating PDF from examples...${NC}"
 
-docker run --rm \
+if docker run --rm \
     -v "${PROJECT_DIR}:/data" \
     --entrypoint=/bin/sh \
     -e OUTPUT_NAME="${OUTPUT_NAME}" \
     -e INPUT_FILES="/data/examples/advanced/deckblatt.md /data/examples/advanced/documentation.md" \
+    -e TEMPLATE="/usr/local/share/pandoc/templates/custom-template.tex" \
+    -e HEADER="/usr/local/share/pandoc/templates/header.tex" \
+    -e HIGHLIGHT_THEME="/usr/local/share/pandoc/styles/code/vscode-light.theme" \
     "${IMAGE_NAME}" \
-    -c "/data/buildPDF"
-
-if [ $? -eq 0 ]; then
+    -c "/data/buildPDF"; then
     echo ""
     echo -e "${GREEN}Build successful!${NC}"
     echo -e "${GREEN}Output: out/${OUTPUT_NAME}.pdf${NC}"

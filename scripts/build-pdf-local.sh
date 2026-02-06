@@ -8,12 +8,12 @@ INPUT_FILES=("${PROJECT_DIR}/examples/advanced/deckblatt.md" "${PROJECT_DIR}/exa
 OUTPUT_DIR="${PROJECT_DIR}/out"
 BUILD_DIR="${OUTPUT_DIR}/build"
 OUTPUT_NAME="documentation"
-TEMPLATE="${PROJECT_DIR}/pandoc/templates/custom-template.tex"
-HEADER="${PROJECT_DIR}/pandoc/templates/header.tex"
-HIGHLIGHT_THEME="${PROJECT_DIR}/pandoc/styles/code/vscode-light.theme"
+TEMPLATE="/usr/local/share/pandoc/templates/custom-template.tex"
+HEADER="/usr/local/share/pandoc/templates/header.tex"
+HIGHLIGHT_THEME="/usr/local/share/pandoc/styles/code/vscode-light.theme"
 KROKI_FILTER="${PROJECT_DIR}/docker/scripts/pandoc-kroki-filter.py"
-CODE_CAPTION_FILTER="${PROJECT_DIR}/pandoc/filters/code-caption.lua"
-COMMON_ARGS="-interaction=nonstopmode -halt-on-error"
+CODE_CAPTION_FILTER="/usr/local/share/pandoc/filters/code-caption.lua"
+COMMON_ARGS=(-interaction=nonstopmode -halt-on-error)
 
 mkdir -p "${BUILD_DIR}"
 
@@ -34,15 +34,17 @@ mkdir -p "${BUILD_DIR}"
 
 # 3. Compile TeX to PDF
 cd "${BUILD_DIR}"
-xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+xelatex "${COMMON_ARGS[@]}" "${OUTPUT_NAME}.tex"
 
-# Bibtex check
-if grep -q "citation" "${OUTPUT_NAME}.aux" || grep -q "bibdata" "${OUTPUT_NAME}.aux"; then
+# Bibliography
+if [ -f "${OUTPUT_NAME}.bcf" ] && command -v biber >/dev/null 2>&1; then
+  biber "${OUTPUT_NAME}" || true
+elif grep -q "citation" "${OUTPUT_NAME}.aux" || grep -q "bibdata" "${OUTPUT_NAME}.aux"; then
   bibtex "${OUTPUT_NAME}" || true
 fi
 
-xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
-xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
+xelatex "${COMMON_ARGS[@]}" "${OUTPUT_NAME}.tex"
+xelatex "${COMMON_ARGS[@]}" "${OUTPUT_NAME}.tex"
 
 # 4. Move final PDF
 mv -f "${OUTPUT_NAME}.pdf" "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"

@@ -15,7 +15,7 @@ docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
 docker run --rm \
 -v "${PROJECT_DIR}:/data" \
 --entrypoint=/bin/sh \
-"${IMAGE_NAME}" \
+"${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}" \
 -c "/data/buildPDF"
 
 ```
