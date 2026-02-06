@@ -1,15 +1,18 @@
-% Modern Pandoc LaTeX Template
+% =========================================================================
+% COMPREHENSIVE MODERN PANDOC LATEX TEMPLATE
+% =========================================================================
 \documentclass[
   paper=a4,
   fontsize=11pt,
   parskip=half,
   headings=standardclasses,
   numbers=noenddot,
-  toc=bibliographynumbered
+  toc=bibliographynumbered,
+  captions=tableheading
 ]{scrartcl}
 
 % =========================================================================
-% Modern Typography & Geometry
+% CORE PACKAGES
 % =========================================================================
 \usepackage[a4paper, left=2cm, right=2cm, top=2.5cm, bottom=2.5cm, includehead, includefoot]{geometry}
 \usepackage{iftex}
@@ -18,11 +21,19 @@
 \usepackage{fancyvrb}
 \usepackage{fvextra}
 \usepackage{framed}
-\emergencystretch=4em
+\usepackage{calc}
+\usepackage{etoolbox}
+
+% Prevent overfull lines
+\emergencystretch=3em
 \sloppy
 \hfuzz=20pt
 \hbadness=9999
+\tolerance=9999
 
+% =========================================================================
+% FONT CONFIGURATION
+% =========================================================================
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
@@ -30,6 +41,7 @@
   \usepackage{lmodern}
   \usepackage{pifont}
   \DeclareUnicodeCharacter{2713}{\ding{51}}
+  \DeclareUnicodeCharacter{2717}{\ding{55}}
 \else
   \usepackage{fontspec}
   \IfFontExistsTF{Source Sans Pro}{
@@ -58,20 +70,123 @@
 \fi
 
 % =========================================================================
-% Code Highlighting (listings)
+% UNIFIED TEXT SIZING
 % =========================================================================
-\usepackage{listings}
-\usepackage{xcolor}
-\IfFileExists{listings-languages.tex}{
-  \input{listings-languages.tex}
-}{
-  \IfFileExists{/usr/local/share/pandoc/templates/listings-languages.tex}{
-    \input{/usr/local/share/pandoc/templates/listings-languages.tex}
-  }{}
-}
+\setkomafont{section}{\Large\bfseries}
+\setkomafont{subsection}{\large\bfseries}
+\setkomafont{subsubsection}{\normalsize\bfseries}
+\setkomafont{paragraph}{\normalsize\bfseries}
+\setkomafont{subparagraph}{\normalsize\itshape}
 
 % =========================================================================
-% Language & Utilities
+% COLOR DEFINITIONS
+% =========================================================================
+\definecolor{headercolor}{RGB}{71,85,119}
+\definecolor{codebg}{HTML}{F7F7F7}
+\definecolor{codeframe}{HTML}{B3B2B3}
+\definecolor{listing-keyword}{HTML}{435489}
+\definecolor{listing-keyword-2}{HTML}{1284CA}
+\definecolor{listing-keyword-3}{HTML}{9137CB}
+\definecolor{listing-identifier}{HTML}{435489}
+\definecolor{listing-string}{HTML}{00999A}
+\definecolor{listing-comment}{HTML}{8E8E8E}
+\definecolor{listing-numbers}{HTML}{B3B2B3}
+\definecolor{listing-text-color}{HTML}{000000}
+\definecolor{table-row-color}{HTML}{F5F5F5}
+\definecolor{table-rule-color}{HTML}{999999}
+\definecolor{blockquote-border}{RGB}{221,221,221}
+\definecolor{blockquote-text}{RGB}{119,119,119}
+\definecolor{caption-color}{HTML}{777777}
+
+% VSCode Light Theme Colors (for listings-languages.tex compatibility)
+\definecolor{vscode-text}{HTML}{000000}
+\definecolor{vscode-keyword}{HTML}{1F4E79}
+\definecolor{vscode-control}{HTML}{AF00DB}
+\definecolor{vscode-string}{HTML}{A31515}
+\definecolor{vscode-comment}{HTML}{008000}
+\definecolor{vscode-number}{HTML}{098658}
+\definecolor{vscode-type}{HTML}{267F99}
+\definecolor{vscode-variable}{HTML}{001080}
+\definecolor{vscode-function}{HTML}{795E26}
+\definecolor{vscode-linenumber}{HTML}{888888}
+\definecolor{vscode-frame}{HTML}{B3B2B3}
+\definecolor{vscode-background}{HTML}{FFFFFF}
+
+% =========================================================================
+% HYPERLINKS - BLACK TOC
+% =========================================================================
+\usepackage{bookmark}
+\usepackage{xurl}
+\urlstyle{same}
+
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{naturalnames}{hyperref}
+
+\usepackage{hyperref}
+
+\hypersetup{
+  breaklinks=true,
+  bookmarksnumbered=true,
+  bookmarksopen=true,
+  bookmarksopenlevel=2,
+  pdfborder={0 0 0},
+  unicode=true,
+  colorlinks=true,
+  linkcolor=black,
+  anchorcolor=black,
+  citecolor=black,
+  filecolor=black,
+  menucolor=black,
+  runcolor=black,
+  urlcolor={blue!60!black}
+}
+
+$if(title-meta)$
+\hypersetup{pdftitle={$title-meta$}}
+$endif$
+$if(author-meta)$
+\hypersetup{pdfauthor={$author-meta$}}
+$endif$
+$if(subject)$
+\hypersetup{pdfsubject={$subject$}}
+$endif$
+$if(keywords)$
+\hypersetup{pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$}}
+$endif$
+
+% =========================================================================
+% CODE HIGHLIGHTING & LISTINGS
+% =========================================================================
+\usepackage{listings}
+
+% Load external language definitions if available
+\IfFileExists{/usr/local/share/pandoc/templates/listings-languages.tex}{
+  \input{/usr/local/share/pandoc/templates/listings-languages.tex}
+}
+
+% Pandoc Highlighting
+$if(highlighting-macros)$
+$highlighting-macros$
+$else$
+\makeatletter
+\@ifundefined{Highlighting}{
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{
+    commandchars=\\\{\},
+    fontsize=\small,
+    breaklines=true,
+    breakanywhere=true,
+    breaksymbol=\color{gray}\tiny\ensuremath{\hookrightarrow},
+    breakafter=-/.,
+    showspaces=false,
+    showtabs=false
+  }
+}{}
+\makeatother
+$endif$
+
+% =========================================================================
+% GRAPHICS & FIGURES
 % =========================================================================
 \usepackage{graphicx}
 \setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
@@ -79,58 +194,92 @@
 \usepackage{float}
 \floatplacement{figure}{H}
 
+$if(svg)$
+\usepackage{svg}
+$endif$
+
+% Caption styling
+\usepackage[
+  font={stretch=1.2},
+  textfont={color=caption-color},
+  position=top,
+  skip=4mm,
+  labelfont=bf,
+  singlelinecheck=false,
+  justification=raggedright
+]{caption}
+\setcapindent{0em}
+
+$if(subfigure)$
+\usepackage{subcaption}
+$endif$
+
+% =========================================================================
+% TABLES
+% =========================================================================
 \usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{colortbl}
-\usepackage{etoolbox}
+\usepackage{tabularx}
+
+\providecommand{\real}[1]{#1}
+
+% Custom column types
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+% Table styling
+\arrayrulecolor{table-rule-color}
+\setlength\heavyrulewidth{0.3ex}
+\setlength{\extrarowheight}{3pt}
+\renewcommand{\arraystretch}{1.3}
+
+% Alternating row colors
+\let\oldlongtable\longtable
+\let\endoldlongtable\endlongtable
+\renewenvironment{longtable}{%
+  \rowcolors{2}{white}{table-row-color}%
+  \oldlongtable
+}{%
+  \endoldlongtable
+}
 
 \makeatletter
 \patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
 \makeatother
 
 % =========================================================================
-% Links & Metadata
-% =========================================================================
-\usepackage{hyperref}
-\hypersetup{
-  breaklinks=true,
-  pdfauthor={$author-meta$},
-  pdftitle={$title-meta$},
-  colorlinks=true,
-  linkcolor=blue!60!black,
-  citecolor=green!60!black,
-  urlcolor=blue!60!black,
-}
-
-% =========================================================================
-% Modern Blockquotes with mdframed
+% BLOCKQUOTES
 % =========================================================================
 \usepackage{mdframed}
 \usepackage{tikz}
 
-% Define Shaded to use a light-gray frame
-\newenvironment{Shaded}{%
-  \begin{mdframed}[
-    backgroundcolor=codebg,
-    linecolor=codeframe,
-    linewidth=0.5pt,
-    roundcorner=2pt,
-    skipabove=6pt,
-    skipbelow=6pt,
-    innerleftmargin=10pt,
-    innerrightmargin=10pt,
-    innertopmargin=8pt,
-    innerbottommargin=8pt
-  ]
-}{%
-  \end{mdframed}
-}
+% Shaded environment
+\makeatletter
+\@ifundefined{Shaded}{
+  \newenvironment{Shaded}{%
+    \begin{mdframed}[
+      backgroundcolor=codebg,
+      linecolor=codeframe,
+      linewidth=0.5pt,
+      roundcorner=2pt,
+      skipabove=6pt,
+      skipbelow=6pt,
+      innerleftmargin=10pt,
+      innerrightmargin=10pt,
+      innertopmargin=8pt,
+      innerbottommargin=8pt
+    ]
+  }{%
+    \end{mdframed}
+  }
+}{}
+\makeatother
 
-\newcommand{\CodeCaption}[1]{\begin{center}\small\textit{#1}\end{center}}  % FIXED: #1 not ##1
-
-% Fixed quotebox definition without shadow parameter
+% Quotebox
 \newmdenv[
   linewidth=0pt,
   leftline=true,
@@ -146,38 +295,128 @@
   fontcolor=black!80
 ]{quotebox}
 
-% Redefine quote environment
 \renewenvironment{quote}{\begin{quotebox}}{\end{quotebox}}
 
-% Define passthrough command for inline code
-\providecommand{\passthrough}[1]{\texttt{#1}}  % FIXED: #1 not ##1
-\providecommand{\lstinline}[1]{\texttt{#1}}    % FIXED: #1 not ##1
+% Additional boxes
+\newmdenv[
+  backgroundcolor=yellow!10,
+  linecolor=yellow!50,
+  linewidth=2pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  roundcorner=3pt
+]{warningbox}
 
-% Define tightlist command (used by Pandoc for compact lists)
+\newmdenv[
+  backgroundcolor=green!10,
+  linecolor=green!50,
+  linewidth=2pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  roundcorner=3pt
+]{successbox}
+
+\newmdenv[
+  backgroundcolor=red!10,
+  linecolor=red!50,
+  linewidth=2pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  roundcorner=3pt
+]{errorbox}
+
+\newmdenv[
+  backgroundcolor=blue!10,
+  linecolor=blue!50,
+  linewidth=2pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  roundcorner=3pt
+]{infobox}
+
+% =========================================================================
+% PANDOC COMMANDS - VOLLSTÄNDIG KORRIGIERT
+% =========================================================================
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
-% Define strikethrough command
+% =========================================================================
+% INLINE CODE
+% =========================================================================
+\newcommand{\inlinecode}[1]{{\ttfamily\color{blue!60!black}#1}}
+\renewcommand{\texttt}[1]{\inlinecode{#1}}
+\providecommand{\passthrough}[1]{\inlinecode{#1}}
+\lstdefinestyle{inlinecode}{
+  basicstyle=\ttfamily\color{blue!60!black},
+  keywordstyle=\ttfamily\color{blue!60!black},
+  stringstyle=\ttfamily\color{blue!60!black},
+  commentstyle=\ttfamily\color{blue!60!black},
+  identifierstyle=\ttfamily\color{blue!60!black},
+  showstringspaces=false,
+  language={}
+}
+\makeatletter
+\let\origlstinline\lstinline
+\renewcommand{\lstinline}{\origlstinline[style=inlinecode]}
+\makeatother
+
+% Strikethrough
 \IfFileExists{ulem.sty}{
   \usepackage[normalem]{ulem}
 }{}
 \makeatletter
 \@ifpackageloaded{ulem}{
-  \DeclareRobustCommand{\st}[1]{\sout{#1}}  % FIXED: #1 not ##1
+  \DeclareRobustCommand{\st}[1]{\sout{#1}}
 }{
   \DeclareRobustCommand{\st}{\@firstofone}
 }
 \makeatother
 
-% =========================================================================
-% Additional Pandoc Commands
-% =========================================================================
-
 % Subscript and superscript
-\newcommand{\textsubscr}[1]{\ensuremath{_{\text{#1}}}}  % FIXED: #1 not ##1
-\newcommand{\textsuperscr}[1]{\ensuremath{^{\text{#1}}}} % FIXED: #1 not ##1
+\newcommand{\textsubscr}[1]{\ensuremath{_{\text{#1}}}}
+\newcommand{\textsuperscr}[1]{\ensuremath{^{\text{#1}}}}
 
-% Line blocks (preserve line breaks)
+% Code caption
+\newcommand{\CodeCaption}[1]{\begin{center}\small\textit{#1}\end{center}}
+
+
+% =========================================================================
+% MATHEMATICS
+% =========================================================================
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+
+% =========================================================================
+% LISTS
+% =========================================================================
+\usepackage{enumitem}
+\setlist{nosep}
+
+% =========================================================================
+% BIBLIOGRAPHY
+% =========================================================================
+$if(natbib)$
+\usepackage[$natbiboptions$]{natbib}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
+$endif$
+
+$if(biblatex)$
+\usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
+$for(bibliography)$
+\addbibresource{$bibliography$}
+$endfor$
+$endif$
+
 $if(csl-refs)$
 \newlength{\cslhangindent}
 \setlength{\cslhangindent}{1.5em}
@@ -190,71 +429,63 @@ $if(csl-refs)$
     \setlength{\parsep}{0pt}
     \setlength{\itemsep}{0.5\baselineskip}
     \setlength{\labelsep}{\csllabelwidth}
-    \setlength{\labelwidth}{\csllabelwidth}}}
-  {\end{list}}
+    \setlength{\labelwidth}{\csllabelwidth}}
+  }{\end{list}}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 $endif$
 
 % =========================================================================
-% Modern Headers & Footers
+% HEADERS & FOOTERS
 % =========================================================================
 \usepackage[headsepline,footsepline]{scrlayer-scrpage}
 \clearpairofpagestyles
 
-% Modern color scheme
-\definecolor{headercolor}{RGB}{71,85,119}
-
-% Header styling
 \ihead{\textcolor{headercolor}{\small\textit{$title$}}}
-\ohead{\textcolor{headercolor}{\small$date$}}
+\ohead{\textcolor{headercolor}{\small $date$}}
 \cfoot{\textcolor{headercolor}{\thepage}}
 
-% Line styling
 \setkomafont{headsepline}{\color{headercolor}}
 \setkomafont{footsepline}{\color{headercolor}}
 
 % =========================================================================
-% Document Start
+% DOCUMENT START
 % =========================================================================
 \begin{document}
 
 $if(title)$
-% Modern title page design
+% Title page
 \begin{titlepage}
 \begin{center}
 
-% Top spacing
 \vspace*{3cm}
 
-% Title with modern styling
 {\Huge\bfseries\sffamily\color{headercolor} $title$}
 
 \vspace{1.5em}
 
-% Subtitle
 $if(subtitle)$
 {\Large\sffamily\color{black!70} $subtitle$}
 \vspace{1em}
 $endif$
 
-% Decorative line
 \vspace{2em}
 {\color{headercolor}\rule{0.7\textwidth}{2pt}}
 \vspace{2em}
 
-% Author
 $if(author)$
 {\large\sffamily $for(author)$$author$$sep$, $endfor$}
 \vspace{1em}
 $endif$
 
-% Date
 $if(date)$
 {\large\sffamily\color{black!60} $date$}
 $endif$
 
 \vfill
 
-% Bottom decorative element
 {\color{headercolor}\rule{0.4\textwidth}{1pt}}
 
 \end{center}
@@ -263,19 +494,31 @@ $endif$
 $endif$
 
 $if(toc)$
-% Modern TOC styling
-\hypersetup{linkcolor=headercolor}
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
 \newpage
 $endif$
 
 $if(lof)$
-\hypersetup{linkcolor=headercolor}
 \listoffigures
 \newpage
 $endif$
 
+$if(lot)$
+\listoftables
+\newpage
+$endif$
+
 $body$
+
+$if(natbib)$
+$if(bibliography)$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+$endif$
+$endif$
+
+$if(biblatex)$
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+$endif$
 
 \end{document}

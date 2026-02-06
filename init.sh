@@ -132,6 +132,9 @@ create_new_project() {
     # Help file
     print_info "Creating help documentation..."
     if download_or_copy_template "Help.md.template" "${target_dir}/Help.md"; then
+        if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
+            sed -i "s#\${IMAGE_TAG}#${VERSION}#g" "${target_dir}/Help.md" || true
+        fi
         print_success "Created Help.md"
     else
         create_minimal_help "${target_dir}/Help.md"
@@ -176,13 +179,14 @@ monofont: "Liberation Mono"
 papersize: a4
 fontsize: 11pt
 linestretch: 1.15
-linkcolor: blue
-urlcolor: blue
+linkcolor: black
+urlcolor: black
 toc-title: "Table of Contents"
 numbersections: true
 linestretch: 1.15
-linkcolor: blue
-urlcolor: blue
+linkcolor: black
+urlcolor: black
+listings: true
 EOF
     print_success "Created minimal metadata.yaml"
 }
@@ -311,7 +315,7 @@ EOF
 pull_with_spinner() {
     local image="$1"
     local pid
-    local spin='|/-\'
+    local spin="|/-\\"
     local i=0
 
     docker pull "$image" >/dev/null 2>&1 &
@@ -351,15 +355,15 @@ check_docker_image() {
         print_info "Using local image"
     fi
     
-    # Get version from Docker image
-    IMAGE_VERSION=$(docker inspect --format='{{index .Config.Labels "org.opencontainers.image.version"}}' "${IMAGE_REGISTRY}:latest" 2>/dev/null || echo "unknown")
-    
-    if [ "$IMAGE_VERSION" != "unknown" ] && [ -n "$IMAGE_VERSION" ]; then
-        VERSION="$IMAGE_VERSION"
-        print_info "Using image version: ${VERSION}"
-    else
-        print_info "Could not determine image version, using default: ${VERSION}"
-    fi
+        # Get version from Docker image
+        IMAGE_VERSION=$(docker inspect --format='{{index .Config.Labels "org.opencontainers.image.version"}}' "${IMAGE_REGISTRY}:latest" 2>/dev/null || echo "unknown")
+        
+        if [ "$IMAGE_VERSION" != "unknown" ] && [ -n "$IMAGE_VERSION" ]; then
+            VERSION="$IMAGE_VERSION"
+            print_info "Using image version: ${VERSION}"
+        else
+            print_info "Could not determine image version, using default: ${VERSION}"
+        fi
     
     # Set the full image name with version if available
     if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
@@ -367,6 +371,7 @@ check_docker_image() {
     else
         IMAGE_NAME="${IMAGE_REGISTRY}:latest"
     fi
+    print_info "Selected image: ${IMAGE_NAME}"
 }
 
 # Main script logic

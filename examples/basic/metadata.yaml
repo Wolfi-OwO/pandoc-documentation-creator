@@ -24,9 +24,9 @@ fontsize: 11pt
 linestretch: 1.15
 
 # Colors
-linkcolor: blue
-urlcolor: blue
-citecolor: brown
+linkcolor: black
+urlcolor: black
+citecolor: black
 toccolor: black
 
 # Abstract (optional)

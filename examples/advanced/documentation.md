@@ -1,14 +1,20 @@
-# Typografie & Layout
+---
+bibliography: references.bib
+---
 
-Dies ist ein Test für das Schriftbild. Wir prüfen hier, ob die Koma-Script Klasse (`scrartcl`) korrekt geladen wurde und die Abstände stimmen.
+# Typography & Layout
 
-> **Blockquote Test:** Dies ist ein Test für Zitate. In deinem Template sollte dies durch das `mdframed` Paket mit einem vertikalen grauen Balken am linken Rand hervorgehoben werden.
+This is a test for the typography. We check here whether the KOMA-Script class (`scrartcl`) is loaded correctly and the spacing is correct.
 
-# Code-Beispiele
+Example of a citation with BibTeX: see @knuth1984.
 
-## Referenzen auf Code-Blöcke
+> **Blockquote Test:** This is a test for quotations. In your template, this should be highlighted by the `mdframed` package with a vertical gray bar on the left edge.
 
-Du kannst auf Code-Blöcke über deren ID verlinken. Beispiel: Siehe [Code C# Beispiel](#code-csharp).
+# Code Examples
+
+## References to Code Blocks
+
+You can link to code blocks by their ID. Example: see [C# code example](#code-csharp).
 
 ## C# Example
 
@@ -18,14 +24,14 @@ using System;
 public class Program {
     public static void Main() {
         if (true) {
-            Console.WriteLine("Alles formatiert und in einer Box!");
+            Console.WriteLine("Everything formatted and in a box!");
         }
     }
 }
 
 public class MyClass {
     public static void Main() {
-        Console.WriteLine("Hallo MyClass");
+        Console.WriteLine("Hello MyClass");
     }
 }
 ```
@@ -39,11 +45,11 @@ const app = express();
 const PORT = 3000;
 
 app.get('/', (req, res) => {
-    res.send('Hello, World!');
+  res.send('Hello, World!');
 });
 
 app.listen(PORT, () => {
-    console.log(`Server läuft auf http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
 ```
 
@@ -299,19 +305,147 @@ services:
 }
 ```
 
-# Mathematik
+## C Example
 
-LaTeX-Support Test für komplexe Formeln (Standardabweichung): $$ \sigma = \sqrt{\frac{(p - o)^2}{36}} $$
+```c{#code-c .c caption="C example"}
+#include <stdio.h>
 
-# Diagramme
+int main(void) {
+    int numbers[] = {1, 2, 3, 4, 5};
+    int sum = 0;
+
+    for (int i = 0; i < 5; i++) {
+        sum += numbers[i];
+    }
+
+    printf("Sum: %d\n", sum);
+    return 0;
+}
+```
+
+## C++ Example
+
+```cpp{#code-cpp .cpp caption="C++ example"}
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> values{1, 2, 3, 4, 5};
+    int sum = 0;
+
+    for (int v : values) {
+        sum += v;
+    }
+
+    std::cout << "Sum: " << sum << std::endl;
+    return 0;
+}
+```
+
+## Kotlin Example
+
+```kotlin{#code-kotlin .kt caption="Kotlin example"}
+data class User(val id: Int, val name: String)
+
+fun main() {
+    val users = listOf(User(1, "Ada"), User(2, "Linus"))
+    val names = users.map { it.name }.joinToString(", ")
+    println("Users: $names")
+}
+```
+
+## Swift Example
+
+```swift{#code-swift .swift caption="Swift example"}
+struct Product {
+    let name: String
+    let price: Double
+}
+
+let products = [Product(name: "Book", price: 12.5), Product(name: "Pen", price: 2.0)]
+let total = products.reduce(0.0) { $0 + $1.price }
+print("Total: \(total)")
+```
+
+## HTML Example
+
+```html{#code-html .html caption="HTML example"}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Example</title>
+  </head>
+  <body>
+    <main>
+      <h1>Hello, HTML</h1>
+      <p>This is a simple document.</p>
+    </main>
+  </body>
+</html>
+```
+
+## CSS Example
+
+```css{#code-css .css caption="CSS example"}
+:root {
+  --primary: #1f4e79;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  color: #111;
+  margin: 2rem;
+}
+
+h1 {
+  color: var(--primary);
+}
+```
+
+## XML Example
+
+```xml{#code-xml .xml caption="XML example"}
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <book id="bk101">
+    <title>Example</title>
+    <author>Jane Doe</author>
+  </book>
+</catalog>
+```
+
+## R Example
+
+```r{#code-r .r caption="R example"}
+numbers <- c(1, 2, 3, 4, 5)
+sum_value <- sum(numbers)
+mean_value <- mean(numbers)
+cat("Sum:", sum_value, "Mean:", mean_value, "\n")
+```
+
+## MATLAB Example
+
+```matlab{#code-matlab .m caption="MATLAB example"}
+values = [1, 2, 3, 4, 5];
+total = sum(values);
+average = mean(values);
+fprintf('Sum: %d, Mean: %.2f\n', total, average);
+```
+
+# Mathematics
+
+LaTeX support test for complex formulas (standard deviation): $$ \sigma = \sqrt{\frac{(p - o)^2}{36}} $$
+
+# Diagrams
 
 ## PlantUML
 
 ```plantuml{#code-plantuml .plantuml caption="PlantUML diagram"}
 @startuml
-[Anwender] -> (Pandoc): Markdown Input
+[User] -> (Pandoc): Markdown Input
 (Pandoc) -> [PDF Engine]: LaTeX Code
-[PDF Engine] -> (Ergebnis): PDF Datei
+[PDF Engine] -> (Result): PDF File
 @enduml
 ```
 
@@ -325,3 +459,31 @@ graph LR
 ```
 
 Thanks for your trust in testing this advanced documentation example!
+
+# Tables
+
+| Language   | Code Example      | Description                                    |
+|------------|-------------------|------------------------------------------------|
+| C#         | `code-csharp`     | A simple C# program                            |
+| JavaScript | `code-js`         | A simple Express.js server                     |
+| Python     | `code-python`     | A simple Fibonacci program                     |
+| Java       | `code-java`       | A simple Java HelloWorld                       |
+| TypeScript | `code-typescript` | A simple TypeScript example                    |
+| Go         | `code-go`         | A simple Go goroutine example                  |
+| Rust       | `code-rust`       | A simple Rust example                          |
+| PHP        | `code-php`        | A simple PHP database connection example       |
+| Ruby       | `code-ruby`       | A simple Ruby BankAccount example              |
+| SQL        | `code-sql`        | Aggregation query with joins                   |
+| Bash       | `code-bash`       | Backup script example                          |
+| Dockerfile | `code-dockerfile` | Docker image build example                     |
+| YAML       | `code-yaml`       | Service definitions for containers             |
+| JSON       | `code-json`       | Package metadata example                       |
+| C          | `code-c`          | Array summation example                        |
+| C++        | `code-cpp`        | Vector summation example                       |
+| Kotlin     | `code-kotlin`     | Data class and list mapping example            |
+| Swift      | `code-swift`      | Reduce over structs example                    |
+| HTML       | `code-html`       | Basic page structure                           |
+| CSS        | `code-css`        | Simple styling example                         |
+| XML        | `code-xml`        | Basic catalog structure                        |
+| R          | `code-r`          | Sum and mean calculation                       |
+| MATLAB     | `code-matlab`     | Sum and mean calculation                       |
