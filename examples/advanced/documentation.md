@@ -305,6 +305,134 @@ services:
 }
 ```
 
+## C Example
+
+```c{#code-c .c caption="C example"}
+#include <stdio.h>
+
+int main(void) {
+    int numbers[] = {1, 2, 3, 4, 5};
+    int sum = 0;
+
+    for (int i = 0; i < 5; i++) {
+        sum += numbers[i];
+    }
+
+    printf("Sum: %d\n", sum);
+    return 0;
+}
+```
+
+## C++ Example
+
+```cpp{#code-cpp .cpp caption="C++ example"}
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> values{1, 2, 3, 4, 5};
+    int sum = 0;
+
+    for (int v : values) {
+        sum += v;
+    }
+
+    std::cout << "Sum: " << sum << std::endl;
+    return 0;
+}
+```
+
+## Kotlin Example
+
+```kotlin{#code-kotlin .kt caption="Kotlin example"}
+data class User(val id: Int, val name: String)
+
+fun main() {
+    val users = listOf(User(1, "Ada"), User(2, "Linus"))
+    val names = users.map { it.name }.joinToString(", ")
+    println("Users: $names")
+}
+```
+
+## Swift Example
+
+```swift{#code-swift .swift caption="Swift example"}
+struct Product {
+    let name: String
+    let price: Double
+}
+
+let products = [Product(name: "Book", price: 12.5), Product(name: "Pen", price: 2.0)]
+let total = products.reduce(0.0) { $0 + $1.price }
+print("Total: \(total)")
+```
+
+## HTML Example
+
+```html{#code-html .html caption="HTML example"}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Example</title>
+  </head>
+  <body>
+    <main>
+      <h1>Hello, HTML</h1>
+      <p>This is a simple document.</p>
+    </main>
+  </body>
+</html>
+```
+
+## CSS Example
+
+```css{#code-css .css caption="CSS example"}
+:root {
+  --primary: #1f4e79;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  color: #111;
+  margin: 2rem;
+}
+
+h1 {
+  color: var(--primary);
+}
+```
+
+## XML Example
+
+```xml{#code-xml .xml caption="XML example"}
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <book id="bk101">
+    <title>Example</title>
+    <author>Jane Doe</author>
+  </book>
+</catalog>
+```
+
+## R Example
+
+```r{#code-r .r caption="R example"}
+numbers <- c(1, 2, 3, 4, 5)
+sum_value <- sum(numbers)
+mean_value <- mean(numbers)
+cat("Sum:", sum_value, "Mean:", mean_value, "\n")
+```
+
+## MATLAB Example
+
+```matlab{#code-matlab .m caption="MATLAB example"}
+values = [1, 2, 3, 4, 5];
+total = sum(values);
+average = mean(values);
+fprintf('Sum: %d, Mean: %.2f\n', total, average);
+```
+
 # Mathematics
 
 LaTeX support test for complex formulas (standard deviation): $$ \sigma = \sqrt{\frac{(p - o)^2}{36}} $$
@@ -345,4 +473,17 @@ Thanks for your trust in testing this advanced documentation example!
 | Rust       | `code-rust`       | A simple Rust example                          |
 | PHP        | `code-php`        | A simple PHP database connection example       |
 | Ruby       | `code-ruby`       | A simple Ruby BankAccount example              |
-| Test row to see how the table reacts to extremely long text in a small column.  | —                 | This row verifies table formatting             |
+| SQL        | `code-sql`        | Aggregation query with joins                   |
+| Bash       | `code-bash`       | Backup script example                          |
+| Dockerfile | `code-dockerfile` | Docker image build example                     |
+| YAML       | `code-yaml`       | Service definitions for containers             |
+| JSON       | `code-json`       | Package metadata example                       |
+| C          | `code-c`          | Array summation example                        |
+| C++        | `code-cpp`        | Vector summation example                       |
+| Kotlin     | `code-kotlin`     | Data class and list mapping example            |
+| Swift      | `code-swift`      | Reduce over structs example                    |
+| HTML       | `code-html`       | Basic page structure                           |
+| CSS        | `code-css`        | Simple styling example                         |
+| XML        | `code-xml`        | Basic catalog structure                        |
+| R          | `code-r`          | Sum and mean calculation                       |
+| MATLAB     | `code-matlab`     | Sum and mean calculation                       |

@@ -161,14 +161,17 @@ $endif$
 \usepackage{listings}
 
 % Load external language definitions if available
-\IfFileExists{/data/pandoc/templates/listings-languages.tex}{
-  \input{/data/pandoc/templates/listings-languages.tex}
+\IfFileExists{/usr/local/share/pandoc/templates/listings-languages.tex}{
+  \input{/usr/local/share/pandoc/templates/listings-languages.tex}
 }{
-  \IfFileExists{listings-languages.tex}{
-    \input{listings-languages.tex}
+  \IfFileExists{/data/pandoc/templates/listings-languages.tex}{
+    \input{/data/pandoc/templates/listings-languages.tex}
   }{
-    % Fallback: Basic configuration if external file not found
-    \lstset{%
+    \IfFileExists{listings-languages.tex}{
+      \input{listings-languages.tex}
+    }{
+      % Fallback: Basic configuration if external file not found
+      \lstset{%
       basicstyle=\ttfamily\small,%
       backgroundcolor=\color{codebg},%
       rulecolor=\color{codeframe},%
@@ -194,9 +197,20 @@ $endif$
       commentstyle=\color{listing-comment},%
       identifierstyle=\color{listing-identifier},%
       numberstyle=\tiny\color{listing-numbers},%
+      }
     }
   }
 }
+
+% Ensure vscode-bash style exists even if external styles are missing
+\makeatletter
+\@ifundefined{lst@style@vscode-bash}{
+  \lstdefinestyle{vscode-bash}{
+    style=vscode-java,
+    language=sh
+  }
+}{}
+\makeatother
 
 % Pandoc Highlighting
 $if(highlighting-macros)$
