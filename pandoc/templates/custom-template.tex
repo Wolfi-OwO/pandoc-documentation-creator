@@ -343,24 +343,30 @@ $endif$
 ]{infobox}
 
 % =========================================================================
-% PANDOC COMMANDS
+% PANDOC COMMANDS - VOLLSTÄNDIG KORRIGIERT
 % =========================================================================
-% =========================================================================
-% PANDOC COMMANDS
-% =========================================================================
-\renewcommand{\texttt}[1]{{\ttfamily\color{blue!60!black} #1}}
-\providecommand{\passthrough}[1]{{\ttfamily\color{blue!60!black} #1}}
-\makeatletter
-\@ifundefined{lstinline}{
-  \newcommand{\lstinline}[1]{{\ttfamily\color{blue!60!black} #1}}
-}{
-  % Force lstinline to also be plain blue (optional)
-  \renewcommand{\lstinline}[1]{{\ttfamily\color{blue!60!black} #1}}
-}
-\makeatother
-
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% =========================================================================
+% INLINE CODE
+% =========================================================================
+\newcommand{\inlinecode}[1]{{\ttfamily\color{blue!60!black}#1}}
+\renewcommand{\texttt}[1]{\inlinecode{#1}}
+\providecommand{\passthrough}[1]{\inlinecode{#1}}
+\lstdefinestyle{inlinecode}{
+  basicstyle=\ttfamily\color{blue!60!black},
+  keywordstyle=\ttfamily\color{blue!60!black},
+  stringstyle=\ttfamily\color{blue!60!black},
+  commentstyle=\ttfamily\color{blue!60!black},
+  identifierstyle=\ttfamily\color{blue!60!black},
+  showstringspaces=false,
+  language={}
+}
+\makeatletter
+\let\origlstinline\lstinline
+\renewcommand{\lstinline}{\origlstinline[style=inlinecode]}
+\makeatother
 
 % Strikethrough
 \IfFileExists{ulem.sty}{
@@ -380,6 +386,7 @@ $endif$
 
 % Code caption
 \newcommand{\CodeCaption}[1]{\begin{center}\small\textit{#1}\end{center}}
+
 
 % =========================================================================
 % MATHEMATICS
