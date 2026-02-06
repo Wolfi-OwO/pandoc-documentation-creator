@@ -164,40 +164,36 @@ $endif$
 \IfFileExists{/usr/local/share/pandoc/templates/listings-languages.tex}{
   \input{/usr/local/share/pandoc/templates/listings-languages.tex}
 }{
-  \IfFileExists{/data/pandoc/templates/listings-languages.tex}{
-    \input{/data/pandoc/templates/listings-languages.tex}
+  \IfFileExists{listings-languages.tex}{
+    \input{listings-languages.tex}
   }{
-    \IfFileExists{listings-languages.tex}{
-      \input{listings-languages.tex}
-    }{
-      % Fallback: Basic configuration if external file not found
-      \lstset{%
-      basicstyle=\ttfamily\small,%
-      backgroundcolor=\color{codebg},%
-      rulecolor=\color{codeframe},%
-      frame=single,%
-      framesep=0.19em,%
-      frameround=ffff,%
-      xleftmargin=6pt,%
-      xrightmargin=6pt,%
-      tabsize=4,%
-      columns=flexible,%
-      keepspaces=true,%
-      showstringspaces=false,%
-      breaklines=true,%
-      breakatwhitespace=false,%
-      breakautoindent=true,%
-      breakindent=0pt,%
-      postbreak=\mbox{\textcolor{gray}{\(\hookrightarrow\)}\space},%
-      prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},%
-      keywordstyle=\color{listing-keyword}\bfseries,%
-      keywordstyle={[2]\color{listing-keyword-2}\bfseries},%
-      keywordstyle={[3]\color{listing-keyword-3}\bfseries\itshape},%
-      stringstyle=\color{listing-string},%
-      commentstyle=\color{listing-comment},%
-      identifierstyle=\color{listing-identifier},%
-      numberstyle=\tiny\color{listing-numbers},%
-      }
+    % Fallback: Basic configuration if external file not found
+    \lstset{%
+    basicstyle=\ttfamily\small,%
+    backgroundcolor=\color{codebg},%
+    rulecolor=\color{codeframe},%
+    frame=single,%
+    framesep=0.19em,%
+    frameround=ffff,%
+    xleftmargin=6pt,%
+    xrightmargin=6pt,%
+    tabsize=4,%
+    columns=flexible,%
+    keepspaces=true,%
+    showstringspaces=false,%
+    breaklines=true,%
+    breakatwhitespace=false,%
+    breakautoindent=true,%
+    breakindent=0pt,%
+    postbreak=\mbox{\textcolor{gray}{\(\hookrightarrow\)}\space},%
+    prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},%
+    keywordstyle=\color{listing-keyword}\bfseries,%
+    keywordstyle={[2]\color{listing-keyword-2}\bfseries},%
+    keywordstyle={[3]\color{listing-keyword-3}\bfseries\itshape},%
+    stringstyle=\color{listing-string},%
+    commentstyle=\color{listing-comment},%
+    identifierstyle=\color{listing-identifier},%
+    numberstyle=\tiny\color{listing-numbers},%
     }
   }
 }
@@ -437,10 +433,11 @@ $endif$
 % =========================================================================
 % PANDOC COMMANDS
 % =========================================================================
-\providecommand{\passthrough}[1]{\texttt{#1}}
+\renewcommand{\texttt}[1]{\textcolor{vscode-keyword}{\ttfamily #1}}
+\providecommand{\passthrough}[1]{\textcolor{vscode-keyword}{\texttt{#1}}}
 \makeatletter
 \@ifundefined{lstinline}{
-  \newcommand{\lstinline}[1]{\texttt{#1}}
+  \newcommand{\lstinline}[1]{\textcolor{vscode-keyword}{\texttt{#1}}}
 }{}
 \makeatother
 

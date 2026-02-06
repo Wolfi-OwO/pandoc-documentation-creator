@@ -8,11 +8,11 @@ INPUT_FILES=("${PROJECT_DIR}/examples/advanced/deckblatt.md" "${PROJECT_DIR}/exa
 OUTPUT_DIR="${PROJECT_DIR}/out"
 BUILD_DIR="${OUTPUT_DIR}/build"
 OUTPUT_NAME="documentation"
-TEMPLATE="${PROJECT_DIR}/pandoc/templates/custom-template.tex"
-HEADER="${PROJECT_DIR}/pandoc/templates/header.tex"
-HIGHLIGHT_THEME="${PROJECT_DIR}/pandoc/styles/code/vscode-light.theme"
+TEMPLATE="/usr/local/share/pandoc/templates/custom-template.tex"
+HEADER="/usr/local/share/pandoc/templates/header.tex"
+HIGHLIGHT_THEME="/usr/local/share/pandoc/styles/code/vscode-light.theme"
 KROKI_FILTER="${PROJECT_DIR}/docker/scripts/pandoc-kroki-filter.py"
-CODE_CAPTION_FILTER="${PROJECT_DIR}/pandoc/filters/code-caption.lua"
+CODE_CAPTION_FILTER="/usr/local/share/pandoc/filters/code-caption.lua"
 COMMON_ARGS=(-interaction=nonstopmode -halt-on-error)
 
 mkdir -p "${BUILD_DIR}"

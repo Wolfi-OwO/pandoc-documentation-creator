@@ -7,9 +7,9 @@ OUTPUT_NAME="${OUTPUT_NAME:-documentation}"
 OUTPUT_DIR="/data/out"
 BUILD_DIR="${OUTPUT_DIR}/build"
 LOG_FILE="${BUILD_DIR}/pandoc.log"
-TEMPLATE="${TEMPLATE:-/data/pandoc/templates/custom-template.tex}"
-HEADER="${HEADER:-/data/pandoc/templates/header.tex}"
-HIGHLIGHT_THEME="${HIGHLIGHT_THEME:-/data/pandoc/styles/code/vscode-light.theme}"
+TEMPLATE="${TEMPLATE:-/usr/local/share/pandoc/templates/custom-template.tex}"
+HEADER="${HEADER:-/usr/local/share/pandoc/templates/header.tex}"
+HIGHLIGHT_THEME="${HIGHLIGHT_THEME:-/usr/local/share/pandoc/styles/code/vscode-light.theme}"
 KROKI_FILTER="${KROKI_FILTER:-/usr/local/bin/pandoc-kroki-filter}"
 
 if [ ! -f "${TEMPLATE}" ]; then
@@ -55,7 +55,7 @@ case " ${PANDOC_EXTRA_ARGS} " in
     *" --listings "*) ;;
     *) PANDOC_EXTRA_ARGS="${PANDOC_EXTRA_ARGS} --listings" ;;
 esac
-CODE_CAPTION_FILTER="/data/pandoc/filters/code-caption.lua"
+CODE_CAPTION_FILTER="/usr/local/share/pandoc/filters/code-caption.lua"
 if [ ! -f "${CODE_CAPTION_FILTER}" ]; then
     CODE_CAPTION_FILTER="/usr/local/share/pandoc/filters/code-caption.lua"
 fi
