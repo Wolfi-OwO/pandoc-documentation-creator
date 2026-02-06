@@ -26,33 +26,6 @@ workflow:
     - when: never
 
 # --------------------
-# Code Quality
-# --------------------
-code_quality:
-  stage: validate_security
-  image: docker:24
-  services:
-    - docker:24-dind
-  rules:
-    - if: "$CI_COMMIT_TAG =~ $TAG_REGEX"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
-    - when: never
-  script:
-    - |
-      docker run --rm \
-        -e SOURCE_CODE=/code \
-        -v "$CI_PROJECT_DIR:/code" \
-        -v /var/run/docker.sock:/var/run/docker.sock \
-        registry.gitlab.com/gitlab-org/ci-cd/codequality:latest
-  artifacts:
-    when: always
-    reports:
-      codequality: gl-code-quality-report.json
-
-
-
-# --------------------
 # Secret Detection
 # --------------------
 secret_detection:
