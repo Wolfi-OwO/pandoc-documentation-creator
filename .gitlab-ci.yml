@@ -77,7 +77,6 @@ sast:
 
 dependency_scanning:
   stage: scan_and_test
-  extends: Dependency-Scanning
 
 # --------------------
 # Build Docker Image
