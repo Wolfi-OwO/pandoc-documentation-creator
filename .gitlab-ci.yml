@@ -33,41 +33,56 @@ code_quality:
   image: docker:24
   services:
     - docker:24-dind
+  variables:
+    SOURCE_CODE: "$CI_PROJECT_DIR"
   script:
-    - docker run --rm
-      -v "$PWD":/code
-      -v /var/run/docker.sock:/var/run/docker.sock
-      registry.gitlab.com/gitlab-org/ci-cd/codequality:latest /code
+    - docker run --rm \
+        -e SOURCE_CODE=/ \
+        -v "$CI_PROJECT_DIR:/" \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        registry.gitlab.com/gitlab-org/ci-cd/codequality:latest
   artifacts:
     when: always
     reports:
       codequality: gl-code-quality-report.json
+
 
 # --------------------
 # Secret Detection
 # --------------------
 secret_detection:
   stage: validate_security
-  image: zricethezav/gitleaks:latest
+  image:
+    name: zricethezav/gitleaks:latest
+    entrypoint: [""]
   script:
-    - gitleaks detect --report-format json --report-path gl-secret-report.json
+    - gitleaks detect --source . --report-format json --report-path gl-secret-report.json
   artifacts:
     when: always
     reports:
       secret_detection: gl-secret-report.json
+
 
 # --------------------
 # SAST (Semgrep)
 # --------------------
 sast:
   stage: validate_security
-  image: returntocorp/semgrep
+  image:
+    name: returntocorp/semgrep
+    entrypoint: [""]
   script:
-    - semgrep scan --config auto --json --severity ERROR > gl-sast-report.json || true
+    - semgrep scan \
+        --config auto \
+        --json \
+        --severity ERROR \
+        --project-dir "$CI_PROJECT_DIR" \
+        > gl-sast-report.json || true
   artifacts:
     when: always
     reports:
       sast: gl-sast-report.json
+
 
 # --------------------
 # Build Docker Image
