@@ -1,8 +1,8 @@
-## Pandoc Documentation Creator - Release ${CI_COMMIT_TAG#v}
+## Pandoc Documentation Creator - Release ${TAG_NO_V}
 
 ### Docker Image
 
-- **Documentation Creator:** `${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG#v}`
+- **Documentation Creator:** `${CI_REGISTRY_IMAGE}:${TAG_NO_V}`
 - **Documentation Creator (latest):** `${CI_REGISTRY_IMAGE}:latest`
 
 ### Usage
@@ -10,12 +10,12 @@
 Pull and run the Documentation Creator image:
 
 ```bash
-docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG#v}
+docker pull ${CI_REGISTRY_IMAGE}:${TAG_NO_V}
 
 docker run --rm \
 -v "${PROJECT_DIR}:/data" \
 --entrypoint=/bin/sh \
-"${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG#v}" \
+"${CI_REGISTRY_IMAGE}:${TAG_NO_V}" \
 -c "/data/buildPDF"
 
 ```
