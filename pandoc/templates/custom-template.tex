@@ -345,12 +345,18 @@ $endif$
 % =========================================================================
 % PANDOC COMMANDS
 % =========================================================================
-\renewcommand{\texttt}[1]{\textcolor{vscode-keyword}{\ttfamily #1}}
-\providecommand{\passthrough}[1]{\textcolor{vscode-keyword}{\texttt{#1}}}
+% =========================================================================
+% PANDOC COMMANDS
+% =========================================================================
+\renewcommand{\texttt}[1]{{\ttfamily\color{blue!60!black} #1}}
+\providecommand{\passthrough}[1]{{\ttfamily\color{blue!60!black} #1}}
 \makeatletter
 \@ifundefined{lstinline}{
-  \newcommand{\lstinline}[1]{\textcolor{vscode-keyword}{\texttt{#1}}}
-}{}
+  \newcommand{\lstinline}[1]{{\ttfamily\color{blue!60!black} #1}}
+}{
+  % Force lstinline to also be plain blue (optional)
+  \renewcommand{\lstinline}[1]{{\ttfamily\color{blue!60!black} #1}}
+}
 \makeatother
 
 \providecommand{\tightlist}{%
