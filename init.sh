@@ -274,7 +274,8 @@ create_new_project() {
     # Build helper script
     print_info "Creating build helper script..."
     if download_or_copy_template "buildPDF.template" "${target_dir}/buildPDF"; then
-        chmod +x "${target_dir}/buildPDF"
+        chmod a+x "${target_dir}/buildPDF"
+        echo $target_dir
         if [ -n "${CONFIG_OUTPUT_NAME}" ] || [ -n "${CONFIG_INPUT_FILES_CONTAINER}" ]; then
             apply_user_config_to_build_script "${target_dir}/buildPDF" \
                 "${CONFIG_OUTPUT_NAME}" \
@@ -283,6 +284,7 @@ create_new_project() {
         if [ -n "${docs_dir}" ]; then
             sed -i "s#{{DOCS_DIR}}#${docs_dir}#g" "${target_dir}/buildPDF" || true
         fi
+        chmod +x "${target_dir}/buildPDF"
         print_success "Created buildPDF"
     else
         print_error "Failed to create buildPDF from templates"
@@ -298,6 +300,9 @@ create_new_project() {
         fi
         if [ -n "${docs_dir}" ]; then
             sed -i "s#{{DOCS_DIR}}#${docs_dir}#g" "${target_dir}/Help.md" || true
+        fi
+        if [ -n "${CONFIG_OUTPUT_NAME}" ]; then
+            sed -i "s#{{OUTPUT_NAME}}#${CONFIG_OUTPUT_NAME}#g" "${target_dir}/Help.md" || true
         fi
         print_success "Created Help.md"
     else

@@ -49,7 +49,7 @@ docker run --rm  \
 -c "/data/buildPDF"
 ```
 
-Your PDF will be in `out/documentation.pdf`
+Your PDF will be in `out/{{OUTPUT_NAME}}.pdf`
 
 ## Project Structure
 
