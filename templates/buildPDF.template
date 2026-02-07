@@ -28,13 +28,13 @@ if [ -n "${INPUT_FILES}" ]; then
     # shellcheck disable=SC2086
     set -- ${INPUT_FILES}
 else
-    if [ -d /data/chapters ] && ls /data/chapters/*.md >/dev/null 2>&1; then
-        set -- /data/chapters/*.md
+    if [ -d /data/{{DOCS_DIR}} ] && ls /data/{{DOCS_DIR}}/*.md >/dev/null 2>&1; then
+        set -- /data/{{DOCS_DIR}}/*.md
     elif [ -d /data/examples/advanced ] && ls /data/examples/advanced/*.md >/dev/null 2>&1; then
         set -- /data/examples/advanced/*.md
     else
         echo "ERROR: No input markdown files found."
-        echo "Expected /data/chapters/*.md or /data/examples/advanced/*.md"
+        echo "Expected /data/{{DOCS_DIR}}/*.md or /data/examples/advanced/*.md"
         exit 1
     fi
 fi

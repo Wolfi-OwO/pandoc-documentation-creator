@@ -26,4 +26,4 @@ Your documentation should be organized in logical chapters:
 6. Troubleshooting
 7. Appendix
 
-Edit the files in the `chapters/` directory to build your documentation.
+Edit the files in the `{{DOCS_DIR}}/` directory to build your documentation.

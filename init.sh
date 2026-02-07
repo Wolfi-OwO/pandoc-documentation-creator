@@ -64,20 +64,6 @@ prompt_with_default() {
     printf -v "${__resultvar}" '%s' "${input}"
 }
 
-prompt_optional() {
-    local prompt="$1"
-    local __resultvar="$2"
-    local input=""
-
-    if is_interactive; then
-        read -r -p "${prompt} (leave empty to use default): " input
-    else
-        input=""
-    fi
-
-    printf -v "${__resultvar}" '%s' "${input}"
-}
-
 escape_double_quotes() {
     printf '%s' "$1" | sed 's/"/\\"/g'
 }
@@ -107,24 +93,12 @@ apply_user_config_to_build_script() {
     local build_script="$1"
     local output_name="$2"
     local input_files="$3"
-    local template_path="$4"
-    local header_path="$5"
-    local highlight_theme="$6"
-    local pandoc_extra_args="$7"
 
     local esc_output_name
     local esc_input_files
-    local esc_template_path
-    local esc_header_path
-    local esc_highlight_theme
-    local esc_pandoc_extra_args
 
     esc_output_name="$(escape_double_quotes "${output_name}")"
     esc_input_files="$(escape_double_quotes "${input_files}")"
-    esc_template_path="$(escape_double_quotes "${template_path}")"
-    esc_header_path="$(escape_double_quotes "${header_path}")"
-    esc_highlight_theme="$(escape_double_quotes "${highlight_theme}")"
-    esc_pandoc_extra_args="$(escape_double_quotes "${pandoc_extra_args}")"
 
     if grep -q "BEGIN USER CONFIG" "${build_script}"; then
         sed -i '/BEGIN USER CONFIG/,/END USER CONFIG/d' "${build_script}"
@@ -139,18 +113,6 @@ fi
 if [ -n "${esc_input_files}" ]; then
     INPUT_FILES="${esc_input_files}"
 fi
-if [ -n "${esc_template_path}" ]; then
-    TEMPLATE="${esc_template_path}"
-fi
-if [ -n "${esc_header_path}" ]; then
-    HEADER="${esc_header_path}"
-fi
-if [ -n "${esc_highlight_theme}" ]; then
-    HIGHLIGHT_THEME="${esc_highlight_theme}"
-fi
-if [ -n "${esc_pandoc_extra_args}" ]; then
-    PANDOC_EXTRA_ARGS="${esc_pandoc_extra_args}"
-fi
 # END USER CONFIG
 EOF
 )
@@ -160,19 +122,47 @@ EOF
         { print }
         $0 ~ /^set -e$/ && !inserted { print ""; print block; inserted=1 }
     ' "${build_script}" > "${tmp_file}" && mv "${tmp_file}" "${build_script}"
+}
 
-    if ! grep -q "INPUT_FILES=\"\${INPUT_FILES}\"" "${build_script}"; then
-        awk '
-            { print }
-            /-e OUTPUT_NAME=/ && !done {
-                print "    -e INPUT_FILES=\"\${INPUT_FILES}\" \\\\";
-                print "    -e TEMPLATE=\"\${TEMPLATE}\" \\\\";
-                print "    -e HEADER=\"\${HEADER}\" \\\\";
-                print "    -e HIGHLIGHT_THEME=\"\${HIGHLIGHT_THEME}\" \\\\";
-                print "    -e PANDOC_EXTRA_ARGS=\"\${PANDOC_EXTRA_ARGS}\" \\\\";
-                done=1
-            }
-        ' "${build_script}" > "${tmp_file}" && mv "${tmp_file}" "${build_script}"
+CONFIG_OUTPUT_NAME=""
+CONFIG_INPUT_FILES=""
+CONFIG_INPUT_DIR=""
+CONFIG_INPUT_FILES_CONTAINER=""
+
+normalize_input_dir() {
+    local input_files="$1"
+    local first_token
+    local dir
+
+    first_token="${input_files%% *}"
+    if [ -z "${first_token}" ]; then
+        echo "chapters"
+        return 0
+    fi
+
+    if [[ "${first_token}" == */* ]]; then
+        dir="${first_token%/*}"
+    else
+        dir="."
+    fi
+
+    dir="${dir#./}"
+    dir="${dir#/}"
+
+    if [ -z "${dir}" ]; then
+        echo "."
+    else
+        echo "${dir}"
+    fi
+}
+
+display_input_dir() {
+    local dir="$1"
+
+    if [ -z "${dir}" ] || [ "${dir}" = "." ]; then
+        echo "project root"
+    else
+        echo "${dir}/"
     fi
 }
 
@@ -180,40 +170,19 @@ prompt_build_configuration() {
     local target_dir="$1"
 
     print_header "Build Configuration"
-    print_info "Configure where your input files are located and how the output should be named."
+    print_info "Configure output name and input markdown files."
     echo ""
 
     local output_name
     local input_files
-    local template_path
-    local header_path
-    local highlight_theme
-    local pandoc_extra_args
 
     prompt_with_default "Output PDF name (without .pdf)" "documentation" output_name
     prompt_with_default "Input files (space-separated, relative to project root)" "chapters/*.md" input_files
-    prompt_optional "Custom template path (relative to project root)" template_path
-    prompt_optional "Custom header path (relative to project root)" header_path
-    prompt_optional "Custom highlight theme path (relative to project root)" highlight_theme
-    prompt_optional "Extra pandoc args (e.g. --toc --number-sections)" pandoc_extra_args
 
-    local container_input_files
-    local container_template
-    local container_header
-    local container_theme
-
-    container_input_files="$(to_container_paths "${input_files}")"
-    container_template="$(to_container_paths "${template_path}")"
-    container_header="$(to_container_paths "${header_path}")"
-    container_theme="$(to_container_paths "${highlight_theme}")"
-
-    apply_user_config_to_build_script "${target_dir}/build-pdf.sh" \
-        "${output_name}" \
-        "${container_input_files}" \
-        "${container_template}" \
-        "${container_header}" \
-        "${container_theme}" \
-        "${pandoc_extra_args}"
+    CONFIG_OUTPUT_NAME="${output_name}"
+    CONFIG_INPUT_FILES="${input_files}"
+    CONFIG_INPUT_DIR="$(normalize_input_dir "${input_files}")"
+    CONFIG_INPUT_FILES_CONTAINER="$(to_container_paths "${input_files}")"
 }
 
 # Function to download file from templates directory or use local
@@ -242,12 +211,28 @@ download_or_copy_template() {
 
 create_new_project() {
     local target_dir="${1:-.}"
+    local docs_dir
+    local docs_display
+    local docs_full_dir
     
     print_header "Creating New Documentation Project"
+
+    # Prompt for configuration first (needed for directory setup)
+    prompt_build_configuration "${target_dir}"
+
+    docs_dir="${CONFIG_INPUT_DIR}"
+    docs_display="$(display_input_dir "${docs_dir}")"
+    if [ -n "${docs_dir}" ] && [ "${docs_dir}" != "." ]; then
+        docs_full_dir="${target_dir}/${docs_dir}"
+    else
+        docs_full_dir="${target_dir}"
+    fi
     
     # Create directory structure
     print_info "Creating directory structure..."
-    mkdir -p "${target_dir}/chapters"
+    if [ -n "${docs_dir}" ] && [ "${docs_dir}" != "." ]; then
+        mkdir -p "${target_dir}/${docs_dir}"
+    fi
     mkdir -p "${target_dir}/media"
     mkdir -p "${target_dir}/out"
     mkdir -p "${target_dir}/out/build"
@@ -262,45 +247,46 @@ create_new_project() {
     if download_or_copy_template "metadata.yaml.template" "${target_dir}/metadata.yaml"; then
         print_success "Created metadata.yaml"
     else
-        print_error "Failed to create metadata.yaml, creating minimal version"
-        create_minimal_metadata "${target_dir}/metadata.yaml"
+        print_error "Failed to create metadata.yaml from templates"
+        exit 1
     fi
     
     # Example chapters
     print_info "Creating example chapters..."
     
-    if download_or_copy_template "01-introduction.md.template" "${target_dir}/chapters/01-introduction.md"; then
-        print_success "Created chapters/01-introduction.md"
-    else
-        create_minimal_intro "${target_dir}/chapters/01-introduction.md"
-    fi
-    
-    if download_or_copy_template "02-example-content.md.template" "${target_dir}/chapters/02-example-content.md"; then
-        print_success "Created chapters/02-example-content.md"
-    else
-        create_minimal_example "${target_dir}/chapters/02-example-content.md"
-    fi
-    
-    # Build script
-    print_info "Creating build script..."
-    if download_or_copy_template "build-pdf.sh.template" "${target_dir}/build-pdf.sh"; then
-        chmod +x "${target_dir}/build-pdf.sh"
-        if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
-            sed -i "s#IMAGE_TAG=\"\${IMAGE_TAG:-latest}\"#IMAGE_TAG=\"${VERSION}\"#" "${target_dir}/build-pdf.sh" || true
+    if download_or_copy_template "01-introduction.md.template" "${docs_full_dir}/01-introduction.md"; then
+        if [ -n "${docs_dir}" ]; then
+            sed -i "s#{{DOCS_DIR}}#${docs_dir}#g" "${docs_full_dir}/01-introduction.md" || true
         fi
-        print_success "Created build-pdf.sh"
+        print_success "Created ${docs_display}01-introduction.md"
     else
-        create_minimal_build_script "${target_dir}/build-pdf.sh"
+        print_error "Failed to create introduction from templates"
+        exit 1
     fi
 
-    # Prompt for configuration and apply to build script
-    prompt_build_configuration "${target_dir}"
-
+    if download_or_copy_template "02-example-content.md.template" "${docs_full_dir}/02-example-content.md"; then
+        print_success "Created ${docs_display}02-example-content.md"
+    else
+        print_error "Failed to create example content from templates"
+        exit 1
+    fi
+    
     # Build helper script
     print_info "Creating build helper script..."
     if download_or_copy_template "buildPDF.template" "${target_dir}/buildPDF"; then
         chmod +x "${target_dir}/buildPDF"
+        if [ -n "${CONFIG_OUTPUT_NAME}" ] || [ -n "${CONFIG_INPUT_FILES_CONTAINER}" ]; then
+            apply_user_config_to_build_script "${target_dir}/buildPDF" \
+                "${CONFIG_OUTPUT_NAME}" \
+                "${CONFIG_INPUT_FILES_CONTAINER}"
+        fi
+        if [ -n "${docs_dir}" ]; then
+            sed -i "s#{{DOCS_DIR}}#${docs_dir}#g" "${target_dir}/buildPDF" || true
+        fi
         print_success "Created buildPDF"
+    else
+        print_error "Failed to create buildPDF from templates"
+        exit 1
     fi
     
     # Help file
@@ -308,10 +294,15 @@ create_new_project() {
     if download_or_copy_template "Help.md.template" "${target_dir}/Help.md"; then
         if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
             sed -i "s#\${IMAGE_TAG}#${VERSION}#g" "${target_dir}/Help.md" || true
+            sed -i "s#\${VERSION}#${VERSION}#g" "${target_dir}/Help.md" || true
+        fi
+        if [ -n "${docs_dir}" ]; then
+            sed -i "s#{{DOCS_DIR}}#${docs_dir}#g" "${target_dir}/Help.md" || true
         fi
         print_success "Created Help.md"
     else
-        create_minimal_help "${target_dir}/Help.md"
+        print_error "Failed to create Help.md from templates"
+        exit 1
     fi
 
     print_info "Adding pandoc-schema for .yaml files..."
@@ -324,166 +315,25 @@ create_new_project() {
     fi
     
     # Create .gitignore
-    create_gitignore "${target_dir}/.gitignore"
+    if download_or_copy_template "gitignore.template" "${target_dir}/.gitignore"; then
+        print_success "Created .gitignore"
+    else
+        print_error "Failed to create .gitignore from templates"
+        exit 1
+    fi
     
     echo ""
     print_success "Project structure created successfully!"
     echo ""
     print_header "Next Steps"
-    echo "1. Edit your documentation in the chapters/ directory"
+    echo "1. Edit your documentation in the ${docs_display}directory"
     echo "2. Customize document settings in metadata.yaml"
-    echo "3. Run ./build-pdf.sh to generate your PDF"
+    echo "3. Run the Docker image and execute /data/buildPDF to generate your PDF"
     echo "4. Check Help.md for detailed documentation"
     echo ""
     echo "Note: Pandoc configuration (defaults.yaml) is built into the Docker image."
     echo "      You only need to edit metadata.yaml for document customization."
     echo ""
-}
-
-create_minimal_metadata() {
-    cat > "$1" << 'EOF'
-title: "Project Documentation"
-author: "Your Name"
-date: ""
-lang: en-US
-documentclass: scrartcl
-mainfont: "Liberation Serif"
-sansfont: "Liberation Sans"
-monofont: "Liberation Mono"
-papersize: a4
-fontsize: 11pt
-linestretch: 1.15
-linkcolor: black
-urlcolor: black
-toc-title: "Table of Contents"
-numbersections: true
-linestretch: 1.15
-linkcolor: black
-urlcolor: black
-listings: true
-EOF
-    print_success "Created minimal metadata.yaml"
-}
-
-create_minimal_intro() {
-    cat > "$1" << 'EOF'
-# Introduction
-
-Welcome to your documentation project.
-
-## Getting Started
-
-This template provides a professional documentation system using Pandoc and LaTeX.
-
-## Features
-
-- Easy to write: Use Markdown syntax
-- Professional output: LaTeX-based PDF generation
-- Code highlighting: Support for multiple programming languages
-- Customizable: Easily adjust styling and layout
-
-Edit the files in the `chapters/` directory to build your documentation.
-EOF
-    print_success "Created minimal introduction chapter"
-}
-
-create_minimal_example() {
-    cat > "$1" << 'EOF'
-# Example Content
-
-## Code Example
-
-```python
-def hello_world():
-    print("Hello, World!")
-```
-
-## Table
-
-| Column 1 | Column 2 |
-|----------|----------|
-| Data 1   | Data 2   |
-
-## List
-
-- First item
-- Second item
-- Third item
-EOF
-    print_success "Created minimal example chapter"
-}
-
-create_minimal_build_script() {
-        cat > "$1" << 'EOF'
-#!/bin/bash
-set -e
-IMAGE_NAME="pandoc-documentation-creator"
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OUTPUT_NAME="${OUTPUT_NAME:-documentation}"
-
-echo "Building PDF..."
-
-docker run --rm \
-    -v "${PROJECT_DIR}:/data" \
-    --entrypoint=/bin/sh \
-    -e OUTPUT_NAME="${OUTPUT_NAME}" \
-    "${IMAGE_NAME}" \
-    -c "set -e
-COMMON_ARGS='-halt-on-error'
-mkdir -p /data/out/build
-pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \\\n+  --metadata-file=/data/metadata.yaml \\\n+  /data/chapters/*.md \\\n+  --to=latex \\\n+  --output /data/out/build/${OUTPUT_NAME}.tex \\\n+  --standalone \\\n+  --verbose \\\n+  --biblatex \\\n+  > /data/out/build/pandoc.log 2>&1
-cd /data/out/build
-pdflatex $COMMON_ARGS ${OUTPUT_NAME}.tex
-bibtex ${OUTPUT_NAME}
-pdflatex $COMMON_ARGS ${OUTPUT_NAME}.tex
-pdflatex $COMMON_ARGS ${OUTPUT_NAME}.tex
-mv -f /data/out/build/${OUTPUT_NAME}.pdf /data/out/${OUTPUT_NAME}.pdf"
-
-echo "Done! Output: out/${OUTPUT_NAME}.pdf"
-EOF
-    chmod +x "$1"
-    print_success "Created minimal build script"
-}
-
-create_minimal_help() {
-    cat > "$1" << 'EOF'
-# Help
-
-## Quick Start
-
-1. Write markdown files in `chapters/` directory
-2. Run `./build-pdf.sh` to generate PDF
-3. Find output in `out/documentation.pdf`
-
-## Configuration
-
-Edit `metadata.yaml` to customize document properties.
-EOF
-    print_success "Created minimal help file"
-}
-
-create_gitignore() {
-    cat > "$1" << 'EOF'
-# Output directory
-out/*.pdf
-out/build/
-
-# Temporary files
-*.aux
-*.log
-*.out
-*.toc
-*.lot
-*.lof
-
-# Diagram cache
-plantuml-images/
-mermaid-images/
-
-# OS files
-.DS_Store
-Thumbs.db
-EOF
 }
 
 pull_with_spinner() {
@@ -569,7 +419,7 @@ echo ""
 echo "Next steps:"
 echo "  1. Edit files in the chapters/ directory"
 echo "  2. Customize metadata.yaml"
-echo "  3. Run ./build-pdf.sh to generate your PDF"
+echo "  3. Run the Docker image and execute /data/buildPDF to generate your PDF"
 echo ""
 
 # Remove the init script

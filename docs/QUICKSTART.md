@@ -30,7 +30,11 @@ curl -fsSL https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/m
 vim chapters/01-introduction.md
 
 # Build your PDF
-./build-pdf.sh
+docker run --rm  \
+-v "$(pwd):/data" \
+--entrypoint=/bin/sh \
+"registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION}" \
+-c "/data/buildPDF"
 ```
 
 ## Repository

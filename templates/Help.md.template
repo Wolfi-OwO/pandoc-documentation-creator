@@ -23,17 +23,17 @@ Run the initialization script to create the project structure:
 ```
 
 This creates:
-- `chapters/` - Your documentation chapters
+- `{{DOCS_DIR}}/` - Your documentation chapters
 - `media/` - Images and diagrams
 - `out/` - Generated PDFs
 - Default configuration files
 
 ### 2. Write Your Documentation
 
-Edit markdown files in the `chapters/` directory:
+Edit markdown files in the `{{DOCS_DIR}}/` directory:
 
 ```bash
-chapters/
+{{DOCS_DIR}}/
   01-introduction.md
   02-setup.md
   03-usage.md
@@ -42,7 +42,11 @@ chapters/
 ### 3. Build Your PDF
 
 ```bash
-./build-pdf.sh
+docker run --rm  \
+-v "$(pwd):/data" \
+--entrypoint=/bin/sh \
+"registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION}" \
+-c "/data/buildPDF"
 ```
 
 Your PDF will be in `out/documentation.pdf`
@@ -51,12 +55,11 @@ Your PDF will be in `out/documentation.pdf`
 
 ```
 your-project/
-├── chapters/           # Documentation chapters (markdown)
+├── {{DOCS_DIR}}/           # Documentation chapters (markdown)
 ├── media/             # Images, diagrams, assets
 ├── out/               # Generated PDF output
 │   └── build/         # Build logs and LaTeX artifacts
 ├── metadata.yaml      # Document metadata (title, author, etc.)
-├── build-pdf.sh       # Build script
 └── buildPDF           # Build helper run inside Docker
 ```
 
@@ -135,12 +138,14 @@ graph TD
 
 ### Custom Build Options
 
-Edit the build script to customize (preferred):
+Run with custom image tag (preferred):
 
 ```bash
-docker run --rm -v "$(pwd):/data" --entrypoint=/bin/sh \
-  registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${IMAGE_TAG} \
-  -c "/data/buildPDF"
+docker run --rm  \
+-v "$(pwd):/data" \
+--entrypoint=/bin/sh \
+"registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION}" \
+-c "/data/buildPDF"
 ```
 
 ### Using Different Templates
@@ -165,18 +170,20 @@ filters:
 
 ### Pull the Image
 
-Use the tag configured in `build-pdf.sh` (the `IMAGE_TAG` value), or export `IMAGE_TAG` before running the commands below.
+Use a specific tag by exporting `VERSION` before running the commands below.
 
 ```bash
-docker pull registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${IMAGE_TAG}
+docker pull registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION}
 ```
 
 ### Run Manually
 
 ```bash
-docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
-  registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${IMAGE_TAG} \
-  -c "/data/buildPDF"
+docker run --rm  \
+-v "$(pwd):/data" \
+--entrypoint=/bin/sh \
+"registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION}" \
+-c "/data/buildPDF"
 ```
 
 ## Troubleshooting
@@ -188,7 +195,7 @@ docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
 
 ### Build Errors
 
-- Check file permissions: `ls -la chapters/`
+- Check file permissions: `ls -la {{DOCS_DIR}}/`
 - Verify markdown syntax in your files
 - Check logs in terminal output
 
@@ -199,7 +206,7 @@ docker run --rm -v $(pwd):/data --entrypoint=/bin/sh \
 
 ## Examples
 
-See the `chapters/` directory for example markdown files demonstrating:
+See the `{{DOCS_DIR}}/` directory for example markdown files demonstrating:
 - Typography and formatting
 - Code blocks
 - Diagrams
