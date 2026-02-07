@@ -47,8 +47,9 @@ fi
 
 META_ARG=""
 if [ -f /data/metadata.yaml ]; then
-    set -- --metadata-file=/data/metadata.yaml "$@"
+    META_ARG="--metadata-file=/data/metadata.yaml"
 fi
+
 
 PANDOC_EXTRA_ARGS="${PANDOC_EXTRA_ARGS:-}"
 case " ${PANDOC_EXTRA_ARGS} " in
@@ -95,20 +96,21 @@ echo "Code caption filter: ${CODE_CAPTION_FILTER}"
 echo "Input files: $@"
 echo "Working directory: $(pwd)"
 
-echo 'pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
+echo "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     ${META_ARG} \
     ${TEMPLATE_ARG} \
     ${HEADER_ARG} \
     ${HIGHLIGHT_ARG} \
     ${KROKI_ARG} \
+    --extract-media=. \
     --to=latex \
-    --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
+    --output '${BUILD_DIR}/${OUTPUT_NAME}.tex' \
     --standalone \
     --verbose \
     ${CODE_CAPTION_ARG} \
     ${PANDOC_EXTRA_ARGS} \
-    "$@" \
-    2>&1'
+    '$@' \
+    2>&1"
 
 # REMOVED --biblatex from this command!
 (cd "${BUILD_DIR}" && pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
@@ -117,6 +119,7 @@ echo 'pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     ${HEADER_ARG} \
     ${HIGHLIGHT_ARG} \
     ${KROKI_ARG} \
+    --extract-media=. \
     --to=latex \
     --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
     --standalone \
