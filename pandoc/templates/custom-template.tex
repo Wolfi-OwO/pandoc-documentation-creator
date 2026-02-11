@@ -443,9 +443,13 @@ $endif$
 \usepackage[headsepline,footsepline]{scrlayer-scrpage}
 \clearpairofpagestyles
 
-\ihead{\textcolor{headercolor}{\small\textit{$title$}}}
-\ohead{\textcolor{headercolor}{\small $date$}}
-\cfoot{\textcolor{headercolor}{\thepage}}
+\ihead{\textcolor{headercolor}{\small\textit{$header-left$}}}
+\chead{\textcolor{headercolor}{\small\textit{$header-center$}}}
+\ohead{\textcolor{headercolor}{\small\textit{$header-right$}}}
+
+\ifoot{\textcolor{headercolor}{\small $footer-left$}}
+\cfoot{\textcolor{headercolor}{\small $footer-center$}}
+\ofoot{\textcolor{headercolor}{\small $footer-right$}}
 
 \setkomafont{headsepline}{\color{headercolor}}
 \setkomafont{footsepline}{\color{headercolor}}

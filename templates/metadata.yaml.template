@@ -45,9 +45,9 @@ secnumdepth: 3
 # logo: "media/logo.png"
 
 # Header and footer customization
-# header-left: ""
-# header-center: ""
-# header-right: ""
-# footer-left: ""
-# footer-center: ""
-# footer-right: ""
+header-left: "Default Left Header"
+header-center: "Default Center Header"
+header-right: "Default Right Header"
+footer-left: "Default Left Footer"
+footer-center: "Default Center Footer"
+footer-right: "Default Right Footer"
