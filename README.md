@@ -106,7 +106,6 @@ pandoc-documentation-creator/
 ├── docker/                # Docker-specific files
 │   ├── Dockerfile
 │   ├── eisvogel.latex
-│   ├── mmdc-wrapper.sh
 │   └──  plantuml
 ├── templates/             # Project templates
 │   ├── Help.md.template
@@ -267,14 +266,13 @@ This repository is organized as follows:
 
 ```text
 pandoc-documentation-creator/
-├── docker/                     # Docker-related files
+├── docker/                    # Docker-related files
 │   ├── Dockerfile             # Multi-stage image build
 │   ├── .dockerignore          # Docker ignore patterns
 │   ├── build-image.sh         # Build script with version management
 │   └── scripts/               # Container scripts
-│       ├── mmdc-wrapper.sh    # Mermaid wrapper
 │       └── plantuml           # PlantUML wrapper
-├── pandoc/                     # Pandoc configurations
+├── pandoc/                    # Pandoc configurations
 │   ├── defaults.yaml          # Pandoc defaults (built into image)
 │   ├── templates/             # LaTeX templates
 │   │   ├── custom-template.tex
@@ -287,11 +285,11 @@ pandoc-documentation-creator/
 │   │   ├── extensions.yaml
 │   │   └── metadata.yaml
 │   └── filters/               # Custom Lua filters
-├── scripts/                    # Utility scripts
+├── scripts/                   # Utility scripts
 │   ├── init.sh                # Project initialization
 │   ├── build-pdf-local.sh     # Local build script
 │   └── build-pdf.sh           # Standard build script
-├── templates/                  # User project templates
+├── templates/                 # User project templates
 │   ├── 01-introduction.md.template
 │   ├── 02-example-content.md.template
 │   ├── build-pdf.sh.template
@@ -316,7 +314,7 @@ The image includes:
 
 - Pandoc 3.7 with LaTeX
 - Python 3 with pandoc filters
-- Node.js with Mermaid CLI
+- NodeMermaid CLI.js with 
 - PlantUML with Java runtime
 - Chromium for Mermaid rendering
 - Comprehensive TeX packages

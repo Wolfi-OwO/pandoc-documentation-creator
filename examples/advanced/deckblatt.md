@@ -5,4 +5,3 @@ date: "January 26, 2026"
 ---
 
 \vspace{5cm}
-
