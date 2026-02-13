@@ -1,7 +1,7 @@
 # Pandoc Documentation Creator
 
 [![pipeline](https://gitlab.com/woofi4/public/pandoc-documentation-creator/badges/main/pipeline.svg)](https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/pipelines)
-[![latest-tag](https://img.shields.io/gitlab/v/tag/woofi4/public/pandoc-documentation-creator)](https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/tags)
+[![latest-release](https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/badges/release.svg)](https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/releases/permalink/latest)
 
 A complete Docker-based documentation system using Pandoc, LaTeX, and professional templates.
 
