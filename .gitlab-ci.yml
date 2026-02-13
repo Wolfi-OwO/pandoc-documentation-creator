@@ -218,6 +218,7 @@ push_to_registry:
   services:
     - docker:24-dind
   needs:
+    - build_docker
     - test_docker
     - container_scan
   rules:
