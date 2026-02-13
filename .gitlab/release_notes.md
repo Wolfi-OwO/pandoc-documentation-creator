@@ -5,6 +5,18 @@
 - **Documentation Creator:** `${CI_REGISTRY_IMAGE}:${TAG_NO_V}`
 - **Documentation Creator (latest):** `${CI_REGISTRY_IMAGE}:latest`
 
+### Setup Project
+
+Pull and run the Documentation Creator image:
+
+```bash
+wget https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/v${TAG_NO_V}/init.sh
+
+chmod +x init.sh
+
+./init.sh build
+```
+
 ### Usage
 
 Pull and run the Documentation Creator image:
