@@ -224,6 +224,8 @@ push_to_registry:
   rules:
     - if: "$CI_COMMIT_TAG =~ $TAG_REGEX"
     - when: never
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     - |
       docker load -i pandoc-image.tar
@@ -236,6 +238,8 @@ push_to_registry:
 
       docker push "$IMAGE"
       docker push "$CI_REGISTRY_IMAGE:latest"
+  after_script:
+    - docker logout "$CI_REGISTRY" || true
 
 # --------------------
 # Release
