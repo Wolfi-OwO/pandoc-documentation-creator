@@ -2,6 +2,7 @@ stages:
   - validate_and_security
   - build
   - scan_and_test
+  - push_image
   - release
 
 variables:
@@ -211,7 +212,7 @@ test_docker:
 # --------------------
 
 push_to_registry:
-  stage: build
+  stage: push_image
   image: docker:24
   services:
     - docker:24-dind
