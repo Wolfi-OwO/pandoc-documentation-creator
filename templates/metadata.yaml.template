@@ -47,7 +47,7 @@ secnumdepth: 3
 # Header and footer customization
 header-left: "Default Left Header"
 header-center: "Default Center Header"
-header-right: "Default Right Header"
+header-right: \today
 footer-left: "Default Left Footer"
 footer-center: "Default Center Footer"
-footer-right: "Default Right Footer"
+footer-right: \pagemark
