@@ -183,7 +183,7 @@ test_docker:
   script:
     - |
       docker load -i pandoc-image.tar
-      TEST_IMAGE="pandoc-documentation-creator"
+      TEST_IMAGE="pandoc-documentation-creator:local"
 
     - docker run --rm "$TEST_IMAGE" pandoc --version
     - docker run --rm "$TEST_IMAGE" xelatex --version

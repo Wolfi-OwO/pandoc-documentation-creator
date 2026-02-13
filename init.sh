@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IMAGE_REGISTRY="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
 VERSION="unknown"
 
-# Repository URL for templates
+# Repository URL for templates (updated after image version detection)
 REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/templates"
 
 # Colors
@@ -393,6 +393,15 @@ check_docker_image() {
         else
             print_info "Could not determine image version, using default: ${VERSION}"
         fi
+
+    if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
+        if [[ "${VERSION}" == v* ]]; then
+            REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/${VERSION}/templates"
+        else
+            REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/v${VERSION}/templates"
+        fi
+        print_info "Using templates from: ${REPO_RAW_URL}"
+    fi
     
     # Set the full image name with version if available
     if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then

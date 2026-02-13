@@ -7,7 +7,8 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-IMAGE_NAME="registry.gitlab.com/woofi4/public/pandoc-documentation-creator:1.0.0"
+IMAGE_REGISTRY="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
+IMAGE_NAME="${IMAGE_REGISTRY}:latest"
 OUTPUT_NAME="example-documentation"
 
 # Colors
@@ -22,11 +23,16 @@ echo -e "${BLUE}Building Example Documentation${NC}"
 echo -e "${BLUE}=======================================${NC}"
 echo ""
 
-# Check if Docker image exists
+# Ensure latest image is available
 if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
-    echo -e "${RED}Error: Docker image not found${NC}"
-    echo -e "${YELLOW}Run ./init.sh build first${NC}"
-    exit 1
+    echo -e "${YELLOW}Pulling latest Docker image...${NC}"
+    docker pull "${IMAGE_NAME}" >/dev/null
+fi
+
+# Prefer the current release tag if it is available in image labels
+IMAGE_VERSION=$(docker inspect --format='{{index .Config.Labels "org.opencontainers.image.version"}}' "${IMAGE_NAME}" 2>/dev/null || echo "")
+if [ -n "${IMAGE_VERSION}" ] && [ "${IMAGE_VERSION}" != "unknown" ]; then
+    IMAGE_NAME="${IMAGE_REGISTRY}:${IMAGE_VERSION}"
 fi
 
 # Create output directories
