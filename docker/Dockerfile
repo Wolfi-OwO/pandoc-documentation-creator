@@ -51,20 +51,29 @@ RUN mkdir -p /opt/plantuml && \
     chmod a+x /usr/bin/plantuml
 
 # Install all TeX packages in optimized groups
-RUN tlmgr update --self && \
-    tlmgr install \
-    microtype listings fvextra xcolor geometry titlesec \
-    koma-script fancyhdr booktabs multirow colortbl \
-    mathtools amsmath enumitem footmisc adjustbox mdframed needspace \
-    lm lm-math merriweather fontaxes mweights sourcesanspro sourcecodepro \
-    fontawesome5 ly1 fontspec \
-    titling pagecolor collectbox footnotebackref zref sectsty \
-    truncate tocloft wallpaper morefloats etoolbox \
-    ulem upquote csquotes float hyperref iftex xkeyval xpatch \
-    caption bidi scrhack \
-    siunitx threeparttable makecell bbold cleveref forloop lipsum \
-    courier pdfpages lineno hardwrap catchfile pdflscape pdftexcmds && \
-    rm -rf /tmp/*
+RUN set -e; \
+        tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet; \
+        for i in 1 2 3; do \
+            if tlmgr update --self && \
+                 tlmgr install \
+                 microtype listings fvextra xcolor geometry titlesec \
+                 koma-script fancyhdr booktabs multirow colortbl \
+                 mathtools amsmath enumitem footmisc adjustbox mdframed needspace \
+                 lm lm-math merriweather fontaxes mweights sourcesanspro sourcecodepro \
+                 fontawesome5 ly1 fontspec \
+                 titling pagecolor collectbox footnotebackref zref sectsty \
+                 truncate tocloft wallpaper morefloats etoolbox \
+                 ulem upquote csquotes float hyperref iftex xkeyval xpatch \
+                 caption bidi scrhack \
+                 siunitx threeparttable makecell bbold cleveref forloop lipsum \
+                 courier pdfpages lineno hardwrap catchfile pdflscape pdftexcmds; then \
+                success=1; \
+                break; \
+            fi; \
+            sleep 5; \
+        done; \
+        [ -n "$success" ]; \
+        rm -rf /tmp/*
 
 # Update font cache after all fonts are installed
 RUN fc-cache -fv
