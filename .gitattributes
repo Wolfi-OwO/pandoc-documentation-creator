@@ -1,0 +1,6 @@
+# Ensure shell scripts use LF so they run in Linux containers
+*.sh text eol=lf
+
+# Keep Dockerfile and other Unix-style scripts LF as well
+Dockerfile text eol=lf
+f
