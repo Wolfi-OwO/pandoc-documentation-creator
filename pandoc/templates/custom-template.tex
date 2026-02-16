@@ -420,6 +420,14 @@ $endif$
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{mathtools}
+\usepackage{breqn}
+\allowdisplaybreaks[2]
+\setlength{\mathindent}{0pt}
+% Auto-convert display math ($$...$$ / \[...\]) to dmath for line breaking.
+\let\origdisplaymath\[
+\let\endorigdisplaymath\]
+\renewcommand{\[}{\begin{dmath}}
+\renewcommand{\]}{\end{dmath}}
 
 % =========================================================================
 % LISTS

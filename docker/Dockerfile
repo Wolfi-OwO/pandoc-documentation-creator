@@ -60,7 +60,7 @@ RUN set -e; \
                  koma-script fancyhdr booktabs multirow colortbl \
                  mathtools amsmath enumitem footmisc adjustbox mdframed needspace \
                  lm lm-math merriweather fontaxes mweights sourcesanspro sourcecodepro \
-                 fontawesome5 ly1 fontspec \
+                 fontawesome5 ly1 fontspec breqn \
                  titling pagecolor collectbox footnotebackref zref sectsty \
                  truncate tocloft wallpaper morefloats etoolbox \
                  ulem upquote csquotes float hyperref iftex xkeyval xpatch \
