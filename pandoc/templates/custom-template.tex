@@ -78,6 +78,30 @@
 \setkomafont{paragraph}{\normalsize\bfseries}
 \setkomafont{subparagraph}{\normalsize\itshape}
 
+% Numbering and TOC depth (up to subparagraph)
+$if(secnumdepth)$
+\setcounter{secnumdepth}{$secnumdepth$}
+$else$
+\setcounter{secnumdepth}{5}
+$endif$
+$if(toc-depth)$
+\setcounter{tocdepth}{$toc-depth$}
+$else$
+\setcounter{tocdepth}{5}
+$endif$
+
+% Ensure all headings start on a new line
+\RedeclareSectionCommand[
+  runin=false,
+  beforeskip=1.5ex plus 0.4ex minus 0.2ex,
+  afterskip=0.8ex plus 0.2ex
+]{paragraph}
+\RedeclareSectionCommand[
+  runin=false,
+  beforeskip=1.2ex plus 0.3ex minus 0.2ex,
+  afterskip=0.6ex plus 0.2ex
+]{subparagraph}
+
 % =========================================================================
 % COLOR DEFINITIONS
 % =========================================================================
@@ -500,6 +524,9 @@ $endif$
 $endif$
 
 $if(toc)$
+$if(toc-title)$
+\renewcommand{\contentsname}{$toc-title$}
+$endif$
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
 \newpage

@@ -98,13 +98,17 @@ def process_code_block(block):
         # Return original code block if generation failed
         return block
     
+    # Default to full text width unless the author specified sizing
+    if not any(k in ('width', 'height') for k, _ in keyvals):
+        keyvals = keyvals + [('width', '100%')]
+
     # Return image element
     return {
         't': 'Para',
         'c': [{
             't': 'Image',
             'c': [
-                ['', [], []],  # attrs
+                [ident, classes, keyvals],  # attrs
                 [],  # caption
                 [image_path, '']  # target
             ]

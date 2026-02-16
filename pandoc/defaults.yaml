@@ -15,12 +15,10 @@ pdf-engine: xelatex
 
 # Filters (executed in order)
 filters:
-  - pandoc-plantuml
   - /usr/local/bin/pandoc-kroki-filter
 
 # Table of contents
 table-of-contents: true
-toc-depth: 3
 
 # Number sections
 number-sections: true

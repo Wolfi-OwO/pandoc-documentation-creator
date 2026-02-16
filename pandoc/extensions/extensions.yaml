@@ -19,7 +19,6 @@ metadata-files:
 
 # Filters
 filters:
-  - pandoc-plantuml
   - pandoc-citeproc
 
 # Table of contents

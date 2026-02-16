@@ -36,6 +36,7 @@ abstract: ""
 toc-title: "Table of Contents"
 lof: false # List of figures
 lot: false # List of tables
+toc-depth: 3
 
 # Section numbering
 numbersections: true
