@@ -8,6 +8,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IMAGE_REGISTRY="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
 VERSION="unknown"
+IMAGE_TAG=""
 
 # Repository URL for templates (updated after image version detection)
 REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/templates"
@@ -294,9 +295,9 @@ create_new_project() {
     # Help file
     print_info "Creating help documentation..."
     if download_or_copy_template "Help.md.template" "${target_dir}/Help.md"; then
-        if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
-            sed -i "s#\${IMAGE_TAG}#${VERSION}#g" "${target_dir}/Help.md" || true
-            sed -i "s#\${VERSION}#${VERSION}#g" "${target_dir}/Help.md" || true
+        if [ -n "${IMAGE_TAG}" ]; then
+            sed -i "s#\${IMAGE_TAG}#${IMAGE_TAG}#g" "${target_dir}/Help.md" || true
+            sed -i "s#\${VERSION}#${IMAGE_TAG}#g" "${target_dir}/Help.md" || true
         fi
         if [ -n "${docs_dir}" ]; then
             sed -i "s#{{DOCS_DIR}}#${docs_dir}#g" "${target_dir}/Help.md" || true
@@ -395,6 +396,12 @@ check_docker_image() {
         fi
 
     if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
+        IMAGE_TAG="${VERSION#v}"
+    else
+        IMAGE_TAG=""
+    fi
+
+    if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
         local repo_ref="${VERSION}"
         # If VERSION is a short/long git SHA, use it directly without a "v" prefix.
         if [[ "${VERSION}" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
@@ -411,8 +418,8 @@ check_docker_image() {
     fi
     
     # Set the full image name with version if available
-    if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
-        IMAGE_NAME="${IMAGE_REGISTRY}:${VERSION}"
+    if [ -n "${IMAGE_TAG}" ]; then
+        IMAGE_NAME="${IMAGE_REGISTRY}:${IMAGE_TAG}"
     else
         IMAGE_NAME="${IMAGE_REGISTRY}:latest"
     fi
