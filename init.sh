@@ -395,11 +395,18 @@ check_docker_image() {
         fi
 
     if [ -n "${VERSION}" ] && [ "${VERSION}" != "unknown" ]; then
-        if [[ "${VERSION}" == v* ]]; then
-            REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/${VERSION}/templates"
+        local repo_ref="${VERSION}"
+        # If VERSION is a short/long git SHA, use it directly without a "v" prefix.
+        if [[ "${VERSION}" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+            repo_ref="${VERSION}"
+        elif [[ "${VERSION}" == v* ]]; then
+            repo_ref="${VERSION}"
         else
-            REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/v${VERSION}/templates"
+            # Non-prefixed tag (e.g., 1.2.3) uses v-prefixed ref.
+            repo_ref="v${VERSION}"
         fi
+
+        REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/${repo_ref}/templates"
         print_info "Using templates from: ${REPO_RAW_URL}"
     fi
     
