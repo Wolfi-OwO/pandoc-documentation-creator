@@ -35,7 +35,9 @@ abstract: ""
 # Table of contents settings
 toc-title: "Table of Contents"
 lof: false # List of figures
+# lof-title: "List of Figures"
 lot: false # List of tables
+# lot-title: "List of Tables"
 toc-depth: 3
 
 # Section numbering

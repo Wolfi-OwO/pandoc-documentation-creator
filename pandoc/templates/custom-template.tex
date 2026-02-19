@@ -541,11 +541,15 @@ $endif$
 $endif$
 
 $if(lof)$
+$if(toc-title)$
+\renewcommand{\listfigurename}{$lof-title$}
+$endif$
 \listoffigures
 \newpage
 $endif$
 
 $if(lot)$
+\renewcommand{\listtablename}{$lot-title$}
 \listoftables
 \newpage
 $endif$
