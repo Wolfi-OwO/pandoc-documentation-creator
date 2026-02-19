@@ -51,14 +51,15 @@ This creates a complete project structure:
 
 ```text
 your-project/
-├── chapters/           # Your markdown documentation
+├── chapters/          # Your markdown documentation (Be careful default, can be overwritten!)
 ├── media/             # Images and diagrams
 ├── out/               # Generated PDFs
-│   └── build/         # Build logs and LaTeX artifacts
+│   ├── build/         # Build logs and LaTeX artifacts
+│   └── xxx.pdf/       # Output PDF
 ├── metadata.yaml      # Document metadata (title, author, etc.)
 ├── build-pdf.sh       # Build script
 ├── buildPDF           # Build helper run inside Docker
-└── Help.md           # Comprehensive help
+└── Help.md            # Comprehensive help
 ```
 
 Note: Pandoc configuration (defaults.yaml) is built into the Docker image.
@@ -258,54 +259,6 @@ Add to `metadata.yaml`:
 ```yaml
 # Document metadata is configured here
 # Pandoc defaults.yaml is built into the Docker image
-```
-
-## Project Structure
-
-This repository is organized as follows:
-
-```text
-pandoc-documentation-creator/
-├── docker/                    # Docker-related files
-│   ├── Dockerfile             # Multi-stage image build
-│   ├── .dockerignore          # Docker ignore patterns
-│   ├── build-image.sh         # Build script with version management
-│   └── scripts/               # Container scripts
-│       └── plantuml           # PlantUML wrapper
-├── pandoc/                    # Pandoc configurations
-│   ├── defaults.yaml          # Pandoc defaults (built into image)
-│   ├── templates/             # LaTeX templates
-│   │   ├── custom-template.tex
-│   │   ├── header.tex
-│   │   └── listings-languages.tex
-│   ├── styles/                # Syntax highlighting themes
-│   │   └── code/
-│   │       └── vscode-light.theme
-│   ├── extensions/            # Pandoc extensions
-│   │   ├── extensions.yaml
-│   │   └── metadata.yaml
-│   └── filters/               # Custom Lua filters
-├── scripts/                   # Utility scripts
-│   ├── init.sh                # Project initialization
-│   ├── build-pdf-local.sh     # Local build script
-│   └── build-pdf.sh           # Standard build script
-├── templates/                 # User project templates
-│   ├── 01-introduction.md.template
-│   ├── 02-example-content.md.template
-│   ├── build-pdf.sh.template
-│   ├── Help.md.template
-│   ├── metadata.yaml.template
-│   └── README.md
-├── examples/                   # Example projects
-│   ├── basic/                 # Minimal example
-│   └── advanced/              # Full-featured example
-├── docs/                       # Documentation
-│   └── QUICKSTART.md          # Quick start guide
-├── .gitlab/                    # GitLab CI/CD
-│   └── gitlab-ci.yml          # CI/CD pipeline
-├── VERSION                     # Version number
-├── README.md                  # This file
-└── LICENCE                    # License information
 ```
 
 ## Docker Image Details
