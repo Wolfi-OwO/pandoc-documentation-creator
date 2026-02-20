@@ -139,8 +139,6 @@ echo "=== Pandoc processing complete ==="
 echo "Generated: ${BUILD_DIR}/${OUTPUT_NAME}.tex"
 echo "=== Starting LaTeX compilation ==="
 
-cd "${BUILD_DIR}"
-
 echo "Running xelatex (first pass)..."
 xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
 
