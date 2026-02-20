@@ -3,4 +3,3 @@
 
 # Keep Dockerfile and other Unix-style scripts LF as well
 Dockerfile text eol=lf
-f
