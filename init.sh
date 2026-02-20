@@ -276,7 +276,6 @@ create_new_project() {
     print_info "Creating build helper script..."
     if download_or_copy_template "buildPDF.template" "${target_dir}/buildPDF"; then
         chmod a+x "${target_dir}/buildPDF"
-        echo $target_dir
         if [ -n "${CONFIG_OUTPUT_NAME}" ] || [ -n "${CONFIG_INPUT_FILES_CONTAINER}" ]; then
             apply_user_config_to_build_script "${target_dir}/buildPDF" \
                 "${CONFIG_OUTPUT_NAME}" \

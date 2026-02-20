@@ -139,6 +139,8 @@ echo "=== Pandoc processing complete ==="
 echo "Generated: ${BUILD_DIR}/${OUTPUT_NAME}.tex"
 echo "=== Starting LaTeX compilation ==="
 
+cd "${BUILD_DIR}"
+
 echo "Running xelatex (first pass)..."
 xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
 
@@ -153,7 +155,7 @@ xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
 echo "Running xelatex (third pass)..."
 xelatex ${COMMON_ARGS} "${OUTPUT_NAME}.tex"
 
-mv -f "${BUILD_DIR}/${OUTPUT_NAME}.pdf" "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
+mv -f "${OUTPUT_NAME}.pdf" "${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
 
 echo "=== Build complete ==="
 echo "PDF created at: ${OUTPUT_DIR}/${OUTPUT_NAME}.pdf"
