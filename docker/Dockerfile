@@ -43,6 +43,7 @@ RUN pip3 install --break-system-packages --no-cache-dir \
 COPY docker/scripts/pandoc-kroki-filter.py /usr/local/bin/pandoc-kroki-filter
 RUN chmod +x /usr/local/bin/pandoc-kroki-filter
 
+
 # Download PlantUML and setup wrapper
 COPY docker/scripts/plantuml /usr/bin/plantuml
 RUN mkdir -p /opt/plantuml && \

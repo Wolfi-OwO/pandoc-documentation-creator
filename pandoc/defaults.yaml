@@ -16,6 +16,8 @@ pdf-engine: xelatex
 # Filters (executed in order)
 filters:
   - /usr/local/bin/pandoc-kroki-filter
+  - /usr/local/share/pandoc/filters/code-caption.lua
+  - /usr/local/share/pandoc/filters/columns.lua
 
 # Table of contents
 table-of-contents: true
@@ -71,3 +73,6 @@ fail-if-warnings: false
 
 # Strip comments
 strip-comments: false
+
+# Extract media (images, etc.)
+extract-media: .
