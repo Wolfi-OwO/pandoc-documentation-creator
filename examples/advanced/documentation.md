@@ -488,7 +488,6 @@ Thanks for your trust in testing this advanced documentation example!
 | R          | `code-r`          | Sum and mean calculation                       |
 | MATLAB     | `code-matlab`     | Sum and mean calculation                       |
 
-
 # Columns
 
 You can create columns using the `columns` directive:
