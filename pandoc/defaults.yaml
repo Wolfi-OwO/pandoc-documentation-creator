@@ -72,3 +72,6 @@ fail-if-warnings: false
 
 # Strip comments
 strip-comments: false
+
+# Extract media (images, etc.)
+extract-media: .
