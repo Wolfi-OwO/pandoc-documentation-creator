@@ -487,3 +487,26 @@ Thanks for your trust in testing this advanced documentation example!
 | XML        | `code-xml`        | Basic catalog structure                        |
 | R          | `code-r`          | Sum and mean calculation                       |
 | MATLAB     | `code-matlab`     | Sum and mean calculation                       |
+
+
+# Columns
+
+You can create columns using the `columns` directive:
+
+:::columns
+:::column
+
+```{#code-python .python caption="Python code in column"}
+print("This is the first column.")
+```
+
+:::
+
+:::column
+
+```{#code-javascript .javascript caption="JavaScript code in column"}
+console.log("This is the second column.");
+```
+
+:::
+:::

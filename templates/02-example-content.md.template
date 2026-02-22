@@ -144,3 +144,21 @@ $$
 Here's a sentence with a footnote[^1].
 
 [^1]: This is the footnote content.
+
+## Columns
+
+You can create columns using the `columns` directive:
+
+:::columns
+:::column
+```{#code-python .python caption="Python code in column"}
+print("This is the first column.")
+```
+:::
+
+:::column
+```{#code-javascript .javascript caption="JavaScript code in column"}
+console.log("This is the second column.");
+```
+:::
+:::
