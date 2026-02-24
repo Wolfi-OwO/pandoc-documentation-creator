@@ -67,7 +67,8 @@ RUN set -e; \
                  ulem upquote csquotes float hyperref iftex xkeyval xpatch \
                  caption bidi scrhack \
                  siunitx threeparttable makecell bbold cleveref forloop lipsum \
-                 courier pdfpages lineno hardwrap catchfile pdflscape pdftexcmds; then \
+                 courier pdfpages lineno hardwrap catchfile pdflscape pdftexcmds \
+                 svg transparent; then \
                 success=1; \
                 break; \
             fi; \
