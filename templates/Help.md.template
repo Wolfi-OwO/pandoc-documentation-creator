@@ -23,6 +23,7 @@ Run the initialization script to create the project structure:
 ```
 
 This creates:
+
 - `{{DOCS_DIR}}/` - Your documentation chapters
 - `media/` - Images and diagrams
 - `out/` - Generated PDFs
@@ -53,7 +54,7 @@ Your PDF will be in `out/{{OUTPUT_NAME}}.pdf`
 
 ## Project Structure
 
-```
+```text
 your-project/
 ├── {{DOCS_DIR}}/           # Documentation chapters (markdown)
 ├── media/             # Images, diagrams, assets
@@ -207,6 +208,7 @@ docker run --rm  \
 ## Examples
 
 See the `{{DOCS_DIR}}/` directory for example markdown files demonstrating:
+
 - Typography and formatting
 - Code blocks
 - Diagrams
@@ -216,9 +218,10 @@ See the `{{DOCS_DIR}}/` directory for example markdown files demonstrating:
 ## Support
 
 For issues and questions:
+
 - Check this Help file
 - Review example files
-- Check Pandoc documentation: https://pandoc.org/
+- Check Pandoc documentation: <https://pandoc.org/>
 
 ## License
 
