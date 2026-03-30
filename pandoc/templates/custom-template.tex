@@ -436,8 +436,26 @@ $endif$
 % =========================================================================
 % LISTS
 % =========================================================================
-\usepackage{enumitem}
-\setlist{nosep}
+% Keep list spacing compact without relying on enumitem, which can
+% conflict with newer TeX Live list internals in CI builds.
+\AtBeginEnvironment{itemize}{%
+  \setlength{\itemsep}{0pt}%
+  \setlength{\parskip}{0pt}%
+  \setlength{\parsep}{0pt}%
+  \setlength{\topsep}{0.5\baselineskip}%
+}
+\AtBeginEnvironment{enumerate}{%
+  \setlength{\itemsep}{0pt}%
+  \setlength{\parskip}{0pt}%
+  \setlength{\parsep}{0pt}%
+  \setlength{\topsep}{0.5\baselineskip}%
+}
+\AtBeginEnvironment{description}{%
+  \setlength{\itemsep}{0pt}%
+  \setlength{\parskip}{0pt}%
+  \setlength{\parsep}{0pt}%
+  \setlength{\topsep}{0.5\baselineskip}%
+}
 
 % =========================================================================
 % BIBLIOGRAPHY
