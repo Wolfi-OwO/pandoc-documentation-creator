@@ -1,4 +1,4 @@
-FROM pandoc/latex:3.7
+FROM pandoc/latex:3.9
 
 # Build arguments for OCI labels
 ARG VERSION
