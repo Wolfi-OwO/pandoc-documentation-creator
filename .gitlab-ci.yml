@@ -153,7 +153,7 @@ container_scan:
         -v "$CI_PROJECT_DIR:/work" \
         -v "$CI_PROJECT_DIR/$TRIVY_CACHE_DIR:/root/.cache/" \
         -w /work \
-        aquasec/trivy:latest image \
+        aquasec/trivy:0.69.3 image \
         --format template --template "@/contrib/gitlab.tpl" \
         --output gl-container-scanning-report.json \
         --severity CRITICAL,HIGH,MEDIUM \
