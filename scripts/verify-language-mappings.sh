@@ -28,9 +28,9 @@ STYLES="${TMP_DIR}/styles.txt"
 awk '
     /^# Tables/ {in_table=1; next}
     in_table && /^#/ {exit}
-    in_table && /`code-[^`]+`/ {
+    in_table && /`code-[^`][^`]*`/ {
         line=$0
-        while (match(line, /`code-[^`]+`/)) {
+        while (match(line, /`code-[^`][^`]*`/)) {
             id=substr(line, RSTART+1, RLENGTH-2)
             print id
             line=substr(line, RSTART+RLENGTH)
@@ -44,15 +44,26 @@ if [ ! -s "$TABLE_IDS" ]; then
 fi
 
 awk '
-    /\{#code-/ {
-        id=""
-        lang=""
-        if (match($0, /\{#(code-[^ \t}]+)[^}]*\}/, m)) { id=m[1] }
-        if (match($0, /^```([A-Za-z0-9_+-]+)/, m2)) { lang=tolower(m2[1]) }
-        if (lang == "") {
-            if (match($0, /\.[A-Za-z0-9_+-]+/, m3)) { lang=tolower(substr(m3[0], 2)) }
+    /^[[:space:]]*```/ {
+        line=$0
+        sub(/^[[:space:]]*/, "", line)
+        if (line !~ /#code-/) {
+            next
         }
-        if (id != "") print id "\t" lang
+        id=line
+        sub(/.*#code-/, "code-", id)
+        sub(/[^A-Za-z0-9_-].*$/, "", id)
+
+        lang=line
+        sub(/^```/, "", lang)
+        sub(/[[:space:]{].*$/, "", lang)
+        if (lang == "") {
+            if (match(line, /\.[A-Za-z0-9_-][A-Za-z0-9_-]*/)) {
+                lang=substr(line, RSTART+1, RLENGTH-1)
+            }
+        }
+
+        if (id != "") print id "\t" tolower(lang)
     }
 ' "$DOC_PATH" > "$CODE_LANGS"
 
@@ -60,7 +71,7 @@ awk '
     /local language_definitions = \{/ {in_map=1; next}
     in_map && /^[[:space:]]*}/ {in_map=0}
     in_map {
-        if (match($0, /([A-Za-z0-9_]+)[[:space:]]*=[[:space:]]*\{[^}]*style[[:space:]]*=[[:space:]]*"([^"]+)"/, m)) {
+        if (match($0, /([A-Za-z0-9_][A-Za-z0-9_]*)[[:space:]]*=[[:space:]]*\{[^}]*style[[:space:]]*=[[:space:]]*"([^"]+)"/, m)) {
             print tolower(m[1]) "\t" m[2]
         }
     }
@@ -72,7 +83,7 @@ awk '
     in_alias {
         if (match($0, /\["([^"]+)"\][[:space:]]*=[[:space:]]*"([^"]+)"/, m)) {
             print tolower(m[1]) "\t" tolower(m[2])
-        } else if (match($0, /([A-Za-z0-9_]+)[[:space:]]*=[[:space:]]*"([^"]+)"/, m2)) {
+        } else if (match($0, /([A-Za-z0-9_][A-Za-z0-9_]*)[[:space:]]*=[[:space:]]*"([^"]+)"/, m2)) {
             print tolower(m2[1]) "\t" tolower(m2[2])
         }
     }
