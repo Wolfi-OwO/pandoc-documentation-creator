@@ -11,6 +11,7 @@ TEMPLATE="${TEMPLATE:-/usr/local/share/pandoc/templates/custom-template.tex}"
 HEADER="${HEADER:-/usr/local/share/pandoc/templates/header.tex}"
 HIGHLIGHT_THEME="${HIGHLIGHT_THEME:-/usr/local/share/pandoc/styles/code/vscode-light.theme}"
 KROKI_FILTER="${KROKI_FILTER:-/usr/local/bin/pandoc-kroki-filter}"
+BIBLIOGRAPHY="${BIBLIOGRAPHY:-}"
 
 if [ ! -f "${TEMPLATE}" ]; then
     echo "ERROR: Template not found at ${TEMPLATE}"
@@ -30,19 +31,32 @@ fi
 
 mkdir -p "${BUILD_DIR}"
 
+INPUT_GLOB="${INPUT_GLOB:-}"
+INPUT_DIR="${INPUT_DIR:-}"
+
 if [ -n "${INPUT_FILES}" ]; then
     # shellcheck disable=SC2086
     set -- ${INPUT_FILES}
-else
-    if [ -d /data/chapters ] && ls /data/chapters/*.md >/dev/null 2>&1; then
-        set -- /data/chapters/*.md
-    elif [ -d /data/examples/advanced ] && ls /data/examples/advanced/*.md >/dev/null 2>&1; then
-        set -- /data/examples/advanced/*.md
+elif [ -n "${INPUT_GLOB}" ]; then
+    # shellcheck disable=SC2086
+    set -- ${INPUT_GLOB}
+elif [ -n "${INPUT_DIR}" ]; then
+    if [ -d "${INPUT_DIR}" ] && ls "${INPUT_DIR}"/*.md >/dev/null 2>&1; then
+        set -- "${INPUT_DIR}"/*.md
     else
-        echo "ERROR: No input markdown files found."
-        echo "Expected /data/chapters/*.md or /data/examples/advanced/*.md"
+        echo "ERROR: INPUT_DIR was provided but no .md files were found: ${INPUT_DIR}"
         exit 1
     fi
+else
+    echo "ERROR: INPUT_FILES is required."
+    echo "Provide one of: INPUT_FILES (space-separated), INPUT_GLOB, or INPUT_DIR."
+    exit 1
+fi
+
+if [ "$#" -eq 0 ]; then
+    echo "ERROR: No input markdown files found."
+    echo "Provide one of: INPUT_FILES (space-separated), INPUT_GLOB, or INPUT_DIR."
+    exit 1
 fi
 
 META_ARG=""
@@ -85,6 +99,11 @@ if [ -f "${KROKI_FILTER}" ]; then
     KROKI_ARG="--filter ${KROKI_FILTER}"
 fi
 
+BIBLIOGRAPHY_ARG=""
+if [ -n "${BIBLIOGRAPHY}" ]; then
+    BIBLIOGRAPHY_ARG="--bibliography=${BIBLIOGRAPHY}"
+fi
+
 # Clean and recreate build directory
 rm -rf "${BUILD_DIR}"
 mkdir -p "${BUILD_DIR}"
@@ -102,6 +121,7 @@ echo "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     ${HEADER_ARG} \
     ${HIGHLIGHT_ARG} \
     ${KROKI_ARG} \
+    ${BIBLIOGRAPHY_ARG} \
     --extract-media=. \
     --to=latex \
     --output '${BUILD_DIR}/${OUTPUT_NAME}.tex' \
@@ -119,6 +139,7 @@ echo "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     ${HEADER_ARG} \
     ${HIGHLIGHT_ARG} \
     ${KROKI_ARG} \
+    ${BIBLIOGRAPHY_ARG} \
     --extract-media=. \
     --to=latex \
     --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \

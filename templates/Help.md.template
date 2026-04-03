@@ -52,6 +52,49 @@ docker run --rm  \
 
 Your PDF will be in `out/{{OUTPUT_NAME}}.pdf`
 
+## Inputs & Bibliography
+
+Builds require explicit inputs. Provide one of:
+
+- `INPUT_FILES`: space-separated list of markdown files.
+- `INPUT_GLOB`: glob like `/data/chapters/*.md`.
+- `INPUT_DIR`: a directory containing `.md` files.
+
+Example:
+
+```bash
+-e INPUT_FILES="/data/chapters/01-introduction.md /data/chapters/02-usage.md"
+```
+
+The default syntax highlighting theme is **VSCode Light**.
+
+For citations, add a `references.bib` file and reference it in metadata or set it explicitly:
+
+```yaml
+bibliography: references.bib
+```
+
+```bash
+-e BIBLIOGRAPHY="/data/references.bib"
+```
+
+Use `@key` in markdown to cite entries from your bibliography, for example:
+
+```markdown
+See @knuth1984 for details.
+```
+
+Add new entries in BibTeX format:
+
+```bibtex
+@book{knuth1984,
+  title   = {The TeXbook},
+  author  = {Donald E. Knuth},
+  year    = {1984},
+  publisher = {Addison-Wesley}
+}
+```
+
 ## Project Structure
 
 ```text

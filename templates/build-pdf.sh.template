@@ -69,6 +69,7 @@ docker run --rm \
     -v "${PROJECT_DIR}:/data" \
     --entrypoint=/bin/sh \
     -e OUTPUT_NAME="${OUTPUT_NAME}" \
+    -e INPUT_GLOB="/data/{{DOCS_DIR}}/*.md" \
     "${IMAGE_NAME}" \
     -c "/data/buildPDF"
 

@@ -34,82 +34,66 @@ function CodeBlock(el)
         el.attributes["caption"] = nil
         el.attributes["title"] = nil
 
-        -- Add language class if specified
+        -- Add language and style if specified
         if language ~= "" then
-            -- Convert Pandoc language to listings language
-            local lang_map = {
-                python = "Python",
-                py = "Python",
-                java = "Java",
-                javascript = "JavaScript",
-                js = "JavaScript",
-                typescript = "JavaScript",
-                ts = "JavaScript",
-                cpp = "C++",
-                c = "C",
-                csharp = "CSharp",
-                cs = "CSharp",
-                rust = "Rust",
-                go = "Go",
-                sql = "SQL",
-                bash = "bash",
+            local normalized = string.lower(language)
+            local alias_map = {
+                py = "python",
+                js = "javascript",
+                ts = "typescript",
+                tsx = "typescript",
+                jsx = "javascript",
+                cs = "csharp",
+                ["c#"] = "csharp",
+                ["c++"] = "cpp",
                 sh = "bash",
-                yaml = "YAML",
-                yml = "YAML",
-                json = "JSON",
-                html = "HTML",
-                css = "CSS",
-                ruby = "Ruby",
-                php = "PHP",
-                swift = "Swift",
-                kotlin = "Kotlin",
-                matlab = "Matlab",
-                r = "R",
-                docker = "Docker",
-                latex = "TeX"
+                shell = "bash",
+                zsh = "bash",
+                yml = "yaml",
+                dockerfile = "docker",
+                tex = "latex",
+                xhtml = "xml"
+            }
+            if alias_map[normalized] then
+                normalized = alias_map[normalized]
+            end
+
+            local language_definitions = {
+                python = {listings = "Python", style = "vscode-python"},
+                java = {listings = "Java", style = "vscode-java"},
+                javascript = {listings = "JavaScript", style = "vscode-javascript"},
+                typescript = {listings = "JavaScript", style = "vscode-typescript"},
+                cpp = {listings = "C++", style = "vscode-cpp"},
+                c = {listings = "C", style = "vscode-c"},
+                csharp = {listings = "CSharp", style = "vscode-csharp"},
+                rust = {listings = "Rust", style = "vscode-rust"},
+                go = {listings = "Go", style = "vscode-go"},
+                sql = {listings = "SQL", style = "vscode-sql"},
+                bash = {listings = "bash", style = "vscode-bash"},
+                yaml = {listings = "YAML", style = "vscode-yaml"},
+                json = {listings = "JSON", style = "vscode-json"},
+                html = {listings = "HTML", style = "vscode-html"},
+                xml = {listings = "XML", style = "vscode-xml"},
+                css = {listings = "CSS", style = "vscode-css"},
+                ruby = {listings = "Ruby", style = "vscode-ruby"},
+                php = {listings = "PHP", style = "vscode-php"},
+                swift = {listings = "Swift", style = "vscode-swift"},
+                kotlin = {listings = "Kotlin", style = "vscode-kotlin"},
+                matlab = {listings = "Matlab", style = "vscode-matlab"},
+                r = {listings = "R", style = "vscode-r"},
+                docker = {listings = "Docker", style = "vscode-docker"},
+                latex = {listings = "TeX", style = "vscode-latex"}
             }
 
-            local lang_key = lang_map[language] or ""
-            if lang_key ~= "" then
-                el.attributes["language"] = lang_key
+            local def = language_definitions[normalized]
+            if def then
+                if def.listings and def.listings ~= "" then
+                    el.attributes["language"] = def.listings
+                end
+                if def.style and def.style ~= "" then
+                    el.attributes["style"] = def.style
+                end
             end
-        end
-
-        -- Apply listings style per language
-        local style_map = {
-            python = "vscode-python",
-            py = "vscode-python",
-            java = "vscode-java",
-            javascript = "vscode-javascript",
-            js = "vscode-javascript",
-            typescript = "vscode-typescript",
-            ts = "vscode-typescript",
-            csharp = "vscode-csharp",
-            cs = "vscode-csharp",
-            cpp = "vscode-cpp",
-            c = "vscode-c",
-            rust = "vscode-rust",
-            go = "vscode-go",
-            sql = "vscode-sql",
-            bash = "vscode-bash",
-            sh = "vscode-bash",
-            yaml = "vscode-yaml",
-            yml = "vscode-yaml",
-            json = "vscode-json",
-            html = "vscode-html",
-            css = "vscode-css",
-            ruby = "vscode-ruby",
-            php = "vscode-php",
-            swift = "vscode-swift",
-            kotlin = "vscode-kotlin",
-            matlab = "vscode-matlab",
-            r = "vscode-r",
-            docker = "vscode-docker",
-            latex = "vscode-latex"
-        }
-        local style_name = style_map[language]
-        if style_name then
-            el.attributes["style"] = style_name
         end
 
         return {el, pandoc.RawBlock("latex", "\\CodeCaption{" .. escaped .. "}")}

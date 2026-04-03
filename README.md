@@ -116,7 +116,6 @@ pandoc-documentation-creator/
 │   ├── metadata.yaml.template
 │   ├── 01-introduction.md.template
 │   ├── 02-example-content.md.template
-│   ├── build-pdf.sh.template
 │   └── buildPDF.template
 ├── example/               # Example documentation
 │   ├── deckblatt.md
@@ -164,6 +163,7 @@ docker run --rm \
   -v $(pwd):/data \
   --entrypoint=/bin/sh \
   -e OUTPUT_NAME="documentation" \
+  -e INPUT_GLOB="/data/chapters/*.md" \
   pandoc-documentation-creator \
   -c "/data/buildPDF"
 ```
@@ -175,7 +175,7 @@ docker run --rm \
   -v $(pwd):/data \
   --entrypoint=/bin/sh \
   -e OUTPUT_NAME="doc" \
-  -e INPUT_FILES="/data/chapters/*.md" \
+  -e INPUT_GLOB="/data/chapters/*.md" \
   -e PANDOC_EXTRA_ARGS="--template=/usr/local/share/pandoc/templates/custom-template.tex" \
   pandoc-documentation-creator \
   -c "/data/buildPDF"
@@ -188,10 +188,32 @@ docker run --rm \
   -v $(pwd):/data \
   --entrypoint=/bin/sh \
   -e OUTPUT_NAME="doc" \
-  -e INPUT_FILES="/data/chapters/*.md" \
+  -e INPUT_GLOB="/data/chapters/*.md" \
   -e PANDOC_EXTRA_ARGS="--toc --toc-depth=3" \
   pandoc-documentation-creator \
   -c "/data/buildPDF"
+```
+
+## Inputs & Bibliography
+
+Builds require explicit inputs. Provide one of:
+
+- `INPUT_FILES`: space-separated list of markdown files.
+- `INPUT_GLOB`: glob like `/data/chapters/*.md`.
+- `INPUT_DIR`: a directory containing `.md` files.
+
+The default syntax highlighting theme is **VSCode Light**.
+
+Bibliographies are supported via `references.bib` and `@key` citations in your markdown or `metadata.yaml`:
+
+```yaml
+bibliography: references.bib
+```
+
+You can override or point to a different file using `BIBLIOGRAPHY`, for example:
+
+```bash
+-e BIBLIOGRAPHY="/data/references.bib"
 ```
 
 ## Features in Detail
@@ -269,7 +291,7 @@ The image includes:
 
 - Pandoc 3.7 with LaTeX
 - Python 3 with pandoc filters
-- NodeMermaid CLI.js with 
+- NodeMermaid CLI.js with
 - PlantUML with Java runtime
 - Chromium for Mermaid rendering
 - Comprehensive TeX packages
