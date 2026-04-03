@@ -44,7 +44,7 @@ if [ ! -s "$TABLE_IDS" ]; then
 fi
 
 awk '
-    /{#code-/ {
+    /\{#code-/ {
         id=""
         lang=""
         if (match($0, /\{#(code-[^ \t}]+)[^}]*\}/, m)) { id=m[1] }
