@@ -254,6 +254,13 @@ $endif$
 \usepackage{tabularx}
 
 \providecommand{\real}[1]{#1}
+% Pandoc emits \LTcaptype{none} for longtables without captions.
+% The caption package expects a counter to exist, so define a dummy one.
+\makeatletter
+\@ifundefined{c@none}{\newcounter{none}}{}
+\makeatother
+\providecommand{\thenone}{}
+\renewcommand{\thenone}{}
 
 % Custom column types
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}

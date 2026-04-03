@@ -205,7 +205,7 @@ test_docker:
         "$TEST_IMAGE" \
         -c "/data/buildPDF"
 
-      test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
+      test -f "$CI_P`ROJECT_DIR/out/ci-test.pdf"
 
   artifacts:
     paths:
