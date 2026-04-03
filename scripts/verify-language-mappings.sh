@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-set -euo pipefail
+set -eu
 
 DOC_PATH="examples/advanced/documentation.md"
 LUA_PATH="pandoc/filters/code-caption.lua"
@@ -13,125 +13,109 @@ for required in "$DOC_PATH" "$LUA_PATH" "$TEX_PATH"; do
     fi
 done
 
-mapfile -t table_ids < <(
-    awk '
-        /^# Tables/ {in_table=1; next}
-        in_table && /^#/ {exit}
-        in_table && /`code-[^`]+`/ {
-            line=$0
-            while (match(line, /`code-[^`]+`/)) {
-                id=substr(line, RSTART+1, RLENGTH-2)
-                print id
-                line=substr(line, RSTART+RLENGTH)
-            }
-        }
-    ' "$DOC_PATH" | sort -u
-)
+TMP_DIR="$(mktemp -d)"
+cleanup() {
+    rm -rf "$TMP_DIR"
+}
+trap cleanup EXIT
 
-if [ ${#table_ids[@]} -eq 0 ]; then
+TABLE_IDS="${TMP_DIR}/table_ids.txt"
+CODE_LANGS="${TMP_DIR}/code_langs.tsv"
+STYLE_MAP="${TMP_DIR}/style_map.tsv"
+ALIAS_MAP="${TMP_DIR}/alias_map.tsv"
+STYLES="${TMP_DIR}/styles.txt"
+
+awk '
+    /^# Tables/ {in_table=1; next}
+    in_table && /^#/ {exit}
+    in_table && /`code-[^`]+`/ {
+        line=$0
+        while (match(line, /`code-[^`]+`/)) {
+            id=substr(line, RSTART+1, RLENGTH-2)
+            print id
+            line=substr(line, RSTART+RLENGTH)
+        }
+    }
+' "$DOC_PATH" | sort -u > "$TABLE_IDS"
+
+if [ ! -s "$TABLE_IDS" ]; then
     echo "No code example IDs found in the tables section."
     exit 1
 fi
 
-declare -A code_lang
-while IFS=$'\t' read -r id lang; do
-    if [ -n "$id" ]; then
-        code_lang["$id"]="$lang"
-    fi
-done < <(
-    awk '
-        /{#code-/ {
-            id=""
-            lang=""
-            if (match($0, /\{#(code-[^ \t}]+)[^}]*\}/, m)) { id=m[1] }
-            if (match($0, /^```([A-Za-z0-9_+-]+)/, m2)) { lang=tolower(m2[1]) }
-            if (lang == "") {
-                if (match($0, /\.[A-Za-z0-9_+-]+/, m3)) { lang=tolower(substr(m3[0], 2)) }
-            }
-            if (id != "") print id "\t" lang
+awk '
+    /{#code-/ {
+        id=""
+        lang=""
+        if (match($0, /\{#(code-[^ \t}]+)[^}]*\}/, m)) { id=m[1] }
+        if (match($0, /^```([A-Za-z0-9_+-]+)/, m2)) { lang=tolower(m2[1]) }
+        if (lang == "") {
+            if (match($0, /\.[A-Za-z0-9_+-]+/, m3)) { lang=tolower(substr(m3[0], 2)) }
         }
-    ' "$DOC_PATH"
-)
+        if (id != "") print id "\t" lang
+    }
+' "$DOC_PATH" > "$CODE_LANGS"
 
-declare -A style_map
-while IFS=$'\t' read -r lang style; do
-    if [ -n "$lang" ]; then
-        style_map["$lang"]="$style"
-    fi
-done < <(
-    awk '
-        /local language_definitions = \{/ {in_map=1; next}
-        in_map && /^[[:space:]]*}/ {in_map=0}
-        in_map {
-            if (match($0, /([A-Za-z0-9_]+)[[:space:]]*=[[:space:]]*\{[^}]*style[[:space:]]*=[[:space:]]*"([^"]+)"/, m)) {
-                print tolower(m[1]) "\t" m[2]
-            }
+awk '
+    /local language_definitions = \{/ {in_map=1; next}
+    in_map && /^[[:space:]]*}/ {in_map=0}
+    in_map {
+        if (match($0, /([A-Za-z0-9_]+)[[:space:]]*=[[:space:]]*\{[^}]*style[[:space:]]*=[[:space:]]*"([^"]+)"/, m)) {
+            print tolower(m[1]) "\t" m[2]
         }
-    ' "$LUA_PATH"
-)
+    }
+' "$LUA_PATH" > "$STYLE_MAP"
 
-declare -A alias_map
-while IFS=$'\t' read -r alias target; do
-    if [ -n "$alias" ]; then
-        alias_map["$alias"]="$target"
-    fi
-done < <(
-    awk '
-        /local alias_map = \{/ {in_alias=1; next}
-        in_alias && /^[[:space:]]*}/ {in_alias=0}
-        in_alias {
-            if (match($0, /\["([^"]+)"\][[:space:]]*=[[:space:]]*"([^"]+)"/, m)) {
-                print tolower(m[1]) "\t" tolower(m[2])
-            } else if (match($0, /([A-Za-z0-9_]+)[[:space:]]*=[[:space:]]*"([^"]+)"/, m2)) {
-                print tolower(m2[1]) "\t" tolower(m2[2])
-            }
+awk '
+    /local alias_map = \{/ {in_alias=1; next}
+    in_alias && /^[[:space:]]*}/ {in_alias=0}
+    in_alias {
+        if (match($0, /\["([^"]+)"\][[:space:]]*=[[:space:]]*"([^"]+)"/, m)) {
+            print tolower(m[1]) "\t" tolower(m[2])
+        } else if (match($0, /([A-Za-z0-9_]+)[[:space:]]*=[[:space:]]*"([^"]+)"/, m2)) {
+            print tolower(m2[1]) "\t" tolower(m2[2])
         }
-    ' "$LUA_PATH"
-)
+    }
+' "$LUA_PATH" > "$ALIAS_MAP"
 
-declare -A styles
-while IFS= read -r style; do
-    if [ -n "$style" ]; then
-        styles["$style"]=1
-    fi
-done < <(
-    awk '
-        /\\lstdefinestyle\{/ {
-            if (match($0, /\\lstdefinestyle\{([^}]+)\}/, m)) {
-                print m[1]
-            }
+awk '
+    /\\lstdefinestyle\{/ {
+        if (match($0, /\\lstdefinestyle\{([^}]+)\}/, m)) {
+            print m[1]
         }
-    ' "$TEX_PATH"
-)
+    }
+' "$TEX_PATH" > "$STYLES"
 
-fail=0
-for id in "${table_ids[@]}"; do
-    lang="${code_lang[$id]-}"
+missing=0
+while IFS= read -r id; do
+    lang="$(awk -F '\t' -v key="$id" '$1==key {print $2; exit}' "$CODE_LANGS")"
     if [ -z "$lang" ]; then
         echo "Missing code block for table id: $id"
-        fail=1
+        missing=1
         continue
     fi
 
-    if [ -n "${alias_map[$lang]-}" ]; then
-        lang="${alias_map[$lang]}"
+    alias="$(awk -F '\t' -v key="$lang" '$1==key {print $2; exit}' "$ALIAS_MAP")"
+    if [ -n "$alias" ]; then
+        lang="$alias"
     fi
 
-    style="${style_map[$lang]-}"
+    style="$(awk -F '\t' -v key="$lang" '$1==key {print $2; exit}' "$STYLE_MAP")"
     if [ -z "$style" ]; then
         echo "No style map entry for language '$lang' (id $id)"
-        fail=1
+        missing=1
         continue
     fi
 
-    if [ -z "${styles[$style]-}" ]; then
+    if ! grep -qx "$style" "$STYLES"; then
         echo "Style '$style' missing in listings-languages.tex (language '$lang', id $id)"
-        fail=1
+        missing=1
     fi
-done
+done < "$TABLE_IDS"
 
-if [ $fail -ne 0 ]; then
+if [ "$missing" -ne 0 ]; then
     exit 1
 fi
 
-echo "Language mappings verified for ${#table_ids[@]} table entries."
+COUNT="$(wc -l < "$TABLE_IDS" | tr -d ' ')"
+echo "Language mappings verified for ${COUNT} table entries."
