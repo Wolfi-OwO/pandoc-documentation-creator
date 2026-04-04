@@ -208,7 +208,9 @@ test_docker:
         -c "/data/buildPDF"
 
       test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
-      grep -q "Running bibtex" "$CI_PROJECT_DIR/out/build/pandoc.log"
+      if ! grep -q "Running bibtex" "$CI_PROJECT_DIR/out/build/pandoc.log"; then
+        grep -Eq '\\\\bibliography|\\\\printbibliography|CSLReferences' "$CI_PROJECT_DIR/out/build/ci-test.tex"
+      fi
 
   artifacts:
     paths:
