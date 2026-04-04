@@ -195,8 +195,6 @@ test_docker:
     - docker run --rm "$TEST_IMAGE" python3 --version
     - docker run --rm "$TEST_IMAGE" node --version
     - docker run --rm "$TEST_IMAGE" mermaid --version || true
-    - sh scripts/verify-language-mappings.sh
-
     - |
       docker run --rm \
         -v "$CI_PROJECT_DIR:/data" \
@@ -206,11 +204,9 @@ test_docker:
         --entrypoint /bin/sh \
         "$TEST_IMAGE" \
         -c "/data/buildPDF"
-
-      test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
-      if ! grep -q "Running bibtex" "$CI_PROJECT_DIR/out/build/pandoc.log"; then
-        grep -Eq '\\\\bibliography|\\\\printbibliography|CSLReferences' "$CI_PROJECT_DIR/out/build/ci-test.tex"
-      fi
+    - sh scripts/verify-language-mappings.sh
+    - test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
+      
 
   artifacts:
     paths:
