@@ -71,8 +71,19 @@ awk '
     /local language_definitions = \{/ {in_map=1; next}
     in_map && /^[[:space:]]*}/ {in_map=0}
     in_map {
-        if (match($0, /([A-Za-z0-9_][A-Za-z0-9_]*)[[:space:]]*=[[:space:]]*\{[^}]*style[[:space:]]*=[[:space:]]*"([^"]+)"/, m)) {
-            print tolower(m[1]) "\t" m[2]
+        line=$0
+        if (line ~ /style[[:space:]]*=[[:space:]]*"/) {
+            key=line
+            sub(/=.*/, "", key)
+            gsub(/[[:space:]]*/, "", key)
+
+            style=line
+            sub(/.*style[[:space:]]*=[[:space:]]*"/, "", style)
+            sub(/".*/, "", style)
+
+            if (key != "" && style != "") {
+                print tolower(key) "\t" style
+            }
         }
     }
 ' "$LUA_PATH" > "$STYLE_MAP"
@@ -81,10 +92,31 @@ awk '
     /local alias_map = \{/ {in_alias=1; next}
     in_alias && /^[[:space:]]*}/ {in_alias=0}
     in_alias {
-        if (match($0, /\["([^"]+)"\][[:space:]]*=[[:space:]]*"([^"]+)"/, m)) {
-            print tolower(m[1]) "\t" tolower(m[2])
-        } else if (match($0, /([A-Za-z0-9_][A-Za-z0-9_]*)[[:space:]]*=[[:space:]]*"([^"]+)"/, m2)) {
-            print tolower(m2[1]) "\t" tolower(m2[2])
+        line=$0
+        if (line ~ /\["[^"]+"\][[:space:]]*=[[:space:]]*"/) {
+            alias=line
+            sub(/.*\["/, "", alias)
+            sub(/"\].*/, "", alias)
+
+            target=line
+            sub(/.*=[[:space:]]*"/, "", target)
+            sub(/".*/, "", target)
+
+            if (alias != "" && target != "") {
+                print tolower(alias) "\t" tolower(target)
+            }
+        } else if (line ~ /[A-Za-z0-9_][A-Za-z0-9_]*[[:space:]]*=[[:space:]]*"/) {
+            alias=line
+            sub(/=.*/, "", alias)
+            gsub(/[[:space:]]*/, "", alias)
+
+            target=line
+            sub(/.*=[[:space:]]*"/, "", target)
+            sub(/".*/, "", target)
+
+            if (alias != "" && target != "") {
+                print tolower(alias) "\t" tolower(target)
+            }
         }
     }
 ' "$LUA_PATH" > "$ALIAS_MAP"
