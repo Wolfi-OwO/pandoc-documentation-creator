@@ -122,12 +122,15 @@ awk '
 ' "$LUA_PATH" > "$ALIAS_MAP"
 
 awk '
-    /\\lstdefinestyle\{/ {
-        line=$0
-        sub(/.*\\lstdefinestyle\{/, "", line)
-        sub(/}.*/, "", line)
-        if (line != "") {
-            print line
+    {
+        needle="\\lstdefinestyle{"
+        pos=index($0, needle)
+        if (pos > 0) {
+            line=substr($0, pos + length(needle))
+            end=index(line, "}")
+            if (end > 1) {
+                print substr(line, 1, end - 1)
+            }
         }
     }
 ' "$TEX_PATH" > "$STYLES"
