@@ -123,8 +123,11 @@ awk '
 
 awk '
     /\\lstdefinestyle\{/ {
-        if (match($0, /\\lstdefinestyle\{([^}]+)\}/, m)) {
-            print m[1]
+        line=$0
+        sub(/.*\\lstdefinestyle\{/, "", line)
+        sub(/}.*/, "", line)
+        if (line != "") {
+            print line
         }
     }
 ' "$TEX_PATH" > "$STYLES"
