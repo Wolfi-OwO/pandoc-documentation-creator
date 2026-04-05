@@ -355,6 +355,15 @@ create_new_project() {
         print_error "Failed to create .gitignore from templates"
         exit 1
     fi
+
+    # Create .gitattributes (line endings)
+    if download_or_copy_template "gitattributes.template" "${target_dir}/.gitattributes"; then
+        normalize_line_endings "${target_dir}/.gitattributes"
+        print_success "Created .gitattributes"
+    else
+        print_error "Failed to create .gitattributes from templates"
+        exit 1
+    fi
     
     echo ""
     print_success "Project structure created successfully!"

@@ -1,0 +1,18 @@
+* text=auto eol=lf
+
+*.sh text eol=lf
+*.md text eol=lf
+buildPDF text eol=lf
+init.sh text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.ico binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
