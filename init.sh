@@ -45,6 +45,27 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+normalize_line_endings() {
+    local file="$1"
+
+    if [ -z "${file}" ] || [ ! -f "${file}" ]; then
+        return 0
+    fi
+
+    if command_exists perl; then
+        perl -pi -e 's/\r$//' "${file}"
+        return 0
+    fi
+
+    if command_exists sed; then
+        if sed -i 's/\r$//' "${file}" 2>/dev/null; then
+            return 0
+        fi
+        sed -i '' 's/\r$//' "${file}" 2>/dev/null || true
+        return 0
+    fi
+}
+
 is_interactive() {
     [ -t 0 ] && [ -t 1 ]
 }
@@ -246,6 +267,7 @@ create_new_project() {
     
     # Metadata only (defaults.yaml is built into Docker image)
     if download_or_copy_template "metadata.yaml.template" "${target_dir}/metadata.yaml"; then
+        normalize_line_endings "${target_dir}/metadata.yaml"
         print_success "Created metadata.yaml"
     else
         print_error "Failed to create metadata.yaml from templates"
@@ -259,6 +281,7 @@ create_new_project() {
         if [ -n "${docs_dir}" ]; then
             sed -i "s#{{DOCS_DIR}}#${docs_dir}#g" "${docs_full_dir}/01-introduction.md" || true
         fi
+        normalize_line_endings "${docs_full_dir}/01-introduction.md"
         print_success "Created ${docs_display}01-introduction.md"
     else
         print_error "Failed to create introduction from templates"
@@ -266,6 +289,7 @@ create_new_project() {
     fi
 
     if download_or_copy_template "02-example-content.md.template" "${docs_full_dir}/02-example-content.md"; then
+        normalize_line_endings "${docs_full_dir}/02-example-content.md"
         print_success "Created ${docs_display}02-example-content.md"
     else
         print_error "Failed to create example content from templates"
@@ -284,6 +308,7 @@ create_new_project() {
         if [ -n "${docs_dir}" ]; then
             sed -i "s#{{DOCS_DIR}}#${docs_dir}#g" "${target_dir}/buildPDF" || true
         fi
+        normalize_line_endings "${target_dir}/buildPDF"
         chmod +x "${target_dir}/buildPDF"
         print_success "Created buildPDF"
     else
@@ -304,6 +329,7 @@ create_new_project() {
         if [ -n "${CONFIG_OUTPUT_NAME}" ]; then
             sed -i "s#{{OUTPUT_NAME}}#${CONFIG_OUTPUT_NAME}#g" "${target_dir}/Help.md" || true
         fi
+        normalize_line_endings "${target_dir}/Help.md"
         print_success "Created Help.md"
     else
         print_error "Failed to create Help.md from templates"
@@ -312,15 +338,18 @@ create_new_project() {
 
     print_info "Adding pandoc-schema for .yaml files..."
     if download_or_copy_template "pandoc-metadata.json.template" "${target_dir}/.vscode/schemas/pandoc-metadata.json"; then
+        normalize_line_endings "${target_dir}/.vscode/schemas/pandoc-metadata.json"
         print_success "Created schema template"
     fi
 
     if download_or_copy_template "settings.json.template" "${target_dir}/.vscode/settings.json"; then
+        normalize_line_endings "${target_dir}/.vscode/settings.json"
         print_success "Created vscode-settings"
     fi
     
     # Create .gitignore
     if download_or_copy_template "gitignore.template" "${target_dir}/.gitignore"; then
+        normalize_line_endings "${target_dir}/.gitignore"
         print_success "Created .gitignore"
     else
         print_error "Failed to create .gitignore from templates"
