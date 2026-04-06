@@ -1,63 +1,85 @@
-# Metadata file for Pandoc documentation
-# This file contains default metadata that can be overridden in your markdown files
+########
+# Metadata Defaults
+# ---
+# Internal default metadata values that can be overridden by project metadata.
 
-# Title
+########
+# Document Identity
+# ---
 title: "Documentation"
-
-# Author
 author: "Your Name"
-
-# Date (leave empty for current date)
 date: ""
 
-# Language
-lang: "en"
+########
+# Automatic Date Formatting
+# ---
+date-style: ""
+date-format: ""
 
-# Document class
+########
+# Language And Localization
+# ---
+lang: "en-US"
+
+########
+# Document Class
+# ---
 documentclass: "scrartcl"
 
-# Font settings
+########
+# Fonts
+# ---
 mainfont: "Liberation Serif"
 sansfont: "Liberation Sans"
 monofont: "Liberation Mono"
 
-# Paper size
+########
+# Page Layout
+# ---
 papersize: "a4"
-
-# Font size
 fontsize: "11pt"
-
-# Line spacing
 linestretch: "1.15"
 
+########
 # Geometry
-geometry: 
+# ---
+geometry:
   - "left=2.5cm"
   - "right=2.5cm"
   - "top=2cm"
   - "bottom=2cm"
 
+########
 # Colors
+# ---
 linkcolor: "blue"
 urlcolor: "blue"
 citecolor: "brown"
 
-# Abstract (optional)
+########
+# Abstract
+# ---
 abstract: ""
 
-# Table of contents
+########
+# Contents And Listings
+# ---
 toc: true
 toc-depth: 3
 listings: false
 
-# Use biblatex for bibliography (moved from top-level to variables)
+########
+# Bibliography
+# ---
 biblatex: true
-
-# In user's metadata.yaml
 bibliography: references.bib
 
-# Number sections
+########
+# Section Numbering
+# ---
 number-sections: true
 
-# Show code line numbers
+########
+# Code Line Numbers
+# ---
 show-code-line-numbers: true

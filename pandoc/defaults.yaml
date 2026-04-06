@@ -1,77 +1,149 @@
-# Pandoc defaults configuration - Built into Docker image
-# Users only need to provide metadata.yaml
+########
+# Pandoc Defaults
+# ---
+# Built into the Docker image. Users usually only need `metadata.yaml`.
 
-# Input format with enabled extensions
+########
+# Input Format
+# ---
+# Enabled Markdown extensions for the document source.
 from: markdown+yaml_metadata_block+fenced_code_blocks+backtick_code_blocks+fenced_code_attributes+inline_code_attributes+implicit_figures+table_captions+footnotes+smart+pipe_tables+grid_tables
 
-# Output format
+########
+# Output Format
+# ---
+# Generate PDF output through LaTeX.
 to: pdf
 
-# Template to use
+########
+# Template
+# ---
+# Main LaTeX template used for document rendering.
 template: /usr/local/share/pandoc/templates/custom-template.tex
 
-# PDF engine
+########
+# PDF Engine
+# ---
+# XeLaTeX gives strong Unicode and font support.
 pdf-engine: xelatex
 
-# Filters (executed in order)
+########
+# Lua Filters
+# ---
+# Date metadata is resolved before Pandoc writes LaTeX.
+lua-filter:
+  - /usr/local/share/pandoc/filters/date-metadata.lua
+
+########
+# Filters
+# ---
+# External filters executed in order.
 filters:
   - /usr/local/bin/pandoc-kroki-filter
   - /usr/local/share/pandoc/filters/columns.lua
 
-# Table of contents
+########
+# Table Of Contents
+# ---
+# Enabled by default and can be adjusted in metadata.
 table-of-contents: true
 
-# Number sections
+########
+# Section Numbering
+# ---
+# Enabled by default and can be adjusted in metadata.
 number-sections: true
 
-# Highlight style
+########
+# Highlight Style
+# ---
+# Default syntax highlighting theme.
 highlight-style: /usr/local/share/pandoc/styles/code/vscode-light.theme
 
-# Variables for template
+########
+# Template Variables
+# ---
+# Base defaults passed into the custom LaTeX template.
 variables:
-  # Use listings for code blocks
+  ########
+  # Listings
+  # ---
+  # Use the LaTeX `listings` package for code blocks.
   listings: false
 
-  # Document class
+  ########
+  # Document Class
+  # ---
+  # Default KOMA-Script article class.
   documentclass: scrartcl
 
-  # Paper and font settings
+  ########
+  # Page Defaults
+  # ---
+  # Base paper size and typography defaults.
   papersize: a4
   fontsize: 11pt
   linestretch: 1.15
 
+  ########
   # Geometry
+  # ---
+  # Default page margins.
   geometry:
     - left=2.5cm
     - right=2.5cm
     - top=2.5cm
     - bottom=2.5cm
 
-  # Header includes
+  ########
+  # Header Includes
+  # ---
+  # Additional LaTeX injected into the preamble.
   header-includes: |
     \input{/usr/local/share/pandoc/templates/header.tex}
 
-# Resource path for images
+########
+# Resource Paths
+# ---
+# Locations Pandoc searches for images and related assets.
 resource-path:
   - /data
   - /data/media
   - /data/chapters
   - /data/images
 
-# Standalone document
+########
+# Standalone Mode
+# ---
+# Produce a self-contained LaTeX document.
 standalone: true
 
-# Preserve tabs in code blocks
+########
+# Tab Preservation
+# ---
+# Keep literal tabs in code blocks.
 preserve-tabs: true
 
-# Tab stops (spaces)
+########
+# Tab Stop
+# ---
+# Number of spaces represented by a tab.
 tab-stop: 4
 
-# Fail on warnings
+########
+# Warning Handling
+# ---
+# Warnings do not fail the build by default.
 fail-if-warnings: false
 
-# Strip comments
+########
+# Comment Handling
+# ---
+# Preserve comments in the generated output.
 strip-comments: false
 
-# Extract media (images, etc.)
+########
+# Media Extraction
+# ---
+# Extract generated media relative to the build directory.
 extract-media: .

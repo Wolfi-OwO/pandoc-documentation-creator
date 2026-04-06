@@ -2,25 +2,36 @@
 
 set -e
 
-# Pandoc Documentation Creator - Initialization Script
-# This script sets up the documentation project structure
+########
+# Initialization Script
+# ---
+# Sets up a new documentation project structure and downloads template files.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IMAGE_REGISTRY="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
 VERSION="unknown"
 IMAGE_TAG=""
 
-# Repository URL for templates (updated after image version detection)
+########
+# Template Source
+# ---
+# Raw template URL updated after the image version has been detected.
 REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/templates"
 
+########
 # Colors
+# ---
+# ANSI color codes for terminal output.
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-# Function to print colored messages
+########
+# Message Helpers
+# ---
+# Small helpers for consistent terminal output.
 print_header() {
     echo -e "${BLUE}=======================================${NC}"
     echo -e "${BLUE}$1${NC}"
@@ -40,7 +51,10 @@ print_info() {
     echo -e "${YELLOW}→ $1${NC}"
 }
 
-# Function to check if command exists
+########
+# Command Detection
+# ---
+# Check whether a command is available in the current shell environment.
 command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
@@ -207,7 +221,10 @@ prompt_build_configuration() {
     CONFIG_INPUT_FILES_CONTAINER="$(to_container_paths "${input_files}")"
 }
 
-# Function to download file from templates directory or use local
+########
+# Template Download
+# ---
+# Prefer local templates and fall back to downloading them when needed.
 download_or_copy_template() {
     local template_name="$1"
     local destination="$2"

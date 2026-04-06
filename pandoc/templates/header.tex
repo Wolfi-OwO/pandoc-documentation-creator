@@ -1,29 +1,53 @@
-% header.tex - Safe version
+########
+% Header Includes
+% ---
+% Shared LaTeX helpers loaded into the document preamble.
 
-% Microtype for better typography
+########
+% Typography
+% ---
+% Improve spacing and line breaking.
 \usepackage{microtype}
 
-% Additional math packages
+########
+% Math Packages
+% ---
+% Additional math support used by generated documents.
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{mathtools}
 
-% Code environment styling
+########
+% Code Styling
+% ---
+% Basic framed code environment helpers.
 \usepackage{framed}
 
-% Better code blocks
+########
+% Code Environment
+% ---
+% Provide a simple framed code environment.
 \newenvironment{code}{\begin{framed}\small}{\end{framed}}
 
-% PlantUML support
+########
+% PlantUML Support
+% ---
+% TikZ and import support for diagram assets.
 \usepackage{tikz}
 \usepackage{import}
 
-% Custom commands
-\newcommand{\highlight}[1]{\textcolor{red}{#1}}  % FIXED: #1 not ###1
-\newcommand{\code}[1]{\texttt{\small #1}}       % FIXED: #1 not ###1
+########
+% Custom Commands
+% ---
+% Helper commands used by examples and generated output.
+\newcommand{\highlight}[1]{\textcolor{red}{#1}}
+\newcommand{\code}[1]{\texttt{\small #1}}
 
-% Better verbatim
+########
+% Verbatim Blocks
+% ---
+% Improve the default verbatim environment.
 \usepackage{fancyvrb}
 \RecustomVerbatimEnvironment{Verbatim}{Verbatim}{
   frame=lines,
@@ -32,7 +56,10 @@
   commandchars=\\\{\}
 }
 
-% Title page styling
+########
+% Title Page Styling
+% ---
+% Fallback `\maketitle` layout.
 \renewcommand{\maketitle}{%
   \begin{titlepage}%
     \centering%

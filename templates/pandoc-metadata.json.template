@@ -22,7 +22,15 @@
     },
     "date": {
       "type": "string",
-      "description": "Document date (leave empty for automatic date)"
+      "description": "Document date text. Leave empty to use automatic date handling."
+    },
+    "date-style": {
+      "type": "string",
+      "description": "Localized automatic date style via LaTeX datetime2, e.g. iso or ddmmyyyy"
+    },
+    "date-format": {
+      "type": "string",
+      "description": "Lua strftime format used to generate a literal automatic date string, e.g. %d.%m.%Y"
     },
     "abstract": {
       "type": "string",
@@ -38,6 +46,28 @@
       "description": "Document language (e.g., en-US, de-DE, fr-FR)",
       "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
       "default": "en-US"
+    },
+    "babel-lang": {
+      "type": "string",
+      "description": "Explicit babel language override for pdfTeX builds"
+    },
+    "babel-options": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Additional babel package options"
+    },
+    "polyglossia-lang": {
+      "type": "string",
+      "description": "Explicit polyglossia language override for XeLaTeX builds"
+    },
+    "polyglossia-variant": {
+      "type": "string",
+      "description": "Polyglossia language variant such as austrian"
+    },
+    "polyglossia-options": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Additional polyglossia language options"
     },
     "documentclass": {
       "type": "string",

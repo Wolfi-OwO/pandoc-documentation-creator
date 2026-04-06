@@ -1,53 +1,86 @@
-# Metadata file for Pandoc documentation
-# Edit these values to customize your document
+########
+# Metadata Overview
+# ---
+# Basic example metadata for a generated document.
 
-# Document information
-title: "Project Documentation"
-subtitle: ""
+########
+# Document Identity
+# ---
+title: "Example Documentation"
+subtitle: "Basic Example"
 author: "Your Name"
-date: "" # Leave empty for automatic date
+date: ""
 
-# Language and localization
-lang: en-US
+########
+# Automatic Date Formatting
+# ---
+# Example:
+# date-style: "ddmmyyyy"
+# date-format: "%d.%m.%Y"
+date-style: ""
+date-format: ""
 
-# Document class (scrartcl, scrreprt, scrbook)
-documentclass: scrartcl
+########
+# Language And Localization
+# ---
+# Example:
+# lang: "de-AT"
+# polyglossia-lang: "german"
+# polyglossia-variant: "austrian"
+lang: "en-US"
 
-# Font settings
+########
+# Document Class
+# ---
+documentclass: "scrartcl"
+
+########
+# Fonts
+# ---
 mainfont: "Liberation Serif"
 sansfont: "Liberation Sans"
 monofont: "Liberation Mono"
 
-# Paper and layout
-papersize: a4
-fontsize: 11pt
+########
+# Page Layout
+# ---
+papersize: "a4"
+fontsize: "11pt"
 linestretch: 1.15
 
+########
 # Colors
-linkcolor: black
-urlcolor: black
-citecolor: black
-toccolor: black
+# ---
+linkcolor: "blue"
+urlcolor: "blue"
+citecolor: "brown"
+toccolor: "black"
 
-# Abstract (optional)
+########
+# Abstract
+# ---
 abstract: ""
 
-# Table of contents settings
+########
+# Table Of Contents
+# ---
 toc-title: "Table of Contents"
-lof: false # List of figures
-lot: false # List of tables
+lof: false
+lot: false
+toc-depth: 3
 
-# Section numbering
+########
+# Section Numbering
+# ---
 numbersections: true
 secnumdepth: 3
 
-# Custom logo (optional, path relative to project root)
-# logo: "media/logo.png"
-
-# Header and footer customization
-# header-left: ""
-# header-center: ""
-# header-right: ""
-# footer-left: ""
-# footer-center: ""
-# footer-right: ""
+########
+# Header And Footer Content
+# ---
+header-left: ""
+header-center: ""
+header-right: \DTMtoday
+footer-left: ""
+footer-center: ""
+footer-right: \pagemark

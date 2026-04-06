@@ -104,7 +104,10 @@ echo "Code caption filter: ${CODE_CAPTION_FILTER}"
 echo "Input files: $@"
 echo "Working directory: $(pwd)"
 
-# REMOVED --biblatex from this command!
+########
+# Pandoc Invocation
+# ---
+# Run Pandoc first so LaTeX and bibliography files are generated.
 (cd "${BUILD_DIR}" && pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     ${META_ARG} \
     ${TEMPLATE_ARG} \

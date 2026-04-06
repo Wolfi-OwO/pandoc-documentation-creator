@@ -1,16 +1,15 @@
-% =========================================================================
-% listings-languages.tex
-% VSCode Light Theme for LaTeX Listings Package
-% Complete language support with proper syntax highlighting
-% For use with Pandoc
-% =========================================================================
+########
+% Listings Language Definitions
+% ---
+% VS Code light themed `listings` definitions used by the Pandoc template.
 
 \usepackage{listings}
 \usepackage{xcolor}
 
-% =========================================================================
+########
 % Color Definitions (VSCode Light Theme)
-% =========================================================================
+% ---
+% Section configuration.
 \definecolor{vscode-text}{HTML}{000000}
 \definecolor{vscode-keyword}{HTML}{1F4E79}
 \definecolor{vscode-control}{HTML}{AF00DB}
@@ -24,9 +23,10 @@
 \definecolor{vscode-frame}{HTML}{B3B2B3}
 \definecolor{vscode-background}{HTML}{FFFFFF}
 
-% =========================================================================
+########
 % Global Default Settings
-% =========================================================================
+% ---
+% Section configuration.
 \lstset{
     basicstyle=\small\ttfamily\color{vscode-text},
     backgroundcolor=\color{vscode-background},
@@ -50,9 +50,10 @@
     identifierstyle=\color{vscode-variable}
 }
 
-% =========================================================================
+########
 % Literate Programming (Umlaute & Special Characters)
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinestyle{vscode-literate}{
     literate=
         {ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
@@ -61,9 +62,10 @@
         {€}{{€}}1
 }
 
-% =========================================================================
+########
 % RUST (Complete Definition) - FIXED COMMENTS
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{Rust}{
     keywords={
         as, break, const, continue, crate, else, enum, extern, false, fn,
@@ -94,9 +96,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % GO (Complete Definition) - FIXED COMMENTS
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{Go}{
     keywords={
         break, case, chan, const, continue, default, defer, else,
@@ -124,9 +127,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % JAVA
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinestyle{vscode-java}{
     language=Java,
     keywordstyle=\color{vscode-keyword}\bfseries,
@@ -141,9 +145,10 @@
     morekeywords=[4]{main, println, print, printf, toString, equals, hashCode, valueOf, get, set, add, remove, size, stream, collect}
 }
 
-% =========================================================================
+########
 % PYTHON
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinestyle{vscode-python}{
     language=Python,
     keywordstyle=\color{vscode-keyword}\bfseries,
@@ -154,9 +159,10 @@
     morekeywords=[2]{if, elif, else, for, while, break, continue, return, try, except, finally, with, raise}
 }
 
-% =========================================================================
+########
 % JAVASCRIPT / TYPESCRIPT
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{JavaScript}{
     keywords={
         break, case, catch, continue, debugger, default, delete, do, else,
@@ -192,9 +198,10 @@
     morekeywords=[4]{get, post, put, delete, patch, listen, send, log, fetch, then, catch, map, filter, reduce, forEach, join, split, parse, stringify}
 }
 
-% =========================================================================
+########
 % C / C++
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinestyle{vscode-c}{
     language=C,
     keywordstyle=\color{vscode-keyword}\bfseries,
@@ -214,9 +221,10 @@
     morekeywords={nullptr, auto, decltype, constexpr, override, final, noexcept}
 }
 
-% =========================================================================
+########
 % C#
-% =========================================================================
+% ---
+% Section configuration.
 % C# palette (custom)
 \definecolor{csharp-keyword}{HTML}{0000FF}
 \definecolor{csharp-control}{HTML}{AF00DB}
@@ -266,9 +274,10 @@
     identifierstyle=\color{csharp-identifier}
 }
 
-% =========================================================================
+########
 % PHP
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{PHP}{
     keywords={
         abstract, and, array, as, break, callable, case, catch, class, clone,
@@ -296,9 +305,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % RUBY - FIXED COMMENT CHARACTER
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{Ruby}{
     keywords={
         alias, and, begin, break, case, class, def, defined, do, else,
@@ -319,9 +329,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % KOTLIN
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{Kotlin}{
     keywords={
         abstract, annotation, as, break, by, catch, class, companion, const,
@@ -345,9 +356,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % SWIFT
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{Swift}{
     keywords={
         as, break, case, catch, class, continue, default, defer, do, else,
@@ -374,9 +386,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % BASH / SHELL
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinestyle{vscode-bash}{
     language=bash,
     keywordstyle=\color{vscode-keyword}\bfseries,
@@ -384,9 +397,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % SQL
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinestyle{vscode-sql}{
     language=SQL,
     keywordstyle=\color{vscode-keyword}\bfseries,
@@ -399,9 +413,10 @@
     }
 }
 
-% =========================================================================
+########
 % JSON
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{JSON}{
     morestring=[b]",
     literate=
@@ -421,9 +436,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % YAML - FIXED COMMENT CHARACTER
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{YAML}{
     keywords={true, false, null, True, False, Null, TRUE, FALSE, NULL},
     keywordstyle=\color{vscode-type}\bfseries,
@@ -445,9 +461,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % XML / HTML
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinestyle{vscode-xml}{
     language=XML,
     commentstyle=\color{vscode-comment}\itshape,
@@ -462,9 +479,10 @@
     keywordstyle=\color{vscode-keyword}\bfseries,
 }
 
-% =========================================================================
+########
 % CSS
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{CSS}{
     sensitive=true,
     morekeywords={
@@ -485,9 +503,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % MATLAB - FIXED COMMENT CHARACTER
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{Matlab}{
     keywords={
         break, case, catch, continue, else, elseif, end, for, function,
@@ -506,9 +525,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % R - FIXED COMMENT CHARACTER
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{R}{
     keywords={
         break, else, for, function, if, in, next, repeat, return, while,
@@ -527,9 +547,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % LaTeX
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinestyle{vscode-latex}{
     language=[LaTeX]TeX,
     keywordstyle=\color{vscode-keyword}\bfseries,
@@ -537,9 +558,10 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % Docker
-% =========================================================================
+% ---
+% Section configuration.
 \lstdefinelanguage{Docker}{
     keywords={
         FROM, RUN, CMD, LABEL, EXPOSE, ENV, ADD, COPY, ENTRYPOINT, VOLUME,
@@ -557,7 +579,8 @@
     stringstyle=\color{vscode-string},
 }
 
-% =========================================================================
+########
 % Default Style
-% =========================================================================
+% ---
+% Section configuration.
 \lstset{style=vscode-java}

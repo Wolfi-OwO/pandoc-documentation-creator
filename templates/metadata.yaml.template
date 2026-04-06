@@ -1,56 +1,201 @@
-# Metadata file for Pandoc documentation
-# Edit these values to customize your document
+########
+# Metadata Overview
+# ---
+# Edit this file to control title data, localization, date handling,
+# typography, layout, headers, footers, and other document options.
 
-# Document information
+########
+# Document Identity
+# ---
+# `date` accepts any literal text.
+# Example:
+#   date: "06.04.2026"
+#   date: "April 6, 2026"
+#   date: "Montag, 6. April 2026"
 title: "Project Documentation"
 subtitle: ""
 author: "Your Name"
-date: "" # Leave empty for automatic date
+date: ""
 
-# Language and localization
-lang: en-US
+########
+# Automatic Date Formatting
+# ---
+# Leave `date` empty to use automatic dates.
+# `date-style` controls LaTeX-localized automatic dates via `datetime2`.
+# `date-format` uses Lua `strftime` tokens and writes a literal string.
+# Use one or the other depending on your goal:
+#   date-style: "iso"
+#   date-style: "ddmmyyyy"
+#   date-format: "%d.%m.%Y"
+#   date-format: "%Y-%m-%d"
+#   date-format: "%A, %d %B %Y"
+date-style: ""
+date-format: ""
 
-# Document class (scrartcl, scrreprt, scrbook)
-documentclass: scrartcl
+########
+# Language And Localization
+# ---
+# `lang` is the main language tag. Pandoc maps many common values for you.
+# Examples:
+#   lang: "en-US"
+#   lang: "de-DE"
+#   lang: "de-AT"
+#   lang: "fr-FR"
+#   lang: "es-ES"
+#   lang: "pt-BR"
+lang: "en-US"
 
-# Font settings
+########
+# Advanced Babel Overrides
+# ---
+# Use these when you need explicit control in pdfTeX builds.
+# Examples:
+#   babel-lang: "ngerman"
+#   babel-options:
+#     - "shorthands=off"
+#     - "provide=*"
+# babel-lang: ""
+# babel-options: []
+
+########
+# Advanced Polyglossia Overrides
+# ---
+# Use these when you need explicit control in XeLaTeX builds.
+# Examples:
+#   polyglossia-lang: "german"
+#   polyglossia-variant: "austrian"
+#   polyglossia-options:
+#     - "spelling=new"
+# polyglossia-lang: ""
+# polyglossia-variant: ""
+# polyglossia-options: []
+
+########
+# Document Class
+# ---
+# Common values:
+#   documentclass: "scrartcl"
+#   documentclass: "scrreprt"
+#   documentclass: "scrbook"
+documentclass: "scrartcl"
+
+########
+# Fonts
+# ---
+# These values can be changed to any installed font inside the build image.
+# Examples:
+#   mainfont: "Liberation Serif"
+#   mainfont: "DejaVu Serif"
+#   sansfont: "Liberation Sans"
+#   monofont: "Fira Code"
 mainfont: "Liberation Serif"
 sansfont: "Liberation Sans"
 monofont: "Liberation Mono"
 
-# Paper and layout
-papersize: a4
-fontsize: 11pt
+########
+# Page Layout
+# ---
+# Examples:
+#   papersize: "a4"
+#   papersize: "letter"
+#   fontsize: "11pt"
+#   fontsize: "12pt"
+#   linestretch: 1.15
+#   linestretch: 1.3
+papersize: "a4"
+fontsize: "11pt"
 linestretch: 1.15
 
-# Colors
-linkcolor: blue
-urlcolor: blue
-citecolor: brown
-toccolor: black
+########
+# Margins
+# ---
+# Uncomment and adjust when you want explicit geometry settings.
+# geometry:
+#   - "left=2.5cm"
+#   - "right=2.5cm"
+#   - "top=2.5cm"
+#   - "bottom=2.5cm"
 
-# Abstract (optional)
+########
+# Links And Colors
+# ---
+# Any LaTeX-recognized color is valid.
+# Examples:
+#   linkcolor: "blue"
+#   urlcolor: "teal"
+#   citecolor: "brown"
+#   toccolor: "black"
+linkcolor: "blue"
+urlcolor: "blue"
+citecolor: "brown"
+toccolor: "black"
+
+########
+# Abstract
+# ---
+# Leave empty if you do not want an abstract section.
 abstract: ""
 
-# Table of contents settings
+########
+# Table Of Contents
+# ---
+# Examples:
+#   toc-title: "Table of Contents"
+#   toc-title: "Inhaltsverzeichnis"
+#   lof: true
+#   lot: true
+#   toc-depth: 3
 toc-title: "Table of Contents"
-lof: false # List of figures
+lof: false
 # lof-title: "List of Figures"
-lot: false # List of tables
+lot: false
 # lot-title: "List of Tables"
 toc-depth: 3
 
-# Section numbering
+########
+# Section Numbering
+# ---
+# Examples:
+#   numbersections: true
+#   secnumdepth: 3
 numbersections: true
 secnumdepth: 3
 
-# Custom logo (optional, path relative to project root)
+########
+# Title Page Assets
+# ---
+# Example:
+#   logo: "media/logo.png"
 # logo: "media/logo.png"
 
-# Header and footer customization
+########
+# Header And Footer Content
+# ---
+# You can use plain text or LaTeX commands.
+# Examples:
+#   header-left: "Internal Notes"
+#   header-right: "\\DTMtoday"
+#   footer-right: "\\pagemark"
+#   footer-center: "Confidential"
 header-left: "Default Left Header"
 header-center: "Default Center Header"
-header-right: \today
+header-right: \DTMtoday
 footer-left: "Default Left Footer"
 footer-center: "Default Center Footer"
 footer-right: \pagemark
+
+########
+# Bibliography
+# ---
+# Uncomment when you use citations.
+# bibliography: "references.bib"
+# biblio-title: "References"
+
+########
+# Extra LaTeX
+# ---
+# Use this for advanced custom LaTeX that should be injected into the preamble.
+# Example:
+# header-includes:
+#   - "\\usepackage{siunitx}"
+#   - "\\newcommand{\\mytag}[1]{\\textbf{#1}}"

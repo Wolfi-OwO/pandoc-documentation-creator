@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Pandoc Documentation Creator - Example Build Script
-# This script builds the example documentation
+########
+# Example Build Script
+# ---
+# Builds the repository example documentation into a PDF.
 
 set -e
 
@@ -11,7 +13,10 @@ IMAGE_REGISTRY="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
 IMAGE_NAME="${IMAGE_REGISTRY}:latest"
 OUTPUT_NAME="example-documentation"
 
+########
 # Colors
+# ---
+# ANSI color codes for terminal output.
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -23,22 +28,34 @@ echo -e "${BLUE}Building Example Documentation${NC}"
 echo -e "${BLUE}=======================================${NC}"
 echo ""
 
-# Ensure latest image is available
+########
+# Image Availability
+# ---
+# Pull the image when it is not already available locally.
 if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
     echo -e "${YELLOW}Pulling latest Docker image...${NC}"
     docker pull "${IMAGE_NAME}" >/dev/null
 fi
 
-# Prefer the current release tag if it is available in image labels
+########
+# Release Preference
+# ---
+# Switch to the image's version tag when the OCI label is present.
 IMAGE_VERSION=$(docker inspect --format='{{index .Config.Labels "org.opencontainers.image.version"}}' "${IMAGE_NAME}" 2>/dev/null || echo "")
 if [ -n "${IMAGE_VERSION}" ] && [ "${IMAGE_VERSION}" != "unknown" ]; then
     IMAGE_NAME="${IMAGE_REGISTRY}:${IMAGE_VERSION}"
 fi
 
-# Create output directories
+########
+# Output Directories
+# ---
+# Ensure the output folders exist before the build starts.
 mkdir -p "${PROJECT_DIR}/out/build"
 
-# Build PDF from example files
+########
+# PDF Build
+# ---
+# Run the containerized PDF build using the advanced example inputs.
 echo -e "${YELLOW}Generating PDF from examples...${NC}"
 
 if docker run --rm \

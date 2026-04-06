@@ -1,6 +1,7 @@
-% =========================================================================
+########
 % COMPREHENSIVE MODERN PANDOC LATEX TEMPLATE
-% =========================================================================
+% ---
+% Section configuration.
 \documentclass[
   paper=a4,
   fontsize=11pt,
@@ -11,9 +12,10 @@
   captions=tableheading
 ]{scrartcl}
 
-% =========================================================================
+########
 % CORE PACKAGES
-% =========================================================================
+% ---
+% Section configuration.
 \usepackage[a4paper, left=2cm, right=2cm, top=2.5cm, bottom=2.5cm, includehead, includefoot]{geometry}
 \usepackage{iftex}
 \usepackage{microtype}
@@ -24,6 +26,7 @@
 \usepackage{calc}
 \usepackage{etoolbox}
 \usepackage{multicol}
+\usepackage{xstring}
 
 % Multi-column support for columns filter
 \usepackage{multicol}
@@ -35,9 +38,10 @@
 \hbadness=9999
 \tolerance=9999
 
-% =========================================================================
+########
 % FONT CONFIGURATION
-% =========================================================================
+% ---
+% Section configuration.
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
@@ -70,12 +74,71 @@
   }{
     \setmonofont{DejaVu Sans Mono}[Scale=0.85]
   }}
-  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \fi
 
-% =========================================================================
+########
+% LANGUAGE / LOCALIZATION
+% ---
+% Section configuration.
+$if(lang)$
+\ifPDFTeX
+  $if(babel-options)$
+  $if(babel-lang)$
+  \usepackage[$for(babel-options)$$babel-options$$sep$,$endfor$,main=$babel-lang$]{babel}
+  $else$
+  \usepackage[$for(babel-options)$$babel-options$$sep$,$endfor$,main=$lang$]{babel}
+  $endif$
+  $else$
+  $if(babel-lang)$
+  \usepackage[main=$babel-lang$]{babel}
+  $else$
+  \usepackage[main=$lang$]{babel}
+  $endif$
+  $endif$
+\else
+  \usepackage{polyglossia}
+  $if(polyglossia-lang)$
+    $if(polyglossia-options)$
+      $if(polyglossia-variant)$
+  \setmainlanguage[$for(polyglossia-options)$$polyglossia-options$$sep$,$endfor$,variant=$polyglossia-variant$]{$polyglossia-lang$}
+      $else$
+  \setmainlanguage[$for(polyglossia-options)$$polyglossia-options$$sep$,$endfor$]{$polyglossia-lang$}
+      $endif$
+    $else$
+      $if(polyglossia-variant)$
+  \setmainlanguage[variant=$polyglossia-variant$]{$polyglossia-lang$}
+      $else$
+  \IfSubStr{$lang$}{de-AT}{\setmainlanguage[variant=austrian]{$polyglossia-lang$}}{\setmainlanguage{$polyglossia-lang$}}
+      $endif$
+    $endif$
+  $else$
+    $if(polyglossia-options)$
+      $if(polyglossia-variant)$
+  \setmainlanguage[$for(polyglossia-options)$$polyglossia-options$$sep$,$endfor$,variant=$polyglossia-variant$]{$lang$}
+      $else$
+  \setmainlanguage[$for(polyglossia-options)$$polyglossia-options$$sep$,$endfor$]{$lang$}
+      $endif$
+    $else$
+      $if(polyglossia-variant)$
+  \setmainlanguage[variant=$polyglossia-variant$]{$lang$}
+      $else$
+  \IfSubStr{$lang$}{de-AT}{\setmainlanguage[variant=austrian]{german}}{\setmainlanguage{$lang$}}
+      $endif$
+    $endif$
+  $endif$
+\fi
+$endif$
+
+\usepackage[useregional]{datetime2}
+$if(date-style)$
+\DTMsetstyle{$date-style$}
+$endif$
+
+########
 % UNIFIED TEXT SIZING
-% =========================================================================
+% ---
+% Section configuration.
 \setkomafont{section}{\Large\bfseries}
 \setkomafont{subsection}{\large\bfseries}
 \setkomafont{subsubsection}{\normalsize\bfseries}
@@ -106,9 +169,10 @@ $endif$
   afterskip=0.6ex plus 0.2ex
 ]{subparagraph}
 
-% =========================================================================
+########
 % COLOR DEFINITIONS
-% =========================================================================
+% ---
+% Section configuration.
 \definecolor{headercolor}{RGB}{71,85,119}
 \definecolor{codebg}{HTML}{F7F7F7}
 \definecolor{codeframe}{HTML}{B3B2B3}
@@ -140,9 +204,10 @@ $endif$
 \definecolor{vscode-frame}{HTML}{B3B2B3}
 \definecolor{vscode-background}{HTML}{FFFFFF}
 
-% =========================================================================
+########
 % HYPERLINKS - BLACK TOC
-% =========================================================================
+% ---
+% Section configuration.
 \usepackage{bookmark}
 \usepackage{xurl}
 \urlstyle{same}
@@ -183,9 +248,10 @@ $if(keywords)$
 \hypersetup{pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$}}
 $endif$
 
-% =========================================================================
+########
 % CODE HIGHLIGHTING & LISTINGS
-% =========================================================================
+% ---
+% Section configuration.
 \usepackage{listings}
 
 % Load external language definitions if available
@@ -213,9 +279,10 @@ $else$
 \makeatother
 $endif$
 
-% =========================================================================
+########
 % GRAPHICS & FIGURES
-% =========================================================================
+% ---
+% Section configuration.
 \usepackage{graphicx}
 \graphicspath{{/data/}{/data/media/}}
 \setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
@@ -243,9 +310,10 @@ $if(subfigure)$
 \usepackage{subcaption}
 $endif$
 
-% =========================================================================
+########
 % TABLES
-% =========================================================================
+% ---
+% Section configuration.
 \usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{array}
@@ -287,9 +355,10 @@ $endif$
 \patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
 \makeatother
 
-% =========================================================================
+########
 % BLOCKQUOTES
-% =========================================================================
+% ---
+% Section configuration.
 \usepackage{mdframed}
 \usepackage{tikz}
 
@@ -378,15 +447,17 @@ $endif$
   roundcorner=3pt
 ]{infobox}
 
-% =========================================================================
+########
 % PANDOC COMMANDS - VOLLSTÄNDIG KORRIGIERT
-% =========================================================================
+% ---
+% Section configuration.
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
-% =========================================================================
+########
 % INLINE CODE
-% =========================================================================
+% ---
+% Section configuration.
 \newcommand{\inlinecode}[1]{{\ttfamily\color{blue!60!black}#1}}
 \renewcommand{\texttt}[1]{\inlinecode{#1}}
 \providecommand{\passthrough}[1]{\inlinecode{#1}}
@@ -424,9 +495,10 @@ $endif$
 \newcommand{\CodeCaption}[1]{\begin{center}\small\textit{#1}\end{center}}
 
 
-% =========================================================================
+########
 % MATHEMATICS
-% =========================================================================
+% ---
+% Section configuration.
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
@@ -440,9 +512,10 @@ $endif$
 \renewcommand{\[}{\begin{dmath}}
 \renewcommand{\]}{\end{dmath}}
 
-% =========================================================================
+########
 % LISTS
-% =========================================================================
+% ---
+% Section configuration.
 % Keep list spacing compact without relying on enumitem, which can
 % conflict with newer TeX Live list internals in CI builds.
 \AtBeginEnvironment{itemize}{%
@@ -464,9 +537,10 @@ $endif$
   \setlength{\topsep}{0.5\baselineskip}%
 }
 
-% =========================================================================
+########
 % BIBLIOGRAPHY
-% =========================================================================
+% ---
+% Section configuration.
 $if(natbib)$
 \usepackage[$natbiboptions$]{natbib}
 \bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
@@ -499,9 +573,10 @@ $if(csl-refs)$
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 $endif$
 
-% =========================================================================
+########
 % HEADERS & FOOTERS
-% =========================================================================
+% ---
+% Section configuration.
 \usepackage[headsepline,footsepline]{scrlayer-scrpage}
 \clearpairofpagestyles
 
@@ -517,9 +592,10 @@ $endif$
 \setkomafont{footsepline}{\color{headercolor}}
 \setkomafont{pagenumber}{\color{headercolor}\small\itshape}
 
-% =========================================================================
+########
 % DOCUMENT START
-% =========================================================================
+% ---
+% Section configuration.
 \begin{document}
 
 $if(title)$
@@ -549,6 +625,8 @@ $endif$
 
 $if(date)$
 {\large\sffamily\color{black!60} $date$}
+$else$
+{\large\sffamily\color{black!60} \DTMtoday}
 $endif$
 
 \vfill
