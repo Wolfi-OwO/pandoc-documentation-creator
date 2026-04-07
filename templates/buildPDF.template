@@ -72,6 +72,15 @@ if [ -f "${CODE_CAPTION_FILTER}" ]; then
     CODE_CAPTION_ARG="--lua-filter=${CODE_CAPTION_FILTER}"
 fi
 
+DATE_METADATA_FILTER=""
+if [ -f "/usr/local/share/pandoc/filters/date-metadata.lua" ]; then
+    DATE_METADATA_FILTER="/usr/local/share/pandoc/filters/date-metadata.lua"
+fi
+DATE_METADATA_ARG=""
+if [ -n "${DATE_METADATA_FILTER}" ]; then
+    DATE_METADATA_ARG="--lua-filter=${DATE_METADATA_FILTER}"
+fi
+
 TEMPLATE_ARG=""
 if [ -f "${TEMPLATE}" ]; then
     TEMPLATE_ARG="--template=${TEMPLATE}"
@@ -120,6 +129,7 @@ echo "Working directory: $(pwd)"
     --standalone \
     --verbose \
     ${CODE_CAPTION_ARG} \
+    ${DATE_METADATA_ARG} \
     ${PANDOC_EXTRA_ARGS} \
     "$@" \
     2>&1 | tee "${LOG_FILE}")

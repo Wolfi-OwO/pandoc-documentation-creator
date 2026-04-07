@@ -28,13 +28,6 @@ template: /usr/local/share/pandoc/templates/custom-template.tex
 pdf-engine: xelatex
 
 ########
-# Lua Filters
-# ---
-# Date metadata is resolved before Pandoc writes LaTeX.
-lua-filter:
-  - /usr/local/share/pandoc/filters/date-metadata.lua
-
-########
 # Filters
 # ---
 # External filters executed in order.

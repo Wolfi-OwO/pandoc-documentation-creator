@@ -195,7 +195,9 @@ test_docker:
     - docker run --rm "$TEST_IMAGE" python3 --version
     - docker run --rm "$TEST_IMAGE" node --version
     - docker run --rm "$TEST_IMAGE" mermaid --version || true
+    - docker run --rm "$TEST_IMAGE" test -f /usr/local/share/pandoc/filters/date-metadata.lua
     - |
+      printf 'date: ""\ndate-format: "%Y-%m-%d"\n' > "$CI_PROJECT_DIR/metadata.yaml"
       docker run --rm \
         -v "$CI_PROJECT_DIR:/data" \
         -e OUTPUT_NAME="ci-test" \
@@ -204,6 +206,7 @@ test_docker:
         --entrypoint /bin/sh \
         "$TEST_IMAGE" \
         -c "/data/buildPDF"
+      rm -f "$CI_PROJECT_DIR/metadata.yaml"
     - sh scripts/verify-language-mappings.sh
     - test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
       
