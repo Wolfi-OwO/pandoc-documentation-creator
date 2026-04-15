@@ -1,4 +1,4 @@
-########
+% ########
 % COMPREHENSIVE MODERN PANDOC LATEX TEMPLATE
 % ---
 % Section configuration.
@@ -12,7 +12,7 @@
   captions=tableheading
 ]{scrartcl}
 
-########
+% ########
 % CORE PACKAGES
 % ---
 % Section configuration.
@@ -38,7 +38,7 @@
 \hbadness=9999
 \tolerance=9999
 
-########
+% ########
 % FONT CONFIGURATION
 % ---
 % Section configuration.
@@ -77,7 +77,7 @@
 \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \fi
 
-########
+% ########
 % LANGUAGE / LOCALIZATION
 % ---
 % Section configuration.
@@ -135,7 +135,7 @@ $if(date-style)$
 \DTMsetstyle{$date-style$}
 $endif$
 
-########
+% ########
 % UNIFIED TEXT SIZING
 % ---
 % Section configuration.
@@ -169,7 +169,7 @@ $endif$
   afterskip=0.6ex plus 0.2ex
 ]{subparagraph}
 
-########
+% ########
 % COLOR DEFINITIONS
 % ---
 % Section configuration.
@@ -204,7 +204,7 @@ $endif$
 \definecolor{vscode-frame}{HTML}{B3B2B3}
 \definecolor{vscode-background}{HTML}{FFFFFF}
 
-########
+% ########
 % HYPERLINKS - BLACK TOC
 % ---
 % Section configuration.
@@ -248,7 +248,7 @@ $if(keywords)$
 \hypersetup{pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$}}
 $endif$
 
-########
+% ########
 % CODE HIGHLIGHTING & LISTINGS
 % ---
 % Section configuration.
@@ -279,7 +279,7 @@ $else$
 \makeatother
 $endif$
 
-########
+% ########
 % GRAPHICS & FIGURES
 % ---
 % Section configuration.
@@ -310,7 +310,7 @@ $if(subfigure)$
 \usepackage{subcaption}
 $endif$
 
-########
+% ########
 % TABLES
 % ---
 % Section configuration.
@@ -355,7 +355,7 @@ $endif$
 \patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
 \makeatother
 
-########
+% ########
 % BLOCKQUOTES
 % ---
 % Section configuration.
@@ -447,14 +447,14 @@ $endif$
   roundcorner=3pt
 ]{infobox}
 
-########
+% ########
 % PANDOC COMMANDS - VOLLSTÄNDIG KORRIGIERT
 % ---
 % Section configuration.
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
-########
+% ########
 % INLINE CODE
 % ---
 % Section configuration.
@@ -495,7 +495,7 @@ $endif$
 \newcommand{\CodeCaption}[1]{\begin{center}\small\textit{#1}\end{center}}
 
 
-########
+% ########
 % MATHEMATICS
 % ---
 % Section configuration.
@@ -512,7 +512,7 @@ $endif$
 \renewcommand{\[}{\begin{dmath}}
 \renewcommand{\]}{\end{dmath}}
 
-########
+% ########
 % LISTS
 % ---
 % Section configuration.
@@ -537,7 +537,7 @@ $endif$
   \setlength{\topsep}{0.5\baselineskip}%
 }
 
-########
+% ########
 % BIBLIOGRAPHY
 % ---
 % Section configuration.
@@ -573,7 +573,7 @@ $if(csl-refs)$
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 $endif$
 
-########
+% ########
 % HEADERS & FOOTERS
 % ---
 % Section configuration.
@@ -592,7 +592,7 @@ $endif$
 \setkomafont{footsepline}{\color{headercolor}}
 \setkomafont{pagenumber}{\color{headercolor}\small\itshape}
 
-########
+% ########
 % DOCUMENT START
 % ---
 % Section configuration.
