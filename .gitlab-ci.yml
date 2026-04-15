@@ -190,12 +190,12 @@ test_docker:
       docker load -i pandoc-image.tar
       TEST_IMAGE="pandoc-documentation-creator:local"
 
-    - docker run --rm "$TEST_IMAGE" pandoc --version
-    - docker run --rm "$TEST_IMAGE" xelatex --version
-    - docker run --rm "$TEST_IMAGE" python3 --version
-    - docker run --rm "$TEST_IMAGE" node --version
-    - docker run --rm "$TEST_IMAGE" mermaid --version || true
-    - docker run --rm "$TEST_IMAGE" test -f /usr/local/share/pandoc/filters/date-metadata.lua
+    - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "pandoc --version"
+    - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "xelatex --version"
+    - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "python3 --version"
+    - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "test -x /usr/local/bin/pandoc-kroki-filter"
+    - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "mermaid --version" || true
+    - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "test -f /usr/local/share/pandoc/filters/date-metadata.lua"
     - |
       printf 'date: ""\ndate-format: "%Y-%m-%d"\n' > "$CI_PROJECT_DIR/metadata.yaml"
       docker run --rm \
@@ -209,7 +209,6 @@ test_docker:
       rm -f "$CI_PROJECT_DIR/metadata.yaml"
     - sh scripts/verify-language-mappings.sh
     - test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
-      
 
   artifacts:
     paths:

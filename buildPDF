@@ -162,6 +162,7 @@ echo "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     --standalone \
     --verbose \
     ${CODE_CAPTION_ARG} \
+    ${DATE_METADATA_ARG} \
     ${PANDOC_EXTRA_ARGS} \
     "$@" \
     2>&1 | tee "${LOG_FILE}")
