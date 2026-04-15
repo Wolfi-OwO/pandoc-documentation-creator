@@ -189,7 +189,6 @@ test_docker:
     - |
       docker load -i pandoc-image.tar
       TEST_IMAGE="pandoc-documentation-creator:local"
-
     - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "pandoc --version"
     - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "xelatex --version"
     - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "python3 --version"
@@ -197,7 +196,11 @@ test_docker:
     - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "mermaid --version" || true
     - docker run --rm --entrypoint /bin/sh "$TEST_IMAGE" -c "test -f /usr/local/share/pandoc/filters/date-metadata.lua"
     - |
-      printf 'date: ""\ndate-format: "%Y-%m-%d"\n' > "$CI_PROJECT_DIR/metadata.yaml"
+      cat > "$CI_PROJECT_DIR/metadata.yaml" <<'EOF'
+      date: ""
+      date-format: "%Y-%m-%d"
+      EOF
+
       docker run --rm \
         -v "$CI_PROJECT_DIR:/data" \
         -e OUTPUT_NAME="ci-test" \
@@ -206,6 +209,7 @@ test_docker:
         --entrypoint /bin/sh \
         "$TEST_IMAGE" \
         -c "/data/buildPDF"
+
       rm -f "$CI_PROJECT_DIR/metadata.yaml"
     - sh scripts/verify-language-mappings.sh
     - test -f "$CI_PROJECT_DIR/out/ci-test.pdf"
@@ -214,7 +218,6 @@ test_docker:
     paths:
       - out/ci-test.pdf
     expire_in: 30 days
-
 # --------------------
 # Push to Registry
 # --------------------
