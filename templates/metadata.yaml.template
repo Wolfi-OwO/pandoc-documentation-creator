@@ -37,13 +37,13 @@ date-format: ""
 # ---
 # `lang` is the main language tag. Pandoc maps many common values for you.
 # Examples:
-#   lang: "en-US"
+#   lang: "de-AT"
 #   lang: "de-DE"
 #   lang: "de-AT"
 #   lang: "fr-FR"
 #   lang: "es-ES"
 #   lang: "pt-BR"
-lang: "en-US"
+lang: "de-AT"
 
 ########
 # Advanced Babel Overrides

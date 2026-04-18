@@ -138,7 +138,7 @@ Customize your document:
 title: "My Documentation"
 author: "Your Name"
 date: "2026"
-lang: "en-US"
+lang: "de-AT"
 documentclass: scrartcl
 ```
 

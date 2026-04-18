@@ -57,7 +57,7 @@ RUN set -e; \
              lm lm-math merriweather fontaxes mweights sourcesans sourcecodepro \
              fontawesome5 ly1 fontspec breqn \
              titling pagecolor collectbox footnotebackref zref sectsty \
-             truncate tocloft wallpaper morefloats etoolbox \
+             truncate tocloft wallpaper morefloats etoolbox datetime2 \
              ulem upquote csquotes float hyperref iftex xkeyval xpatch \
              caption bidi scrhack \
              siunitx threeparttable makecell bbold cleveref forloop lipsum \

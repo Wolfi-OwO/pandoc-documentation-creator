@@ -27,7 +27,7 @@ date-format: ""
 # lang: "de-AT"
 # polyglossia-lang: "german"
 # polyglossia-variant: "austrian"
-lang: "en-US"
+lang: "de-AT"
 
 ########
 # Document Class
