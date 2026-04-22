@@ -53,7 +53,7 @@ RUN set -e; \
              microtype listings fvextra xcolor geometry titlesec \
              koma-script fancyhdr booktabs multirow colortbl \
              mathtools amsmath enumitem footmisc adjustbox mdframed needspace \
-             xstring \
+             xstring polyglossia \
              lm lm-math merriweather fontaxes mweights sourcesans sourcecodepro \
              fontawesome5 ly1 fontspec breqn \
              titling pagecolor collectbox footnotebackref zref sectsty \
