@@ -164,6 +164,19 @@ graph TD
 ![Caption](media/image.png)
 ```
 
+#### SVG Images (Auto-Converted)
+
+SVG files cannot be embedded directly in LaTeX/PDF output. During the build, referenced `.svg` images are automatically rasterized using **Inkscape**:
+
+- Default output format: PNG
+- Optional output format: JPG (requires ImageMagick)
+
+You can control this behavior via environment variables:
+
+- `SVG_EXPORT_FORMAT`: `png` (default) or `jpg`
+- `SVG_EXPORT_DPI`: export resolution (default: `300`)
+- `SVG_EXPORT_JPG_QUALITY`: JPG quality (default: `92`)
+
 ### Tables
 
 ```markdown

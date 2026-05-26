@@ -19,6 +19,8 @@ RUN apk add --no-cache \
     py3-pip \
     openjdk21-jre \
     graphviz \
+    inkscape \
+    imagemagick \
     fontconfig \
     freetype \
     ttf-dejavu \

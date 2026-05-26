@@ -88,6 +88,12 @@ if [ -n "${DATE_METADATA_FILTER}" ]; then
     DATE_METADATA_ARG="--lua-filter=${DATE_METADATA_FILTER}"
 fi
 
+SVG_TO_RASTER_FILTER="${SVG_TO_RASTER_FILTER:-/usr/local/share/pandoc/filters/svg-to-raster.lua}"
+SVG_TO_RASTER_ARG=""
+if [ -f "${SVG_TO_RASTER_FILTER}" ]; then
+    SVG_TO_RASTER_ARG="--lua-filter=${SVG_TO_RASTER_FILTER}"
+fi
+
 TEMPLATE_ARG=""
 if [ -f "${TEMPLATE}" ]; then
     TEMPLATE_ARG="--template=${TEMPLATE}"
@@ -124,6 +130,7 @@ echo "=== Starting Pandoc processing ==="
 echo "Template: ${TEMPLATE}"
 echo "Header: ${HEADER}"
 echo "Code caption filter: ${CODE_CAPTION_FILTER}"
+echo "SVG raster filter: ${SVG_TO_RASTER_FILTER}"
 echo "Input files: $@"
 echo "Working directory: $(pwd)"
 
@@ -139,6 +146,7 @@ echo "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     --output '${BUILD_DIR}/${OUTPUT_NAME}.tex' \
     --standalone \
     --verbose \
+    ${SVG_TO_RASTER_ARG} \
     ${CODE_CAPTION_ARG} \
     ${DATE_METADATA_ARG} \
     ${PANDOC_EXTRA_ARGS} \
@@ -161,6 +169,7 @@ echo "pandoc --defaults=/usr/local/share/pandoc/defaults.yaml \
     --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
     --standalone \
     --verbose \
+    ${SVG_TO_RASTER_ARG} \
     ${CODE_CAPTION_ARG} \
     ${DATE_METADATA_ARG} \
     ${PANDOC_EXTRA_ARGS} \

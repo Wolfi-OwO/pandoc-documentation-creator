@@ -247,6 +247,16 @@ graph TD
     B --> C[End]
 ```
 
+### SVG Images (Auto-Converted)
+
+LaTeX/PDF output can’t include `.svg` images directly. During the build, referenced SVGs are automatically rasterized using **Inkscape** (to PNG by default).
+
+You can control the export via environment variables:
+
+- `SVG_EXPORT_FORMAT`: `png` (default) or `jpg`
+- `SVG_EXPORT_DPI`: export resolution (default: `300`)
+- `SVG_EXPORT_JPG_QUALITY`: JPG quality (default: `92`)
+
 ### Typography
 
 - Professional KOMA-Script document classes
