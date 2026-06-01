@@ -441,7 +441,7 @@ LaTeX support test for complex formulas (standard deviation): $$ \sigma = \sqrt{
 
 ## PlantUML
 
-```plantuml{#code-plantuml .plantuml caption="PlantUML diagram"}
+```{#code-plantuml .plantuml caption="PlantUML diagram" max-width=80%}
 @startuml
 [User] -> (Pandoc): Markdown Input
 (Pandoc) -> [PDF Engine]: LaTeX Code
@@ -451,7 +451,7 @@ LaTeX support test for complex formulas (standard deviation): $$ \sigma = \sqrt{
 
 ## Mermaid
 
-```mermaid{#code-mermaid .mermaid caption="Mermaid diagram"}
+```{#code-mermaid .mermaid caption="Mermaid diagram" max-width=80%}
 graph LR
     A[Markdown] --> B(Pandoc Filter)
     B --> C{LaTeX Engine}

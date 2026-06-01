@@ -17,6 +17,7 @@ KROKI_URL = os.environ.get('KROKI_URL', 'https://kroki.io')
 
 # Output directory for generated images
 OUTPUT_DIR = Path('kroki-images')
+SIZING_ATTRIBUTES = {'width', 'height', 'max-width', 'max_width', 'maxwidth', 'maxWidth'}
 
 def create_image(code, diagram_type, output_format='png'):
     """Generate diagram using Kroki service"""
@@ -99,7 +100,7 @@ def process_code_block(block):
         return block
     
     # Default to full text width unless the author specified sizing
-    if not any(k in ('width', 'height') for k, _ in keyvals):
+    if not any(k in SIZING_ATTRIBUTES for k, _ in keyvals):
         keyvals = keyvals + [('width', '100%')]
 
     # Return image element

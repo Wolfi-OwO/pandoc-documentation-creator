@@ -89,7 +89,7 @@ fi
 
 ### Mermaid Flowchart
 
-```{#code-mermaid .mermaid caption="Mermaid flowchart"}
+```{#code-mermaid .mermaid caption="Mermaid flowchart" max-width=85%}
 graph LR
     A[Start] --> B{Decision}
     B -->|Yes| C[Action 1]
@@ -100,7 +100,7 @@ graph LR
 
 ### PlantUML Sequence Diagram
 
-```{#code-plantuml .plantuml caption="PlantUML sequence diagram"}
+```{#code-plantuml .plantuml caption="PlantUML sequence diagram" max-width=85%}
 @startuml
 actor User
 participant "Web App" as Web

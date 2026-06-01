@@ -12,6 +12,7 @@ TEMPLATE="/usr/local/share/pandoc/templates/custom-template.tex"
 HEADER="/usr/local/share/pandoc/templates/header.tex"
 HIGHLIGHT_THEME="/usr/local/share/pandoc/styles/code/vscode-light.theme"
 KROKI_FILTER="${PROJECT_DIR}/docker/scripts/pandoc-kroki-filter.py"
+DIAGRAM_SIZE_FILTER="${PROJECT_DIR}/pandoc/filters/diagram-size.lua"
 CODE_CAPTION_FILTER="/usr/local/share/pandoc/filters/code-caption.lua"
 SVG_TO_RASTER_FILTER="${PROJECT_DIR}/pandoc/filters/svg-to-raster.lua"
 COMMON_ARGS=(-interaction=nonstopmode -halt-on-error)
@@ -26,6 +27,7 @@ mkdir -p "${BUILD_DIR}"
   -H "$HEADER" \
   --highlight-style="$HIGHLIGHT_THEME" \
   --filter "$KROKI_FILTER" \
+  --lua-filter "$DIAGRAM_SIZE_FILTER" \
   --lua-filter "$SVG_TO_RASTER_FILTER" \
   --lua-filter "$CODE_CAPTION_FILTER" \
   --toc \

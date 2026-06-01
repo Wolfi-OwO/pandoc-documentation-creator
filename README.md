@@ -198,7 +198,7 @@ docker run --rm \
 
 Builds require explicit inputs. Provide one of:
 
-- `INPUT_FILES`: space-separated list of markdown files.
+- `INPUT_FILES`: space-separated list of - files.
 - `INPUT_GLOB`: glob like `/data/chapters/*.md`.
 - `INPUT_DIR`: a directory containing `.md` files.
 
@@ -246,6 +246,25 @@ graph TD
     A[Start] --> B[Process]
     B --> C[End]
 ```
+
+Limit diagram size with fenced-code attributes:
+
+````markdown
+```{.plantuml max-width=70%}
+@startuml
+Alice -> Bob: Hello
+Bob -> Alice: Hi!
+@enduml
+```
+
+```{.mermaid max-width=12cm}
+graph TD
+    A[Start] --> B[Process]
+    B --> C[End]
+```
+````
+
+Supported `max-width` values include percentages, `cm`, `mm`, `in`, `pt`, `px`, and LaTeX dimensions such as `0.7\linewidth`.
 
 ### SVG Images (Auto-Converted)
 

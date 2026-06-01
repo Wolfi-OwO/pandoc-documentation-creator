@@ -158,6 +158,25 @@ graph TD
     B --> C[End]
 ```
 
+Limit generated diagram size with fenced-code attributes:
+
+````markdown
+```{.plantuml max-width=70%}
+@startuml
+Alice -> Bob: Hello
+Bob -> Alice: Hi!
+@enduml
+```
+
+```{.mermaid max-width=12cm}
+graph TD
+    A[Start] --> B[Process]
+    B --> C[End]
+```
+````
+
+Supported `max-width` values include percentages, `cm`, `mm`, `in`, `pt`, `px`, and LaTeX dimensions such as `0.7\linewidth`.
+
 ### Images
 
 ```markdown

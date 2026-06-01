@@ -33,6 +33,7 @@ pdf-engine: xelatex
 # External filters executed in order.
 filters:
   - /usr/local/bin/pandoc-kroki-filter
+  - /usr/local/share/pandoc/filters/diagram-size.lua
   - /usr/local/share/pandoc/filters/columns.lua
 
 ########

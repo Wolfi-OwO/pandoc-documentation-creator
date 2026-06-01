@@ -11,6 +11,7 @@ TEMPLATE="${TEMPLATE:-/usr/local/share/pandoc/templates/custom-template.tex}"
 HEADER="${HEADER:-/usr/local/share/pandoc/templates/header.tex}"
 HIGHLIGHT_THEME="${HIGHLIGHT_THEME:-/usr/local/share/pandoc/styles/code/vscode-light.theme}"
 KROKI_FILTER="${KROKI_FILTER:-/usr/local/bin/pandoc-kroki-filter}"
+DIAGRAM_SIZE_FILTER="${DIAGRAM_SIZE_FILTER:-/usr/local/share/pandoc/filters/diagram-size.lua}"
 BIBLIOGRAPHY="${BIBLIOGRAPHY:-}"
 
 if [ ! -f "${TEMPLATE}" ]; then
@@ -107,6 +108,11 @@ if [ -f "${KROKI_FILTER}" ]; then
     KROKI_ARG="--filter ${KROKI_FILTER}"
 fi
 
+DIAGRAM_SIZE_ARG=""
+if [ -f "${DIAGRAM_SIZE_FILTER}" ]; then
+    DIAGRAM_SIZE_ARG="--lua-filter=${DIAGRAM_SIZE_FILTER}"
+fi
+
 BIBLIOGRAPHY_ARG=""
 if [ -n "${BIBLIOGRAPHY}" ]; then
     BIBLIOGRAPHY_ARG="--bibliography=${BIBLIOGRAPHY}"
@@ -116,6 +122,7 @@ echo "=== Starting Pandoc processing ==="
 echo "Template: ${TEMPLATE}"
 echo "Header: ${HEADER}"
 echo "Code caption filter: ${CODE_CAPTION_FILTER}"
+echo "Diagram size filter: ${DIAGRAM_SIZE_FILTER}"
 echo "SVG raster filter: ${SVG_TO_RASTER_FILTER}"
 echo "Input files: $@"
 echo "Working directory: $(pwd)"
@@ -130,6 +137,7 @@ echo "Working directory: $(pwd)"
     ${HEADER_ARG} \
     ${HIGHLIGHT_ARG} \
     ${KROKI_ARG} \
+    ${DIAGRAM_SIZE_ARG} \
     ${BIBLIOGRAPHY_ARG} \
     --to=latex \
     --output "${BUILD_DIR}/${OUTPUT_NAME}.tex" \
