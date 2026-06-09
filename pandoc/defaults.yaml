@@ -35,6 +35,8 @@ filters:
   - /usr/local/bin/pandoc-kroki-filter
   - /usr/local/share/pandoc/filters/diagram-size.lua
   - /usr/local/share/pandoc/filters/columns.lua
+  # Applies the `pdf-theme` visual style and injects table header-row coloring.
+  - /usr/local/share/pandoc/filters/pdf-style.lua
 
 ########
 # Table Of Contents

@@ -64,7 +64,7 @@ RUN set -e; \
              caption bidi scrhack \
              siunitx threeparttable makecell bbold cleveref forloop lipsum \
              courier pdfpages lineno hardwrap catchfile pdflscape pdftexcmds \
-             svg transparent; then \
+             svg transparent import; then \
             success=1; \
             break; \
         fi; \

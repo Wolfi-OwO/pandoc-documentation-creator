@@ -69,6 +69,30 @@
       "items": {"type": "string"},
       "description": "Additional polyglossia language options"
     },
+    "pdf-theme": {
+      "type": "string",
+      "enum": ["modern", "classic", "minimal"],
+      "description": "Overall table/accent style: 'modern' (accent-colored header row + subtle alternating rows), 'classic' (plain booktabs: black rules, no header fill or shading) or 'minimal' (light-grey rules, no header fill, very subtle rows)",
+      "default": "modern"
+    },
+    "table-header-color": {
+      "type": "string",
+      "pattern": "^#?[0-9A-Fa-f]{6}$",
+      "description": "Background color of the table header row as a 6-digit hex value. Setting this re-enables the colored header even under the classic/minimal themes.",
+      "default": "E8ECF4"
+    },
+    "table-accent-color": {
+      "type": "string",
+      "pattern": "^#?[0-9A-Fa-f]{6}$",
+      "description": "Color of the booktabs rules and header/footer accent as a 6-digit hex value. Also redefines the document accent color.",
+      "default": "475577"
+    },
+    "table-row-color": {
+      "type": "string",
+      "pattern": "^#?[0-9A-Fa-f]{6}$",
+      "description": "Alternating data-row shade as a 6-digit hex value.",
+      "default": "F5F5F5"
+    },
     "documentclass": {
       "type": "string",
       "enum": ["scrartcl", "scrreprt", "scrbook", "article", "report", "book"],

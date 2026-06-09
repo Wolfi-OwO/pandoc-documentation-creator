@@ -30,6 +30,12 @@ date-format: ""
 lang: "de-AT"
 
 ########
+# Visual Theme
+# ---
+# "modern" (default), "classic" (plain booktabs), or "minimal".
+pdf-theme: "modern"
+
+########
 # Document Class
 # ---
 documentclass: "scrartcl"
@@ -51,6 +57,10 @@ linestretch: 1.15
 ########
 # Colors
 # ---
+# Optional table color overrides (6-digit hex):
+# table-header-color: "E8ECF4"
+# table-accent-color: "475577"
+# table-row-color: "F5F5F5"
 linkcolor: "blue"
 urlcolor: "blue"
 citecolor: "brown"

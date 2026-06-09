@@ -342,7 +342,21 @@ $endif$
 \setlength{\extrarowheight}{3pt}
 \renewcommand{\arraystretch}{1.3}
 
-% Alternating row colors
+% Booktabs + colortbl compatibility: remove extra rule padding so \rowcolor
+% sits flush against \toprule / \midrule without a white gap.
+\setlength\aboverulesep{0pt}
+\setlength\belowrulesep{0pt}
+
+% Table header background color (theme-configurable via pdf-style.lua filter).
+% Override with table-header-color in metadata.yaml.
+\definecolor{table-header-bg}{HTML}{E8ECF4}
+
+% \PDFTableHeaderColor is inserted by pdf-style.lua before the first header cell.
+% Modern theme: expands to \rowcolor{table-header-bg}.
+% Classic / minimal themes: redefined to {} (no-op) via header-includes.
+\newcommand{\PDFTableHeaderColor}{\rowcolor{table-header-bg}}
+
+% Alternating row colors (overridden per-theme in header-includes)
 \let\oldlongtable\longtable
 \let\endoldlongtable\endlongtable
 \renewenvironment{longtable}{%
@@ -592,6 +606,25 @@ $endif$
 \setkomafont{headsepline}{\color{headercolor}}
 \setkomafont{footsepline}{\color{headercolor}}
 \setkomafont{pagenumber}{\color{headercolor}\small\itshape}
+
+% ########
+% HEADER INCLUDES
+% ---
+% User-supplied LaTeX injected into the preamble via header-includes in
+% metadata.yaml (and via -H on the command line).
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+% ########
+% PDF STYLE OVERRIDES
+% ---
+% Theme and table color overrides emitted by pdf-style.lua. This uses its own
+% variable (not header-includes) so it is never clobbered by --include-in-header
+% (-H). Rendered last in the preamble so it wins over the base table styling.
+$if(pdf-style-preamble)$
+$pdf-style-preamble$
+$endif$
 
 % ########
 % DOCUMENT START

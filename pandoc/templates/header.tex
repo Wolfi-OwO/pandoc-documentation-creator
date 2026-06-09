@@ -1,73 +1,24 @@
 % ########
 % Header Includes
 % ---
-% Shared LaTeX helpers loaded into the document preamble.
+% Small LaTeX helpers loaded into the document preamble via header-includes.
+%
+% The main template (custom-template.tex) already loads the heavy packages
+% (amsmath, microtype, fancyvrb, tikz, ...) and defines the document styling.
+% This file therefore only adds a couple of guarded helper macros. Everything
+% here is idempotent: it is safe to load more than once, which matters because
+% the build pipeline injects it both through `-H` and through the defaults
+% `header-includes` entry.
 
 % ########
-% Typography
+% Diagram Imports
 % ---
-% Improve spacing and line breaking.
-\usepackage{microtype}
-
-% ########
-% Math Packages
-% ---
-% Additional math support used by generated documents.
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsfonts}
-\usepackage{mathtools}
-
-% ########
-% Code Styling
-% ---
-% Basic framed code environment helpers.
-\usepackage{framed}
-
-% ########
-% Code Environment
-% ---
-% Provide a simple framed code environment.
-\newenvironment{code}{\begin{framed}\small}{\end{framed}}
-
-% ########
-% PlantUML Support
-% ---
-% TikZ and import support for diagram assets.
-\usepackage{tikz}
+% `import` lets diagram assets pull in generated sub-files by relative path.
 \usepackage{import}
 
 % ########
-% Custom Commands
+% Custom Helper Commands
 % ---
-% Helper commands used by examples and generated output.
-\newcommand{\highlight}[1]{\textcolor{red}{#1}}
-\newcommand{\code}[1]{\texttt{\small #1}}
-
-% ########
-% Verbatim Blocks
-% ---
-% Improve the default verbatim environment.
-\usepackage{fancyvrb}
-\RecustomVerbatimEnvironment{Verbatim}{Verbatim}{
-  frame=lines,
-  framesep=5pt,
-  samepage=false,
-  commandchars=\\\{\}
-}
-
-% ########
-% Title Page Styling
-% ---
-% Fallback `\maketitle` layout.
-\renewcommand{\maketitle}{%
-  \begin{titlepage}%
-    \centering%
-    {\Large\bfseries\@title\par}%
-    \vspace{1.5cm}%
-    {\large\@author\par}%
-    \vspace{1.5cm}%
-    {\large\@date\par}%
-    \vfill%
-  \end{titlepage}%
-}
+% Defined with \providecommand so they never clash with the main template.
+\providecommand{\highlight}[1]{\textcolor{red}{#1}}
+\providecommand{\code}[1]{\texttt{\small #1}}

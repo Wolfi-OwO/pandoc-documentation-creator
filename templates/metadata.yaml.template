@@ -71,6 +71,18 @@ lang: "de-AT"
 # polyglossia-options: []
 
 ########
+# Visual Theme
+# ---
+# `pdf-theme` controls the overall look of tables and accents.
+#   pdf-theme: "modern"   Accent-colored table header row plus subtle
+#                         alternating row shading (the default).
+#   pdf-theme: "classic"  Traditional plain booktabs: black rules, no header
+#                         fill and no row shading.
+#   pdf-theme: "minimal"  Light-grey rules, no header fill, very subtle
+#                         alternating rows.
+pdf-theme: "modern"
+
+########
 # Document Class
 # ---
 # Common values:
@@ -117,9 +129,24 @@ linestretch: 1.15
 #   - "bottom=2.5cm"
 
 ########
-# Links And Colors
+# Table Colors
 # ---
-# Any LaTeX-recognized color is valid.
+# Fine-tune table colors independently of the theme. Give each value as a
+# 6-digit hex string (with or without a leading '#'). Uncomment to override.
+#   table-header-color  background of the header row (modern theme default
+#                       is a light slate blue). Setting this re-enables the
+#                       colored header even under classic/minimal themes.
+#   table-accent-color  color of the booktabs rules and the header/footer
+#                       accent (also redefines the document accent color).
+#   table-row-color     shade used for alternating data rows.
+# table-header-color: "E8ECF4"
+# table-accent-color: "475577"
+# table-row-color: "F5F5F5"
+
+########
+# Links
+# ---
+# Any LaTeX-recognized color name is valid.
 # Examples:
 #   linkcolor: "blue"
 #   urlcolor: "teal"
