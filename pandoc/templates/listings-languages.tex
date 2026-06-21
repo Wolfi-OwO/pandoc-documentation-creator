@@ -7,11 +7,16 @@
 \usepackage{xcolor}
 
 % ########
-% Color Definitions (VSCode Light Theme)
+% Color Definitions (VS Code "Light Modern" theme)
 % ---
-% Section configuration.
-\definecolor{vscode-text}{HTML}{000000}
-\definecolor{vscode-keyword}{HTML}{1F4E79}
+% Token colors taken from VS Code's Default Light Modern theme, which inherits
+% its syntax palette from light_plus / light_vs:
+%   foreground  #3B3B3B   keyword/storage  #0000FF   control flow  #AF00DB
+%   string      #A31515   comment          #008000   number        #098658
+%   type/class  #267F99   function         #795E26   variable      #001080
+%   line number #6E7681
+\definecolor{vscode-text}{HTML}{3B3B3B}
+\definecolor{vscode-keyword}{HTML}{0000FF}
 \definecolor{vscode-control}{HTML}{AF00DB}
 \definecolor{vscode-string}{HTML}{A31515}
 \definecolor{vscode-comment}{HTML}{008000}
@@ -19,9 +24,35 @@
 \definecolor{vscode-type}{HTML}{267F99}
 \definecolor{vscode-variable}{HTML}{001080}
 \definecolor{vscode-function}{HTML}{795E26}
-\definecolor{vscode-linenumber}{HTML}{888888}
+\definecolor{vscode-linenumber}{HTML}{6E7681}
 \definecolor{vscode-frame}{HTML}{B3B2B3}
 \definecolor{vscode-background}{HTML}{FFFFFF}
+
+% ########
+% Non-Copyable Line Numbers
+% ---
+% Line numbers should be visible but must NOT end up in the clipboard when a
+% reader selects a listing. We tag each gutter number with an empty PDF
+% `ActualText` (via accsupp): conforming text extractors then copy the code
+% only. `\noncopynumber` is appended to the global `numberstyle` below;
+% listings passes the number to it as an argument.
+%
+% Caveat: ActualText is honored by Acrobat and poppler-based viewers
+% (Evince, `pdftotext`), but some embedded viewers (Chrome/PDFium, the VS Code
+% preview) ignore it and may still copy the digits.
+%
+% The macro is defined inside \if...\fi (conditional *text*), not inside the
+% brace arguments of \IfFileExists, so its `#1` is not mistaken for an
+% argument token (which would raise "Illegal parameter number").
+\newif\ifvscodeaccsupp
+\IfFileExists{accsupp.sty}{\vscodeaccsupptrue}{\vscodeaccsuppfalse}
+\ifvscodeaccsupp
+  \usepackage{accsupp}
+  \newcommand{\noncopynumber}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+\else
+  % accsupp unavailable: keep numbers visible, without copy protection.
+  \newcommand{\noncopynumber}[1]{#1}
+\fi
 
 % ########
 % Global Default Settings
@@ -35,7 +66,7 @@
     keepspaces=true,
     showstringspaces=false,
     numbers=left,
-    numberstyle=\scriptsize\color{vscode-linenumber},
+    numberstyle=\scriptsize\color{vscode-linenumber}\noncopynumber,
     xleftmargin=2.7em,
     framexleftmargin=2.5em,
     frame=single,
@@ -230,8 +261,8 @@
 \definecolor{csharp-control}{HTML}{AF00DB}
 \definecolor{csharp-type}{HTML}{267F99}
 \definecolor{csharp-function}{HTML}{795E26}
-\definecolor{csharp-identifier}{HTML}{001088}
-\definecolor{csharp-string}{HTML}{C13215}
+\definecolor{csharp-identifier}{HTML}{001080}
+\definecolor{csharp-string}{HTML}{A31515}
 
 \lstdefinelanguage{CSharp}{
     sensitive=true,
@@ -582,5 +613,14 @@
 % ########
 % Default Style
 % ---
-% Section configuration.
-\lstset{style=vscode-java}
+% Neutral fallback for code blocks whose language is not in the explicit map
+% above. It applies the VS Code palette to keywords/strings/comments without
+% forcing a specific grammar, so an unmapped language is no longer mis-colored
+% with Java keywords. Pandoc still passes `language=...` per block when it
+% recognizes the fence, so built-in listings languages keep full highlighting.
+\lstdefinestyle{vscode-plain}{
+    keywordstyle=\color{vscode-keyword}\bfseries,
+    commentstyle=\color{vscode-comment}\itshape,
+    stringstyle=\color{vscode-string},
+}
+\lstset{style=vscode-plain}

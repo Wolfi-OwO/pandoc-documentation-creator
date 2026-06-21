@@ -177,6 +177,21 @@ graph TD
 
 Supported `max-width` values include percentages, `cm`, `mm`, `in`, `pt`, `px`, and LaTeX dimensions such as `0.7\linewidth`.
 
+#### Ready-made diagram recipes
+
+You can build richer visuals — colored concept cards, styled sequence diagrams,
+circular process cycles — straight from Markdown, without any external tooling.
+Copy-paste recipes for these are in `examples/advanced/diagram-cookbook.md`:
+
+- **Concept cards in a row** (e.g. the 5 V's) — a Mermaid `flowchart` with nodes
+  joined by invisible links (`~~~`) and colored via `classDef`.
+- **Styled sequence diagram** — a Mermaid `sequenceDiagram` with activation bars,
+  side notes and `rect rgb(...)` highlight regions.
+- **Circular process cycle** (e.g. CRISP-DM) — a Graphviz graph with
+  `layout=circo` and filled, colored nodes chained in a loop.
+
+Pick the closest recipe, swap in your own labels and colors, and rebuild.
+
 ### Images
 
 ```markdown
