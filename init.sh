@@ -312,6 +312,14 @@ create_new_project() {
         print_error "Failed to create example content from templates"
         exit 1
     fi
+
+    if download_or_copy_template "03-diagram-cookbook.md.template" "${docs_full_dir}/02-example-content.md"; then
+        normalize_line_endings "${docs_full_dir}/03-diagram-cookbook.md"
+        print_success "Created ${docs_display}03-diagram-cookbook.md"
+    else
+        print_error "Failed to create example content from templates"
+        exit 1
+    fi
     
     # Build helper script
     print_info "Creating build helper script..."
