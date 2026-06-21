@@ -72,7 +72,7 @@ function Meta(meta)
   if hdr ~= '' then
     table.insert(overrides, string.format('\\definecolor{table-header-bg}{HTML}{%s}', hdr))
     -- Re-enable the header color command even if a theme disabled it.
-    table.insert(overrides, '\\renewcommand{\\PDFTableHeaderColor}{\\rowcolor{table-header-bg}}')
+    table.insert(overrides, '\\renewcommand{\\PDFTableHeaderColor}{\\cellcolor{table-header-bg}}')
   end
 
   local accent = strip_hash(stringify(meta['table-accent-color']))
@@ -116,22 +116,25 @@ function Table(tbl)
     return nil
   end
 
-  local first_cell = first_row.cells[1]
-  local color_cmd  = pandoc.RawInline('latex', '\\PDFTableHeaderColor{}')
-
-  -- Insert the \rowcolor command INLINE at the very start of the first header
-  -- cell — never as a separate block. A separate block makes Pandoc emit a
-  -- blank line (a \par) between \PDFTableHeaderColor and the header text, and a
-  -- \par right after \rowcolor's \noalign triggers "Misplaced \noalign".
-  local blocks = first_cell.contents
-  if #blocks > 0 and (blocks[1].t == 'Para' or blocks[1].t == 'Plain') then
-    -- First block is a Para/Plain: prepend the command to its inlines so it
-    -- stays on the same line as the cell text.
-    table.insert(blocks[1].content, 1, color_cmd)
-  else
-    -- Empty or non-paragraph first cell: a single Plain block holding just the
-    -- command introduces no blank line because it is the cell's only block.
-    table.insert(first_cell.contents, 1, pandoc.Plain({color_cmd}))
+  -- Tint the header row. We apply \cellcolor to EVERY header cell rather than a
+  -- single \rowcolor, because Pandoc wraps wide-table header cells in a
+  -- \begin{minipage}...\end{minipage}, and \rowcolor inside a minipage raises
+  -- "Misplaced \noalign". \cellcolor colors the cell background from inside the
+  -- cell content (minipage or not), so it works for tables of any width.
+  --
+  -- The command is inserted INLINE into each cell's leading Para/Plain so it
+  -- shares the line with the text; a separate block would make Pandoc emit a
+  -- blank line (a \par), which is itself illegal right after a colortbl color.
+  for _, cell in ipairs(first_row.cells) do
+    local color_cmd = pandoc.RawInline('latex', '\\PDFTableHeaderColor{}')
+    local blocks = cell.contents
+    if #blocks > 0 and (blocks[1].t == 'Para' or blocks[1].t == 'Plain') then
+      table.insert(blocks[1].content, 1, color_cmd)
+    else
+      -- Empty / non-paragraph cell: a single Plain block holding just the
+      -- command introduces no blank line because it is the cell's only block.
+      table.insert(cell.contents, 1, pandoc.Plain({color_cmd}))
+    end
   end
 
   return tbl

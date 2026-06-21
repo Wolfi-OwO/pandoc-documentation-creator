@@ -369,10 +369,12 @@ $endif$
 % Override with table-header-color in metadata.yaml.
 \definecolor{table-header-bg}{HTML}{E8ECF4}
 
-% \PDFTableHeaderColor is inserted by pdf-style.lua before the first header cell.
-% Modern theme: expands to \rowcolor{table-header-bg}.
-% Classic / minimal themes: redefined to {} (no-op) via header-includes.
-\newcommand{\PDFTableHeaderColor}{\rowcolor{table-header-bg}}
+% \PDFTableHeaderColor is inserted by pdf-style.lua into every header cell.
+% Modern theme: expands to \cellcolor{table-header-bg} (per cell, so it works
+% even when Pandoc wraps wide-table header cells in a minipage — \rowcolor would
+% raise "Misplaced \noalign" there).
+% Classic / minimal themes: redefined to {} (no-op) via the filter overrides.
+\newcommand{\PDFTableHeaderColor}{\cellcolor{table-header-bg}}
 
 % Alternating row colors (overridden per-theme in header-includes)
 \let\oldlongtable\longtable
