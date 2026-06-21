@@ -7,7 +7,7 @@ set -e
 # ---
 # Read the version from the repository root when available.
 VERSION=$(cat ../VERSION 2>/dev/null || echo "1.0.0")
-IMAGE_NAME="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
+IMAGE_NAME="pandoc-documentation-creator"
 BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 VCS_REF=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 VCS_URL=$(git config --get remote.origin.url 2>/dev/null || echo "https://gitlab.com/woofi4/public/pandoc-documentation-creator")
