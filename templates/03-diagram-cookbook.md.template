@@ -130,8 +130,7 @@ picture straight into Markdown as a **raw LaTeX block** — no Kroki, no externa
 service. The required libraries (`arrows.meta`, `positioning`, `calc`, `fit`, …)
 are already loaded by the template, so you only write the picture itself.
 
-Wrap the picture in a ` ```{=latex} … ``` ` raw block. To get a caption and a
-figure number, put it inside a `figure` environment.
+Wrap the picture in a raw LaTeX block (triple backticks with `{=latex}`). To get a caption and a figure number, put it inside a `figure` environment.
 
 ### Single perceptron
 
