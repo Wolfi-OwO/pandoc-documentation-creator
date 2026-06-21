@@ -322,6 +322,23 @@ $endif$
 \usepackage{multirow}
 \usepackage{colortbl}
 \usepackage{tabularx}
+\usepackage{ragged2e}
+
+% Robust word wrapping inside table cells.
+% Pandoc renders wide tables with left-aligned paragraph columns
+% (>{\raggedright\arraybackslash}p{...}). Plain \raggedright hardly hyphenates,
+% so a long token — e.g. a German compound like "Dimensionsreduktion" — sticks
+% out of its column and overlaps the neighbouring cell. Globally aliasing
+% \raggedright to ragged2e's \RaggedRight (which keeps full hyphenation) makes
+% those cell paragraphs break cleanly. Pandoc only emits \raggedright inside
+% table cells, so document body text is unaffected.
+%
+% IMPORTANT: do NOT apply this via \AtBeginEnvironment{longtable}{...}. That
+% injects tokens at the start of the first row, which steals the position where
+% colortbl's \rowcolor (the themed header fill) must emit its \noalign — causing
+% a "Misplaced \noalign" error. Redefining \raggedright keeps the change inside
+% the per-cell column template, where it coexists with \rowcolor safely.
+\let\raggedright\RaggedRight
 
 \providecommand{\real}[1]{#1}
 % Pandoc emits \LTcaptype{none} for longtables without captions.
@@ -332,10 +349,10 @@ $endif$
 \providecommand{\thenone}{}
 \renewcommand{\thenone}{}
 
-% Custom column types
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+% Custom column types (ragged2e variants keep hyphenation in narrow columns)
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\Centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\RaggedLeft\arraybackslash}p{#1}}
 
 % Table styling
 \arrayrulecolor{table-rule-color}
@@ -377,6 +394,9 @@ $endif$
 % Section configuration.
 \usepackage{mdframed}
 \usepackage{tikz}
+% TikZ libraries preloaded so authors can drop raw TikZ pictures straight into
+% Markdown (e.g. neural-network diagrams) without their own \usetikzlibrary.
+\usetikzlibrary{arrows.meta, positioning, calc, fit, backgrounds, shapes.geometric}
 
 % Shaded environment
 \makeatletter

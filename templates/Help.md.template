@@ -192,6 +192,28 @@ Copy-paste recipes for these are in `examples/advanced/diagram-cookbook.md`:
 
 Pick the closest recipe, swap in your own labels and colors, and rebuild.
 
+#### Native TikZ diagrams (neural networks, custom figures)
+
+For node-and-edge figures such as perceptrons or multi-layer networks, you can
+embed **TikZ** directly — it is compiled by LaTeX, so no external service is
+involved. The common libraries (`arrows.meta`, `positioning`, `calc`, `fit`) are
+preloaded, so just write the picture inside a raw LaTeX block:
+
+````markdown
+```{=latex}
+\begin{tikzpicture}[>=Stealth]
+  \node[circle,draw] (a) at (0,0) {$x_1$};
+  \node[circle,draw] (b) at (2,0) {$\Sigma$};
+  \draw[->] (a) -- (b);
+\end{tikzpicture}
+```
+````
+
+Wrap it in `\begin{figure}[H]...\caption{...}\end{figure}` for a numbered,
+captioned figure. Ready-to-copy perceptron and multi-layer-network recipes are in
+`examples/advanced/diagram-cookbook.md`. TikZ renders only in the PDF build, not
+in Markdown previews.
+
 ### Images
 
 ```markdown

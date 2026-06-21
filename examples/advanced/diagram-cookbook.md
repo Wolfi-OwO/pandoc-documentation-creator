@@ -122,6 +122,94 @@ in Graphviz labels.
 
 ---
 
+## 4. Neural-network diagrams (TikZ, native LaTeX)
+
+For node-and-edge figures like perceptrons or multi-layer networks, **TikZ** gives
+the most control. Because the build already targets LaTeX, you can drop a TikZ
+picture straight into Markdown as a **raw LaTeX block** — no Kroki, no external
+service. The required libraries (`arrows.meta`, `positioning`, `calc`, `fit`, …)
+are already loaded by the template, so you only write the picture itself.
+
+Wrap the picture in a ` ```{=latex} … ``` ` raw block. To get a caption and a
+figure number, put it inside a `figure` environment.
+
+### Single perceptron
+
+```{=latex}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  neuron/.style={circle, draw, minimum size=0.8cm},
+  >=Stealth, node distance=1.5cm
+]
+  % Inputs — edit this list to add/remove inputs
+  \foreach \i/\lbl in {1/x_1, 2/x_2, 3/x_3, 4/x_4}
+    \node[neuron] (x\i) at (0, -\i*1.2) {$\lbl$};
+
+  \node[neuron] (b)   at (2, 0.5)  {$b$};
+  \node[neuron] (sum) at (3, -2.4) {$\Sigma$};
+  \node[neuron] (f)   at (5.5, -2.4) {$f$};
+  \node[right=1cm of f] (out) {$\hat{y} \in \{0,1\}$};
+
+  % Weighted edges (\w = label, \col = colour)
+  \foreach \i/\w/\col in {1/w_1/black, 2/w_2/black, 3/w_3/blue, 4/w_4/blue}
+    \draw[->, \col] (x\i) -- node[above, sloped, font=\tiny] {$\w$} (sum);
+
+  \draw[->] (b) -- (sum);
+  \draw[->] (sum) -- node[above, font=\tiny] {$z$} (f);
+  \draw[->] (f) -- (out);
+\end{tikzpicture}
+\caption{Perzeptron: gewichtete Summe und Aktivierungsfunktion}
+\end{figure}
+```
+
+### Multi-layer network
+
+Change the four counts at the top to resize the network — everything else (nodes
+and the fully-connected edges) is generated with `\foreach`.
+
+```{=latex}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  neuron/.style={circle, draw, minimum size=0.7cm, fill=white},
+  >=Stealth, node distance=0.9cm
+]
+  % --- adjust these numbers, the rest adapts automatically ---
+  \def\nin{4}\def\nha{5}\def\nhb{5}\def\nout{3}
+
+  \foreach \i in {1,...,\nin} {
+    \node[neuron] (I\i) at (0, -\i*1.1) {};
+    \node[left=0.2cm of I\i, font=\small] {$x_\i$};
+  }
+  \foreach \i in {1,...,\nha} \node[neuron] (A\i) at (2.5, {-\i*1.1+0.55}) {};
+  \foreach \i in {1,...,\nhb} \node[neuron] (B\i) at (5,   {-\i*1.1+0.55}) {};
+  \foreach \i in {1,...,\nout} \node[neuron] (O\i) at (7.5, {-\i*1.1-0.55}) {};
+
+  % Fully-connected edges
+  \foreach \i in {1,...,\nin}  \foreach \j in {1,...,\nha} \draw[gray!50,->] (I\i) -- (A\j);
+  \foreach \i in {1,...,\nha}  \foreach \j in {1,...,\nhb} \draw[gray!50,->] (A\i) -- (B\j);
+  \foreach \i in {1,...,\nhb}  \foreach \j in {1,...,\nout} \draw[gray!50,->] (B\i) -- (O\j);
+
+  \node[below=0.6cm of I\nin, font=\small, align=center] {Input\\Layer};
+  \node[font=\small, align=center] at (3.75, -6.6) {Hidden Layers};
+  \node[below=0.6cm of O\nout, font=\small, align=center] {Output\\Layer};
+  \draw[->] (0,-7.2) -- (7.5,-7.2) node[midway, below, font=\small] {Forward Propagation};
+\end{tikzpicture}
+\caption{Mehrschichtiges neuronales Netz (vollständig verbunden)}
+\end{figure}
+```
+
+**Adapt it:** node coordinates are `(x, y)`; columns share an `x`, rows step in
+`y`. The `\foreach \i \foreach \j` double loop draws every edge between two
+layers — change a count and the wiring follows. For very large nets the dedicated
+`neuralnetwork` package is an alternative, but the `\foreach` recipe above needs
+no extra packages.
+
+> **Note:** TikZ pictures are compiled by LaTeX directly, so they only render in
+> the PDF build — not in a Markdown preview. Keep them in ` ```{=latex} ``` `
+> raw blocks so other output formats simply skip them.
+
 ## More engines
 
 The same `.engine` mechanism works for many other Kroki diagram types, e.g.:
