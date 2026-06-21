@@ -117,13 +117,22 @@ function Table(tbl)
   end
 
   local first_cell = first_row.cells[1]
-  local color_cmd  = pandoc.RawBlock('latex', '\\PDFTableHeaderColor{}')
+  local color_cmd  = pandoc.RawInline('latex', '\\PDFTableHeaderColor{}')
 
-  local new_blocks = { color_cmd }
-  for _, block in ipairs(first_cell.contents) do
-    table.insert(new_blocks, block)
+  -- Insert the \rowcolor command INLINE at the very start of the first header
+  -- cell — never as a separate block. A separate block makes Pandoc emit a
+  -- blank line (a \par) between \PDFTableHeaderColor and the header text, and a
+  -- \par right after \rowcolor's \noalign triggers "Misplaced \noalign".
+  local blocks = first_cell.contents
+  if #blocks > 0 and (blocks[1].t == 'Para' or blocks[1].t == 'Plain') then
+    -- First block is a Para/Plain: prepend the command to its inlines so it
+    -- stays on the same line as the cell text.
+    table.insert(blocks[1].content, 1, color_cmd)
+  else
+    -- Empty or non-paragraph first cell: a single Plain block holding just the
+    -- command introduces no blank line because it is the cell's only block.
+    table.insert(first_cell.contents, 1, pandoc.Plain({color_cmd}))
   end
-  first_cell.contents = pandoc.Blocks(new_blocks)
 
   return tbl
 end
