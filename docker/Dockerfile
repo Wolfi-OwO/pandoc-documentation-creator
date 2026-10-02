@@ -14,7 +14,12 @@ LABEL org.opencontainers.image.version="${VERSION}" \
 
 ENV PLANTUML_VERSION=1.2025.4
 
-RUN apk add --no-cache \
+# pandoc/latex:3.9 hasn't been rebuilt since 2026-03-30 and ships Alpine 3.23.3
+# packages patched since then (144 trivy findings as of 2026-10-01, 3 CRITICAL).
+# All fixes already exist in Alpine's repos, so `apk upgrade` alone clears every
+# finding with no ignore list needed.
+RUN apk upgrade --no-cache && \
+    apk add --no-cache \
     python3 \
     py3-pip \
     openjdk21-jre \
