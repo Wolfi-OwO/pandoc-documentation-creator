@@ -12,7 +12,7 @@ LABEL org.opencontainers.image.version="${VERSION}" \
     org.opencontainers.image.title="Pandoc Documentation Creator" \
     org.opencontainers.image.description="Professional documentation generator using Pandoc and LaTeX"
 
-ENV PLANTUML_VERSION=1.2025.4
+ENV PLANTUML_VERSION=1.2026.10
 
 # pandoc/latex:3.9 hasn't been rebuilt since 2026-03-30 and ships Alpine 3.23.3
 # packages patched since then (144 trivy findings as of 2026-10-01, 3 CRITICAL).

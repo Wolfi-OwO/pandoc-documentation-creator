@@ -1,0 +1,5 @@
+# Guava is shaded into plantuml.jar and even the newest PlantUML release (1.2026.10)
+# still ships 33.6.0; the fix is 33.7.2. The flaw is a DoS during Java deserialization
+# of untrusted data, and PlantUML here only renders local diagram text, never
+# deserializes external input. Remove once PlantUML bundles Guava >= 33.7.2.
+CVE-2026-102554
