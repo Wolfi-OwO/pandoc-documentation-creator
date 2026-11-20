@@ -8,7 +8,7 @@ set -e
 # Sets up a new documentation project structure and downloads template files.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-IMAGE_REGISTRY="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
+IMAGE_REGISTRY="registry.gitlab.com/woofiowo/pandoc-documentation-creator"
 VERSION="unknown"
 IMAGE_TAG=""
 
@@ -16,7 +16,7 @@ IMAGE_TAG=""
 # Template Source
 # ---
 # Raw template URL updated after the image version has been detected.
-REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/templates"
+REPO_RAW_URL="https://gitlab.com/WoofiOwO/pandoc-documentation-creator/-/raw/main/templates"
 
 ########
 # Colors
@@ -475,7 +475,7 @@ check_docker_image() {
             repo_ref="v${VERSION}"
         fi
 
-        REPO_RAW_URL="https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/${repo_ref}/templates"
+        REPO_RAW_URL="https://gitlab.com/WoofiOwO/pandoc-documentation-creator/-/raw/${repo_ref}/templates"
         print_info "Using templates from: ${REPO_RAW_URL}"
     fi
     

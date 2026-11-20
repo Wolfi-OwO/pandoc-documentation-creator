@@ -46,7 +46,7 @@ Edit markdown files in the `{{DOCS_DIR}}/` directory:
 docker run --rm  \
 -v "$(pwd):/data" \
 --entrypoint=/bin/sh \
-"registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION}" \
+"registry.gitlab.com/woofiowo/pandoc-documentation-creator:${VERSION}" \
 -c "/data/buildPDF"
 ```
 
@@ -257,7 +257,7 @@ Run with custom image tag (preferred):
 docker run --rm  \
 -v "$(pwd):/data" \
 --entrypoint=/bin/sh \
-"registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION}" \
+"registry.gitlab.com/woofiowo/pandoc-documentation-creator:${VERSION}" \
 -c "/data/buildPDF"
 ```
 
@@ -286,7 +286,7 @@ filters:
 Use a specific tag by exporting `VERSION` before running the commands below.
 
 ```bash
-docker pull registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION}
+docker pull registry.gitlab.com/woofiowo/pandoc-documentation-creator:${VERSION}
 ```
 
 ### Run Manually
@@ -295,7 +295,7 @@ docker pull registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VER
 docker run --rm  \
 -v "$(pwd):/data" \
 --entrypoint=/bin/sh \
-"registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION}" \
+"registry.gitlab.com/woofiowo/pandoc-documentation-creator:${VERSION}" \
 -c "/data/buildPDF"
 ```
 

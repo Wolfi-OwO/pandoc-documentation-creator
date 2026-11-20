@@ -9,7 +9,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-IMAGE_REGISTRY="registry.gitlab.com/woofi4/public/pandoc-documentation-creator"
+IMAGE_REGISTRY="registry.gitlab.com/woofiowo/pandoc-documentation-creator"
 IMAGE_NAME="${IMAGE_REGISTRY}:latest"
 OUTPUT_NAME="example-documentation"
 

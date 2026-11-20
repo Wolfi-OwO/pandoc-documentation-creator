@@ -1,7 +1,7 @@
 # Pandoc Documentation Creator
 
-[![pipeline](https://gitlab.com/woofi4/public/pandoc-documentation-creator/badges/main/pipeline.svg)](https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/pipelines)
-[![latest-release](https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/badges/release.svg)](https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/releases/permalink/latest)
+[![pipeline](https://gitlab.com/WoofiOwO/pandoc-documentation-creator/badges/main/pipeline.svg)](https://gitlab.com/WoofiOwO/pandoc-documentation-creator/-/pipelines)
+[![latest-release](https://gitlab.com/WoofiOwO/pandoc-documentation-creator/-/badges/release.svg)](https://gitlab.com/WoofiOwO/pandoc-documentation-creator/-/releases/permalink/latest)
 
 **Maintainer:** Phillip Kofler (<koflerphillip@outlook.com>)
 
@@ -13,7 +13,7 @@ A complete Docker-based documentation system using Pandoc, LaTeX, and profession
 
 ```bash
 # Download and run init.sh
-wget https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/init.sh
+wget https://gitlab.com/WoofiOwO/pandoc-documentation-creator/-/raw/main/init.sh
 chmod +x init.sh
 ./init.sh build
 ```
@@ -22,7 +22,7 @@ Or with curl:
 
 ```bash
 # Download and run init.sh
-curl -O https://gitlab.com/woofi4/public/pandoc-documentation-creator/-/raw/main/init.sh
+curl -O https://gitlab.com/WoofiOwO/pandoc-documentation-creator/-/raw/main/init.sh
 chmod +x init.sh
 ./init.sh build
 ```
@@ -32,7 +32,7 @@ chmod +x init.sh
 If you've already cloned the repository:
 
 ```bash
-git clone https://gitlab.com/woofi4/public/pandoc-documentation-creator.git
+git clone https://gitlab.com/WoofiOwO/pandoc-documentation-creator.git
 cd pandoc-documentation-creator
 ./init.sh build
 ```

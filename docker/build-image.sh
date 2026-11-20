@@ -10,7 +10,7 @@ VERSION=$(cat ../VERSION 2>/dev/null || echo "1.0.0")
 IMAGE_NAME="pandoc-documentation-creator"
 BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 VCS_REF=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
-VCS_URL=$(git config --get remote.origin.url 2>/dev/null || echo "https://gitlab.com/woofi4/public/pandoc-documentation-creator")
+VCS_URL=$(git config --get remote.origin.url 2>/dev/null || echo "https://gitlab.com/WoofiOwO/pandoc-documentation-creator")
 
 echo "Building Docker image with version: ${VERSION}"
 

@@ -292,7 +292,7 @@ services:
   "description": "Professional PDF documentation generator",
   "main": "index.js",
   "scripts": {
-    "build": "docker run --rm -v $(pwd):/data --entrypoint=/bin/sh registry.gitlab.com/woofi4/public/pandoc-documentation-creator:${VERSION} -c /data/buildPDF",
+    "build": "docker run --rm -v $(pwd):/data --entrypoint=/bin/sh registry.gitlab.com/woofiowo/pandoc-documentation-creator:${VERSION} -c /data/buildPDF",
     "test": "jest"
   },
   "dependencies": {
